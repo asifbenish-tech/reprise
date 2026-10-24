@@ -12,10 +12,10 @@ Release 1 polish). Act III, Act IV and the finale are Release 2 and are not star
 Release 1 before starting Act III." The owner asked for the game to be built in one go, so milestones M0 to
 M7 were built back to back rather than reviewed one by one; the review now happens on Release 1 as a whole.
 
-**D-002 · Where the code lives.** The only repository attached to this session is the school timetable
-(`gordon-timetable`), whose `master` branch is published to teachers. The game sits in a self-contained
-`reprise/` folder on a work branch, touches nothing else, and is never merged into `master` by this work.
-It should move to its own repository before it is published on GitHub Pages or itch.io.
+**D-002 · Where the code lives.** The game was first built in a `reprise/` folder of the owner's
+timetable repository (the only repository attached to that session) and then moved, with its history, to
+this repository. GitHub Pages deployment is a workflow that only runs when started by hand, so nothing is
+published until the owner decides (§0: "publish free" happens after the owner reviews each release).
 
 **D-003 · Default name set: `original` (§1).** The owner picks the set at build time. `npm run build`
 uses `original` (Tam Threadwell, the Weavers, *Reprise*) because it is the takedown-safe set;

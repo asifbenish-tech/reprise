@@ -14,6 +14,7 @@ npm install
 npm run dev            # http://localhost:5173
 npm run build          # static site in dist/, name set "original"
 npm run build:loom     # the same game with the "loom" name set
+npm run build:artifact # dist/artifact.html for hosts that wrap the page in their own document
 ```
 
 ## Check it
@@ -59,4 +60,10 @@ the generators never overwrite `final` files. To drop in a recorded stem, put `<
 
 - Final pixel art and final music performances (see `DECISIONS.md` D-017 and D-018).
 - A full human playthrough on a desktop and a phone (§9.8).
-- Move this folder to its own repository before publishing on itch.io or GitHub Pages.
+
+## Publishing
+
+- **GitHub Pages:** once, set Settings -> Pages -> Source to "GitHub Actions". Then Actions -> pages ->
+  Run workflow (choose the name set). It builds and deploys `dist/`; nothing deploys on a plain push.
+- **itch.io:** `npm run build`, zip the contents of `dist/`, upload as an HTML5 game ("This file will be
+  played in the browser"), viewport 1280x720.
