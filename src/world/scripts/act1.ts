@@ -97,7 +97,40 @@ const hall: LogicFactory = (g) => {
   };
 };
 
+/** The Chairman's demo: three bars of glossy hook and one left empty, the space he means for Bobbin. */
+const DEMO = [76, 76, 79, 76, 74, 72, 74, 76, 79, 81, 79, 76];
+
 export const scripts: Record<string, ScriptFn> = {
+  /** Act I opens on the head of the Producers' Guild, come down to sign Bobbin; Bobbin won't (STORY.md, D-050). */
+  async chairman_lobby(g) {
+    if (g.flag("chairman_met")) return;
+    await g.cutscene(async () => {
+      g.setFlag("chairman_here");
+      g.view?.refreshHotspots();
+      g.view?.setSprite("chairman", { frame: 2 });
+      await g.view?.moveSprite("chairman", 196, 266, 2.4);
+      g.view?.setSprite("chairman", { frame: 0 });
+      await g.dialogue("chairman_offer");
+      g.setFlag("chairman_met");
+      g.view?.setSprite("chairman", { frame: 2 });
+      await g.view?.moveSprite("chairman", 484, 266, 2.4);
+      g.setFlag("chairman_here", false);
+      g.view?.refreshHotspots();
+      await g.say("receptionist", "lobby.chairman_gone");
+      await g.say("bobbin", "lobby.chairman_bobbin");
+    });
+  },
+
+  async chairman_demo(g) {
+    g.view?.setSprite("chairman", { frame: 1 });
+    g.caption("caption.chairman_demo");
+    const step = g.conductor.beatSeconds() / 2;
+    if (!g.fast) g.voice.melody("jingle", DEMO, Tone.now() + 0.1, step);
+    // the empty bar after the hook is part of the demo
+    await g.waitSeconds(step * (DEMO.length + 8));
+    g.view?.setSprite("chairman", { frame: 0 });
+  },
+
   async watch_engineer(g) {
     if (g.flag("watched_engineer")) return void (await g.say("bobbin", "mixing.desk_again"));
     await g.cutscene(async () => {

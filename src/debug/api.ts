@@ -34,7 +34,7 @@ export function install(g: Game, hud: HudImpl, _deps: Deps): void {
   async function until(what: string, ok: () => boolean, bars = 6): Promise<void> {
     const deadline = performance.now() + Math.max(2000, g.conductor.barSeconds() * bars * 1000);
     while (!ok()) {
-      if (performance.now() > deadline) throw new Error(`${what} never became true (room ${g.room.id})`);
+      if (performance.now() > deadline) throw new Error(`${what} never became true (room ${g.room?.id})`);
       await idle();
       await sleep(30);
     }
@@ -148,6 +148,7 @@ export function install(g: Game, hud: HudImpl, _deps: Deps): void {
     await g.conductor.start(96);
     g.audioReady();
     document.getElementById("title")?.classList.add("hidden");
+    await until("the room scene", () => !!g.view);
     g.newGame(seed, difficulty);
     await idle();
   }
@@ -161,6 +162,8 @@ export function install(g: Game, hud: HudImpl, _deps: Deps): void {
     await g.conductor.start(96);
     g.audioReady();
     document.getElementById("title")?.classList.add("hidden");
+    // after a reload the room scene may still be loading; a save loaded before it exists is never drawn
+    await until("the room scene", () => !!g.view);
     g.load(save);
     await idle();
   }

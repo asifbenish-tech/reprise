@@ -47,6 +47,7 @@ CAST = {
     "panelist": {"sid": 60, "scale": 1.0},
     "scanner": {"sid": 858, "scale": 0.95, "fx": "robot"},
     "klaxon": {"sid": 858, "scale": 0.9, "fx": "robot"},
+    "chairman": {"sid": 42, "scale": 1.06},
 }
 # Piper's variation: more than its defaults (0.667, 0.8) so the delivery wanders a little, as people do
 NOISE = {"noise_scale": 0.72, "noise_w_scale": 0.92}

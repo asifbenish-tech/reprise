@@ -137,6 +137,20 @@ const CHARS: Record<string, (img: Img, n: number) => void> = {
   foreman(img, n) {
     frames(img, n, (ox, fw, i) => person(img, ox, fw, FIGS.foreman, i ? 1 : -1, 0.6));
   },
+  chairman(img, n) {
+    frames(img, n, (ox, fw, i) => {
+      // 0: waiting, a gold phone in hand; 1: the pen held out; 2: a step
+      const p = person(img, ox, fw, FIGS.chairman, i === 2 ? 0.8 : 0, i === 1 ? 0.55 : 0);
+      const [lx, ly] = [Math.round(p.lh[0]), Math.round(p.lh[1])];
+      img.rect(lx - 1, ly - 4, 3, 5, "#b08a30");
+      img.rect(lx - 1, ly - 4, 2, 4, "#f0d070");
+      if (i === 1) {
+        const [rx, ry] = [Math.round(p.rh[0]), Math.round(p.rh[1])];
+        img.line(rx, ry, rx + 3, ry - 4, "#f0c040");
+        img.px(rx + 3, ry - 4, [255, 248, 210, 255]);
+      }
+    });
+  },
   dominic(img, n) {
     frames(img, n, (ox, fw, i) => person(img, ox, fw, FIGS.dominic, 0, i * 0.5));
   },

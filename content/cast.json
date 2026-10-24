@@ -208,6 +208,17 @@
    ],
    "instrument": "pad",
    "color": "#d0c0a0"
+  },
+  {
+   "id": "chairman",
+   "name": "speaker.chairman",
+   "portrait": "por_chairman",
+   "signature": [
+    36,
+    36
+   ],
+   "instrument": "bass",
+   "color": "#f0d080"
   }
  ]
 }

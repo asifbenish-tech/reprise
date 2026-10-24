@@ -673,6 +673,17 @@
    "recipe": "char:dominic"
   },
   {
+   "id": "chairman",
+   "path": "art/chars/chairman.png",
+   "w": 120,
+   "h": 72,
+   "frames": 3,
+   "frameW": 40,
+   "normal": "art/chars/chairman_n.png",
+   "status": "placeholder",
+   "recipe": "char:chairman"
+  },
+  {
    "id": "mic",
    "path": "art/chars/mic.png",
    "w": 20,
@@ -798,6 +809,15 @@
    "frames": 1,
    "status": "placeholder",
    "recipe": "portrait:dominic"
+  },
+  {
+   "id": "por_chairman",
+   "path": "art/portraits/chairman.png",
+   "w": 640,
+   "h": 296,
+   "frames": 1,
+   "status": "placeholder",
+   "recipe": "portrait:chairman"
   },
   {
    "id": "ui_distaff",

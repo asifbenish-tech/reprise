@@ -2,6 +2,9 @@
 
 ## Look pass (owner feedback on Release 1)
 
+- The Chairman, head of the Producers' Guild: his seal on the city's billboards, a first meeting in the
+  Spire's lobby (a demo, a contract, Bobbin's refusal), and his voice after the encore. STORY.md: pop, rock,
+  then K-pop; the Monotone kept behind him (D-050).
 - How to play: a short illustrated guide before the first game (and on the title and in the menu), and
   first-time tips in the scene, from answering the first call to Combing and the Spindle (D-049).
 - Art pass in the same style: people with real proportions, faces, clothes and shading; Bobbin with a

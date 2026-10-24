@@ -102,6 +102,25 @@
    }
   },
   {
+   "id": "chairman",
+   "rect": [
+    468,
+    194,
+    36,
+    68
+   ],
+   "look": "look.spire_lobby.chairman",
+   "name": "name.chairman",
+   "person": true,
+   "when": "flag:chairman_here",
+   "sprite": {
+    "image": "chairman",
+    "x": 484,
+    "y": 266,
+    "lit": true
+   }
+  },
+  {
    "id": "hologram",
    "rect": [
     108,
@@ -171,5 +190,6 @@
    "color": "#ff9ae8",
    "intensity": 0.9
   }
- ]
+ ],
+ "onEnter": "script:act1.chairman_lobby"
 }

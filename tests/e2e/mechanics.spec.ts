@@ -102,3 +102,18 @@ test("a first new game opens the guide, and the Crossing shows how to answer the
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("reprise.settings.v1")!).guideSeen)).toBe(true);
   expect(errors).toEqual([]);
 });
+
+test("the Chairman meets Bobbin once, at the first visit to the Spire, and is refused", async ({ page }) => {
+  const errors = watchErrors(page);
+  await boot(page, 2026);
+  await solve(page, upTo("A1-1"));
+  await step(page, "walk:spire_lobby");
+  await page.waitForFunction(() => (window as any).__reprise.g.flag("chairman_met") && !(window as any).__reprise.g.busy, null, { timeout: 20000 });
+  expect((await state(page)).flags.chairman_here).toBeFalsy();
+  // out and back in: no second meeting
+  await step(page, "walk:street");
+  await step(page, "walk:spire_lobby");
+  expect(await page.evaluate(() => (window as any).__reprise.g.busy)).toBe(false);
+  await solve(page, ["A1-1"]);
+  expect(errors).toEqual([]);
+});

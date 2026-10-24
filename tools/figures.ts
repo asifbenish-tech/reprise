@@ -21,6 +21,8 @@ export interface Fig {
   top?: "tee" | "jacket" | "coat" | "hoodie" | "vest" | "turtle" | "dress";
   /** The shirt under an open jacket, coat or vest. */
   shirt?: string;
+  /** Dark glasses, in this colour. */
+  shades?: string;
 }
 
 /** Where a drawn person's hands and head ended up, for props placed after. */
@@ -338,6 +340,14 @@ export function person(img: Img, ox: number, fw: number, f: Fig, step = 0, arm =
     if (big) head.px(x + (x < cx ? -1 : 1), eyeY, hex("#f0e8e4"));
     head.px(x, eyeY, hex("#1a1012"));
     if (headH >= 9) head.px(x, eyeY - 2, hex(mix(hair, skin, 0.35)));
+  }
+  if (f.shades) {
+    // two dark lenses on a bridge, a glint on each
+    for (const x of [cx - 2 - ex, cx + ex]) {
+      head.rect(x, eyeY - 1, 2, 2, f.shades);
+      head.px(x, eyeY - 1, hex(mix(f.shades, "#ffffff", 0.45)));
+    }
+    head.rect(cx - ex, eyeY - 1, 2 * ex, 1, f.shades);
   }
   head.px(cx, eyeY + 1, hex(S.lo));
   if (headH >= 9) head.px(cx, eyeY + 2, hex(S.lo));
@@ -695,6 +705,7 @@ export const FIGS: Record<string, Fig> = {
   juno: { h: 58, body: "#2a7a54", skin: "#8a5a3c", hair: "#1a1010", hairStyle: "puffs", headphones: "neck", accent: "#7fe0a0", legs: "#2a2a34", top: "jacket", shirt: "#1e2a24" },
   host: { h: 62, body: "#c89a58", skin: "#ecc0a0", hair: "#7a3a1e", hairStyle: "long", accent: "#ffffff", skirt: true, shoes: "#6a4a2a" },
   foreman: { h: 62, body: "#f08a30", skin: "#b07850", hair: "#2a1a10", hat: "#ffd040", wide: 24, legs: "#3a3a44", accent: "#e8e8e8", top: "vest", shirt: "#4a5a6a", shoes: "#4a3020" },
+  chairman: { h: 64, body: "#ece6da", skin: "#dcb08c", hair: "#d0d0d8", legs: "#e2dccf", shoes: "#3a2418", accent: "#f0c040", top: "jacket", shirt: "#1c1820", shades: "#141018", wide: 20 },
   dominic: { h: 62, body: "#76685a", skin: "#e0b090", hair: "#a4a4a4", headphones: "neck", accent: "#ff9a3a", wide: 21, top: "jacket", shirt: "#2a2a30" },
 };
 

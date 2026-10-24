@@ -1,0 +1,81 @@
+{
+ "id": "chairman_offer",
+ "start": "n0",
+ "nodes": {
+  "n0": {
+   "speaker": "chairman",
+   "text": "dlg.chairman_offer.n0",
+   "next": "n1"
+  },
+  "n1": {
+   "speaker": "bobbin",
+   "text": "dlg.chairman_offer.n1",
+   "next": "n2"
+  },
+  "n2": {
+   "speaker": "chairman",
+   "text": "dlg.chairman_offer.n2",
+   "next": "n3"
+  },
+  "n3": {
+   "speaker": "chairman",
+   "text": "dlg.chairman_offer.n3",
+   "effects": [
+    "script:act1.chairman_demo"
+   ],
+   "next": "n4"
+  },
+  "n4": {
+   "speaker": "chairman",
+   "text": "dlg.chairman_offer.n4",
+   "next": "n5"
+  },
+  "n5": {
+   "speaker": "chairman",
+   "text": "dlg.chairman_offer.n5",
+   "choices": [
+    {
+     "text": "dlg.chairman_offer.c_no",
+     "next": "n7"
+    },
+    {
+     "text": "dlg.chairman_offer.c_swans",
+     "next": "n6b"
+    },
+    {
+     "text": "dlg.chairman_offer.c_sign",
+     "next": "n6a"
+    }
+   ]
+  },
+  "n6a": {
+   "speaker": "bobbin",
+   "text": "dlg.chairman_offer.n6a",
+   "next": "n7"
+  },
+  "n6b": {
+   "speaker": "chairman",
+   "text": "dlg.chairman_offer.n6b",
+   "next": "n7"
+  },
+  "n7": {
+   "speaker": "bobbin",
+   "text": "dlg.chairman_offer.n7",
+   "next": "n8"
+  },
+  "n8": {
+   "speaker": "chairman",
+   "text": "dlg.chairman_offer.n8",
+   "next": "n9"
+  },
+  "n9": {
+   "speaker": "chairman",
+   "text": "dlg.chairman_offer.n9",
+   "next": "n10"
+  },
+  "n10": {
+   "speaker": "chairman",
+   "text": "dlg.chairman_offer.n10"
+  }
+ }
+}

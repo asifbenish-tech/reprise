@@ -62,6 +62,13 @@ export class NoteVoice {
     return times;
   }
 
+  /** A short tune on a character's instrument, one note every `step` seconds. */
+  melody(voice: string, midis: number[], start: number, step: number): void {
+    const inst = this.teacher(voice);
+    if (!inst) return;
+    midis.forEach((m, i) => inst.play(m, step * 0.85, start + i * step, 0.55));
+  }
+
   /** Each speaking character's two-note instrumental signature, played softly under their line (GDD 8.8). */
   signature(voice: string, midis: [number, number], start: number): void {
     const inst = this.teacher(voice);

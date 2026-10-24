@@ -288,6 +288,7 @@ async function resolve(g: Game): Promise<void> {
     g.setFlag("encore");
     await g.dialogue("dominic_end");
     await g.say("bobbin", "show.res4");
+    await g.say("chairman", "show.chairman_sting");
     await g.hud?.episodeEnd();
   });
 }

@@ -2,7 +2,7 @@
 
 The owner's arc (24.10.2026). It replaces the design document's plan for Release 2 (its Acts III and IV,
 the Studios and the Lawyers, and its finale at the top of the Chart). Release 1 already follows it.
-`DECISIONS.md` D-045 to D-047 record what changed and why.
+`DECISIONS.md` D-045 to D-047 and D-050 record what changed and why.
 
 ## What is wrong with the world
 
@@ -26,7 +26,8 @@ Bobbin helps someone get there, he takes back one of his notes.
 | Prologue, Marcus | Marcus's memory, his own rhythm; the e comes back | c d e |
 | Act I, Pop | Lyra sings her own song again | f |
 | Act II, the Hit Factory | Juno's riff, a live show | g |
-| Release 2 worlds | One note for each world that finds its own sound | a, b |
+| Act III, Rock | A rock world that finds its own sound again | a |
+| Act IV, K-pop | The most perfect formula of all, undone | b |
 | The finale | Everyone he helped joins in | high C |
 
 ## The journey: worlds of music
@@ -34,11 +35,37 @@ Bobbin helps someone get there, he takes back one of his notes.
 Bobbin travels through the city's music, helping one world at a time back to its own sound, and the
 world comes together as he goes.
 
-- **Release 1 (built):** Pop (the Starlight Spire, Lyra, LYRIX) and the Hit Factory (the Producers'
-  production floor, Juno, Dominic).
-- **Release 2 (to build):** rock, country, and more. A proposal, for the owner to confirm: Act III Rock
-  (a), Act IV Country (b), with the high C waiting for the finale. More genres (jazz, hip-hop, classical,
-  electronic) could be worlds of their own or people Bobbin meets on the way.
+The order is the owner's (24.10.2026): pop first, because it is the most formulaic; then rock; then K-pop,
+because it is formula perfected.
+
+- **Release 1 (built):** Act I, Pop (the Starlight Spire, Lyra, LYRIX), and Act II, the Hit Factory (the
+  Producers' production floor under the city, Juno, Dominic), where the formulas are made.
+- **Release 2 (to build):** Act III, Rock (a), and Act IV, K-pop (b). The high C waits for the finale.
+
+## The Chairman
+
+The head of the Producers' Guild is a new character, the Chairman: a white suit, dark glasses indoors, silver
+hair, and a gold pin with the Guild's seal, a hook inside a ring. He doesn't sign singers; he signs sounds.
+He is hinted at all through the game (owner direction):
+
+- **His seal** is on every billboard and poster in the city: the street billboard, the Spire's sign, the
+  factory poster, the arena poster. The street billboard's description points it out.
+- **He meets Bobbin early (built).** The first time Bobbin walks into the Starlight Spire, the Chairman
+  steps out of the elevator, plays him a demo from a gold phone (three bars of hook and one empty bar, "where
+  you go") and offers a contract. Bobbin can say no, ask about the swans, or reach for the pen; the pen won't
+  stay in his hand and the Distaff hums one sour note. Bobbin refuses: "A song isn't something you own. It's
+  something you mean." The Chairman: "Keep your sound, then. I'll write something this whole city can't get
+  out of its head. You included." That refusal is why the finale's hit exists.
+- **Others talk about him.** The receptionist has never seen him come down to the lobby. Dominic, at the end
+  of Act II: "The Chairman owns the masters. He owns the notes." After the encore his voice comes over every
+  speaker in the dome: "Not bad, little weaver. Now I'm listening." The end card says the same.
+- **Release 2:** more of him, never for long: a voice on a PA in the rock world, a car that pulls away, a
+  K-pop agency that answers to him.
+
+**The Monotone stays** (owner direction): the hunger from the design document that slipped through behind
+the flock. It is the voice behind the Chairman. His signature under every line is already one low note,
+repeated. When the hook breaks in the finale, what is left in the speakers is that one flat note: the
+Monotone, which has been singing through him.
 
 ## The finale
 
@@ -46,10 +73,11 @@ It happens at the top of the Producers' Guild tower, inside their building: the 
 whose crown broadcasts every new hook to the city. Bobbin climbs it, and the last fight is in the room at
 the very top, where the songs go out.
 
-The head of the Producers' Guild is furious. He releases the catchiest song there has ever been.
+The Chairman is furious. He releases the catchiest song there has ever been: the four bars he promised in the
+lobby.
 
-Everyone Bobbin helped falls under it again: Lyra, Juno, Marcus, the rockers, the country players, and his
-own flock, the swans' choir, Skein too. Bobbin sees them all greyed, swaying on the beat.
+Everyone Bobbin helped falls under it again: Lyra, Juno, Marcus, the rockers, the K-pop idols, and his own
+flock, the swans' choir, Skein too. Bobbin sees them all greyed, swaying on the beat.
 
 Bobbin has three attempts to play long notes: held notes, a new way of playing the Distaff, that braid
 the different styles together. Each attempt brings back more. With the last, a burst of creativity
@@ -66,8 +94,8 @@ Bobbin flies with them.
 
 ## Open questions for the owner
 
-1. Which genres, in which order, and how many worlds in Release 2?
-2. The design document's Monotone (the hunger that slipped through behind the flock) and its offer to
-   loop the flock's song forever: keep it as the voice behind the head of the Guild, or drop it?
-3. The head of the Producers' Guild: a new character, or someone we have met (Dominic is won over in
-   Act II)?
+Answered on 24.10.2026: the genres and their order (pop, rock, K-pop), the Monotone (kept, behind the
+Chairman) and the head of the Guild (the Chairman, new, hinted throughout). Still open:
+
+1. What becomes of the Chairman at the end: freed like everyone else, or left alone with his one note?
+2. Who are the people Bobbin helps in the rock and K-pop worlds?

@@ -122,6 +122,19 @@ function record(img: Img, r: Rect, disc: string, label: string): void {
   });
 }
 
+/** The Producers' Guild's seal, the Chairman's mark: a gold hook inside a ring (D-050). */
+function seal(img: Img, x: number, y: number, r = 6): void {
+  img.circle(x, y, r + 1, "#5a4012");
+  img.circle(x, y, r, "#f0c040");
+  img.circle(x, y, r - 1.5, "#7a5a18");
+  img.circle(x - 1, y - 1, r - 2.5, "#c89a30");
+  const k = Math.max(1, Math.round(r / 3));
+  img.line(x + 1, y - k - 1, x + 1, y + k, "#fff0b0");
+  img.line(x + 1, y + k, x - k, y + k, "#fff0b0");
+  img.px(x - k, y + k - 1, hex("#fff0b0"));
+  img.px(x - r + 1, y - r + 2, hex("#fffbe0"));
+}
+
 /** Black and yellow hazard stripes along a strip. */
 function hazard(img: Img, x: number, y: number, w: number, h: number): void {
   for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) img.px(x + i, y + j, hex(((i + j) >> 2) % 2 ? "#e8c020" : "#1a1a1e"));
@@ -304,6 +317,7 @@ export const ROOMS: Record<string, (img: Img) => void> = {
     img.text(bb[0] + 112, bb[1] + 28, "AGAIN AGAIN", "#ffffff");
     img.text(bb[0] + 112, bb[1] + 40, "(OOH)", "#ffffff");
     img.text(bb[0] + 112, bb[1] + 64, "NO.1 AGAIN", "#66e0ff");
+    seal(img, bb[0] + bb[2] - 14, bb[1] + bb[3] - 14, 7);
     glow(img, bb[0] + bb[2] / 2, bb[1] + bb[3] + 30, 160, 60, "#ff7ae0", 0.25);
     metal(img, bb[0] + 40, bb[1] + bb[3] + 5, 6, 104, "#22182a");
     metal(img, bb[0] + bb[2] - 46, bb[1] + bb[3] + 5, 6, 104, "#22182a");
@@ -354,6 +368,7 @@ export const ROOMS: Record<string, (img: Img) => void> = {
     const s = rectOf("spire_lobby", "sign");
     img.text(s[0] + 2, s[1] + 4, "WHERE EVERY STAR", "#ffffff");
     img.text(s[0] + 2, s[1] + 14, "IS BORN READY", "#66e0ff");
+    seal(img, s[0] + s[2] - 10, s[1] + 12, 6);
     glow(img, s[0] + 40, s[1] + 12, 60, 14, "#66e0ff", 0.25);
     door(img, rectOf("spire_lobby", "elevator"), ["#f0f0f8", "#c8c8d8", "#a4a4b8"], "#e8e8f4", "ELEVATOR");
     const h = rectOf("spire_lobby", "hologram");
@@ -632,6 +647,7 @@ export const ROOMS: Record<string, (img: Img) => void> = {
     img.text(ps[0] + 6, ps[1] + 10, "WE MAKE", "#140c08");
     img.text(ps[0] + 6, ps[1] + 20, "WHAT WORKED", "#140c08");
     img.text(ps[0] + 6, ps[1] + 50, "AND AGAIN", "#3a1a08");
+    seal(img, ps[0] + ps[2] - 12, ps[1] + ps[3] - 12, 6);
     const wb = rectOf("factory_night", "workbench");
     planks(img, wb[0], wb[1] + 14, wb[2], 8, ["#3a1e10", "#5a3018", "#7a4420"], 4);
     metal(img, wb[0] + 4, wb[1] + 22, 6, 28, "#2a1a10");
@@ -815,6 +831,7 @@ export const ROOMS: Record<string, (img: Img) => void> = {
     img.ellipse(p[0] + p[2] / 2, p[1] + 26, 24, 14, "#66e0ff");
     img.text(p[0] + 8, p[1] + 80, "LYRIX LIVE", "#ffffff");
     img.text(p[0] + 8, p[1] + 90, "(NOT LIVE)", "#2a1e5a");
+    seal(img, p[0] + p[2] - 12, p[1] + p[3] - 12, 6);
     img.line(p[0] + 4, p[1] + 88, p[0] + 48, p[1] + 96, "#ffffff");
     door(img, rectOf("arena_outside", "dome_doors"), ["#140c2a", "#22184a"], "#a070ff", "MEGA-DOME");
     glow(img, 570, 200, 80, 60, "#a070ff", 0.25);

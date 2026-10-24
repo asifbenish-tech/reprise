@@ -274,6 +274,17 @@ ninety seconds without progress, and Combing and the Spindle when they arrive. E
 "No more tips" and a Settings switch turn them off (switching them on again starts them over). The bot plays
 with `fast` on, which hides both.
 
+**D-050 · The Chairman, and the genres (owner direction).** The worlds go pop (most formulaic, Act I), rock,
+then K-pop (formula perfected); the Hit Factory stays as Act II, where the formulas are made. The Monotone is
+kept, as the voice behind the head of the Guild. That head is a new character, the Chairman, hinted at all
+through the game: his seal (a gold hook in a ring) on every billboard and poster, a meeting at the start of
+Act I where he plays Bobbin a demo with a gap "where you go" and offers a contract, which Bobbin refuses (the
+three answers all end there; reaching for the pen fails because the Distaff won't have it), mentions by the
+receptionist and Dominic, and his voice over the dome after the encore. The refusal is why the finale's hit
+exists. His speaking signature is one low note, twice: the Monotone under him. The scene runs once, on the
+first entry to the Spire's lobby; the debug harness now waits for the room scene before loading a save,
+which this scene's timing exposed.
+
 ## Data formats (§9.5) extensions
 
 **D-025 · Extra fields.** `HotspotDef` gains `name`, `talk`, `listen`, `person`, `stand`, `when`, `sprite`

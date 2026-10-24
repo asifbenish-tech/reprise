@@ -31,6 +31,10 @@ interface Bust {
   lids?: number;
   stubble?: boolean;
   glasses?: boolean;
+  /** dark glasses over the eyes */
+  shades?: boolean;
+  /** a lapel pin in this colour */
+  pin?: string;
   hologram?: boolean;
 }
 
@@ -232,6 +236,28 @@ function face(img: Img, h: Head, b: Bust, rimC: string): void {
     }
 }
 
+/** Dark glasses: two lenses that hold the room's light in one corner, a thin gold rim, a bridge. */
+function shades(img: Img, h: Head): void {
+  const ey = h.hy - 4;
+  for (const side of [-1, 1]) {
+    const ex = h.cx + side * 25;
+    for (let y = ey - 16; y <= ey + 16; y++)
+      for (let x = ex - 26; x <= ex + 26; x++) {
+        const d = Math.hypot((x - ex) / 22, (y - ey) / 13.5);
+        if (d > 1.12) continue;
+        if (d > 1) img.px(x, y, hex(d > 1.06 ? "#5a4418" : "#c8a040"));
+        else {
+          const t = 0.08 + Math.max(0, (ey - y) / 30) * 0.3 + (x < ex ? 0.06 : 0);
+          img.px(x, y, hex(band(["#06050a", "#141020", "#241c34", "#3a2e4a"], t, x, y)));
+        }
+      }
+    for (let k = 0; k < 6; k++) img.px(ex - 10 + k, ey - 6 - Math.floor(k / 3), hex("#d8d0f0"));
+    img.px(ex + 9, ey + 5, hex("#8a7aa8"));
+    for (let x = ex + side * 24; x !== ex + side * 36; x += side) img.px(x, ey - 5, hex("#a07c30"));
+  }
+  for (let x = h.cx - 7; x <= h.cx + 7; x++) img.px(x, ey - 6 + Math.round(Math.abs(x - h.cx) / 4), hex("#c8a040"));
+}
+
 // ---- hair -------------------------------------------------------------------------------------------
 
 function hairLine(h: Head, style: HairStyle, x: number): number {
@@ -417,6 +443,18 @@ function bust(img: Img, b: Bust, cx = 468): void {
   shoulders(fig, h, b, rimC);
   if (b.headphones === "neck") headphones(fig, h, "neck", b.accent);
   face(fig, h, b, rimC);
+  if (b.shades) shades(fig, h);
+  if (b.pin) {
+    // the Guild's seal on the lapel: a gold ring with a hook inside
+    const [px, py] = [cx - 78, 258];
+    fig.circle(px, py, 7, "#7a5a18");
+    fig.circle(px, py, 6, b.pin);
+    fig.circle(px, py, 4, "#7a5a18");
+    fig.line(px + 1, py - 3, px + 1, py + 2, "#ffe9a0");
+    fig.line(px + 1, py + 2, px - 2, py + 2, "#ffe9a0");
+    fig.px(px - 2, py + 1, hex("#ffe9a0"));
+    fig.px(px - 3, py - 4, hex("#fff6d0"));
+  }
   hairFront(fig, h, b, rimC);
   if (b.headphones === "on") headphones(fig, h, "on", b.accent);
   fig.outline(OUTLINE);
@@ -544,6 +582,7 @@ const BUSTS: Record<string, Bust> = {
   choreographer: { shape: [53, 84, 0.52], field: ["#1a0a20", "#3a0c30", "#6a1440"], body: "#26242e", skin: "#e0b090", hair: "#ececf4", hairStyle: "short", accent: "#ff4040", collar: "high", brow: 0.9, smile: -0.4 },
   juno: { shape: [59, 77, 0.4], field: ["#0e1a12", "#1a3a24", "#2a5a36"], body: "#2a7a54", skin: "#8a5a3c", hair: "#1a1010", hairStyle: "puffs", headphones: "neck", accent: "#7fe0a0", collar: "round", smile: 0.5 },
   host: { shape: [56, 81, 0.46], field: ["#3a2a1a", "#6a5034", "#9a7a50"], body: "#c89a58", skin: "#ecc0a0", hair: "#7a3a1e", hairStyle: "long", accent: "#ffffff", eyes: "#3a6a3a", collar: "jacket", smile: 1 },
+  chairman: { shape: [58, 82, 0.34], field: ["#140e06", "#3a2a10", "#7a5a20"], body: "#ece6da", skin: "#dcb08c", hair: "#d0d0d8", hairStyle: "short", collar: "jacket", accent: "#1c1820", smile: 0.75, brow: 0.4, shades: true, pin: "#f0c040" },
   dominic: { shape: [62, 80, 0.3], field: ["#1a0e08", "#3a2014", "#5a3420"], body: "#76685a", skin: "#e0b090", hair: "#a4a4a4", hairStyle: "short", headphones: "neck", accent: "#ff9a3a", collar: "jacket", glasses: true, brow: 0.5, stubble: true },
 };
 
