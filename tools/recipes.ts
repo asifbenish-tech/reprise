@@ -1,12 +1,22 @@
 // tools/recipes.ts: placeholder drawings for every manifest entry. Rooms come from rooms.ts, close-ups from
 // portraits.ts, characters and machines from figures.ts; this file maps a manifest recipe to its drawing.
 import { Img, hex } from "./pixel";
-import { FIGS, bobbin, frames, lamp, metal, person, swan } from "./figures";
+import { FIGS, bobbin, cygnet, frames, lamp, metal, person, swan } from "./figures";
 import { band, dither, fbm, glow, vgrad } from "./paint";
 import { ROOMS } from "./rooms";
 import { closeup } from "./portraits";
 import { filmEarth, filmIsland, filmSwanSmall, titleSky } from "./cinema";
 import { memoryFight, memoryNow, memoryStreet, memoryStreetGrey } from "./memory";
+
+/** A clipboard held at the hand, its sheet ruled. */
+function clipboard(img: Img, x: number, y: number): void {
+  x = Math.round(x);
+  y = Math.round(y);
+  img.rect(x, y, 7, 9, "#6a4a30");
+  img.rect(x + 1, y + 1, 5, 7, "#ece8dc");
+  for (let k = 0; k < 3; k++) img.rect(x + 2, y + 3 + k * 2, 3, 1, "#9a96a0");
+  img.rect(x + 2, y, 3, 1, "#b0b0b8");
+}
 
 const CHARS: Record<string, (img: Img, n: number) => void> = {
   bobbin(img, n) {
@@ -32,32 +42,21 @@ const CHARS: Record<string, (img: Img, n: number) => void> = {
     img.outline("#2a2a40");
   },
   skein(img, n) {
-    frames(img, n, (ox, _fw, i) => {
-      const b = i % 2;
-      img.ellipse(ox + 8, 11 - b, 6, 4, "#b8b8c6");
-      img.ellipse(ox + 7, 12 - b, 4, 2, "#8a8aa0");
-      img.circle(ox + 12, 6 - b, 3, "#c8c8d4");
-      img.px(ox + 13, 5 - b, [30, 30, 40, 255]);
-      img.px(ox + 15, 6 - b, [220, 120, 60, 255]);
-      img.rect(ox + 6 + b, 14, 1, 2, "#3a3a44");
-      img.rect(ox + 9 - b, 14, 1, 2, "#3a3a44");
-    });
+    frames(img, n, (ox, _fw, i) => cygnet(img, ox + 6, 11, i % 2));
     img.outline("#1e1a2a");
   },
   skein_sit(img, n) {
-    frames(img, n, (ox, _fw, i) => {
-      img.ellipse(ox + 12, 15, 9, 4, "#9a9aa6");
-      img.ellipse(ox + 10, 16, 6, 2, "#7a7a88");
-      img.circle(ox + 18 - i, 12, 3, "#9a9aa6");
-      img.px(ox + 19 - i, 11, [40, 40, 50, 255]);
-    });
+    frames(img, n, (ox, _fw, i) => cygnet(img, ox + 10 - i, 15, 0, true, "#9a9aa6"));
     img.outline("#1e1a2a");
   },
   jogger(img, n) {
     frames(img, n, (ox, fw, i) => {
-      person(img, ox, fw, FIGS.jogger, Math.sin((i / n) * Math.PI * 2) * 1.5, 0.5);
-      glow(img, ox + fw - 8, 28, 6, 6, "#ff7ae0", 0.8);
-      img.rect(ox + fw - 9, 26, 3, 5, "#ffb0f0");
+      // jogging on the spot, the phone playing the hook held up in front of him
+      const p = person(img, ox, fw, FIGS.jogger, Math.sin((i / n) * Math.PI * 2) * 1.2, 0.45);
+      const [hx, hy] = [Math.round(p.rh[0]), Math.round(p.rh[1])];
+      glow(img, hx, hy - 3, 6, 6, "#ff7ae0", 0.8);
+      img.rect(hx - 1, hy - 5, 3, 5, "#2a1a2a");
+      img.rect(hx - 1, hy - 4, 2, 3, "#ffb0f0");
     });
   },
   marcus(img, n) {
@@ -68,9 +67,11 @@ const CHARS: Record<string, (img: Img, n: number) => void> = {
       metal(img, cx + 12, 58, 14, 14, "#c89848");
       img.ellipse(cx - 20, 56, 7, 2, "#e0c080");
       img.ellipse(cx + 19, 58, 7, 2, "#f0d090");
-      person(img, ox, fw, { h: 50, body: "#3a6a9a", skin: "#7a4a30", hair: "#1a1010", legs: "#3a2a20", accent: "#e8c040", headphones: "on" }, 0, (i % 2) * 0.8, true);
-      img.line(cx - 12, 38 - (i % 2) * 8, cx - 20, 55, "#ecd8a8");
-      img.line(cx + 14, 40 - ((i + 1) % 2) * 8, cx + 19, 57, "#ecd8a8");
+      const p = person(img, ox, fw, { h: 50, body: "#3a6a9a", skin: "#7a4a30", hair: "#1a1010", legs: "#3a2a20", accent: "#e8c040", headphones: "on", top: "hoodie", shoes: "#d8d0c0" }, 0, (i % 2) * 0.55, true);
+      // a stick in each hand, one up while the other strikes
+      const up = i % 2;
+      img.line(p.lh[0], p.lh[1], cx - 20 - up * 2, 55 - (1 - up) * 9, "#ecd8a8");
+      img.line(p.rh[0], p.rh[1], cx + 18 + (1 - up) * 2, 57 - up * 9, "#ecd8a8");
     });
   },
   commuter(img, n) {
@@ -78,8 +79,9 @@ const CHARS: Record<string, (img: Img, n: number) => void> = {
   },
   receptionist(img, n) {
     frames(img, n, (ox, fw, i) => {
-      person(img, ox, fw, FIGS.receptionist);
-      if (i) img.rect(ox + fw / 2 - 3, 6, 6, 1, "#f0c4a4");
+      const p = person(img, ox, fw, FIGS.receptionist);
+      // the second frame blinks
+      if (i) img.rect(p.head[0] - 3, p.eyeY, 6, 1, "#e0b090");
     });
   },
   lyrix_holo(img, n) {
@@ -104,23 +106,23 @@ const CHARS: Record<string, (img: Img, n: number) => void> = {
   },
   coach(img, n) {
     frames(img, n, (ox, fw, i) => {
-      person(img, ox, fw, FIGS.coach, 0, i * 0.6);
-      if (i) img.circle(ox + fw / 2, 10, 1, "#2a1010");
+      const p = person(img, ox, fw, FIGS.coach, 0, i * 0.6);
+      if (i) img.rect(p.mouth[0] - 1, p.mouth[1], 2, 2, "#4a1418");
     });
   },
   dancers(img, n) {
     frames(img, n, (ox, _fw, i) => {
       for (let k = 0; k < 3; k++) {
         const sub = new Img(36, img.h);
-        person(sub, 0, 36, { h: 60, body: "#eceaf4", skin: "#d8c0d0", hair: "#ff7ae0", hairStyle: "bob", accent: "#66e0ff", legs: "#c0c0d8" }, [-1, 1, 0.4, -0.4][i], [0, 1, 0.5, 0.2][i]);
+        person(sub, 0, 36, { h: 60, body: "#eceaf4", skin: "#d8c0d0", hair: "#ff7ae0", hairStyle: "bob", accent: "#66e0ff", legs: "#c0c0d8", top: "turtle", shoes: "#66e0ff" }, [-1, 1, 0.4, -0.4][i], [0, 1, 0.5, 0.2][i]);
         img.blit(sub, ox + 2 + k * 39, 0);
       }
     });
   },
   choreographer(img, n) {
     frames(img, n, (ox, fw, i) => {
-      person(img, ox, fw, FIGS.choreographer, 0, i);
-      metal(img, ox + 3, 30, 7, 9, "#e8e4d8");
+      const p = person(img, ox, fw, FIGS.choreographer, 0, i);
+      clipboard(img, p.lh[0] - 4, p.lh[1] - 7);
     });
   },
   juno(img, n) {
@@ -128,8 +130,8 @@ const CHARS: Record<string, (img: Img, n: number) => void> = {
   },
   host(img, n) {
     frames(img, n, (ox, fw, i) => {
-      person(img, ox, fw, FIGS.host, 0, 0.3 + i * 0.3);
-      metal(img, ox + 3, 28, 8, 10, "#e8e4d8");
+      const p = person(img, ox, fw, FIGS.host, 0, 0.3 + i * 0.3);
+      clipboard(img, p.lh[0] - 4, p.lh[1] - 8);
     });
   },
   foreman(img, n) {
@@ -145,7 +147,7 @@ const CHARS: Record<string, (img: Img, n: number) => void> = {
         vgrad(sub, 4, 40, 32, 30, ["#8a6a50", "#6a4a34"]);
         metal(sub, 2, 30, 6, 40, "#5a3a24");
         const style = (["short", "bob", "bald"] as const)[k];
-        person(sub, 0, 40, { h: 56, body: ["#c06040", "#4a80c0", "#6aa060"][k], skin: ["#e0b090", "#a87050", "#f0c8a8"][k], hair: ["#2a1a10", "#a08060", "#1a1a1a"][k], hairStyle: style }, 0, (i + k) % 2 ? 0.4 : 0, true);
+        person(sub, 0, 40, { h: 56, body: ["#c06040", "#4a80c0", "#6aa060"][k], skin: ["#e0b090", "#a87050", "#f0c8a8"][k], hair: ["#2a1a10", "#a08060", "#1a1a1a"][k], hairStyle: style, top: (["jacket", "turtle", "tee"] as const)[k], shirt: "#e8e4dc" }, 0, (i + k) % 2 ? 0.4 : 0, true);
         img.blit(sub, ox + 4 + k * 48, 0);
       }
     });

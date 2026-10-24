@@ -2,6 +2,9 @@
 
 ## Look pass (owner feedback on Release 1)
 
+- Art pass in the same style: people with real proportions, faces, clothes and shading; Bobbin with a
+  mantle, sleeves and a carved Distaff; feathered swans and a cygnet Skein; varied close-up faces; shadows
+  under everyone; the fitting room, focus lounge and talent elevator furnished (D-048).
 - The original's screen: the scene on top, a black panel below with the speech line in the speaker's
   colour and the carved Distaff, whose sockets hold glowing spools; a five-line notation strip writes the
   notes as they sound and each played note floats up off its socket (DECISIONS.md D-030, D-034).

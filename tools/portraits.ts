@@ -21,6 +21,8 @@ interface Bust {
   headphones?: "on" | "neck";
   accent?: string;
   collar?: Collar;
+  /** face width and height (half sizes) and jaw taper; the default is 60, 80, 0.38 */
+  shape?: [number, number, number];
   /** -1 worried .. 1 stern */
   brow?: number;
   /** -1 frown .. 1 smile */
@@ -38,6 +40,14 @@ const L = (() => {
   const m = Math.hypot(v[0], v[1], v[2]);
   return v.map((x) => x / m);
 })();
+
+/** Hair: the colour itself sits lower in the ramp and dark hair gets only a faint sheen, so black hair stays
+ *  black instead of turning grey in the light. */
+function hairRamp(c: string): string[] {
+  const [r, g, b] = hex(c);
+  const k = (0.3 * r + 0.55 * g + 0.15 * b) / 255 < 0.25 ? 0.5 : 1;
+  return [mix(c, "#0a0610", 0.55), mix(c, "#1a0a24", 0.28), c, mix(c, "#fff2dc", 0.06 + 0.12 * k), mix(c, "#fff2dc", 0.08 + 0.22 * k), mix(c, "#fffaf2", 0.12 + 0.36 * k)];
+}
 
 /** Six tones from deep violet-shifted shadow to warm highlight. */
 function ramp(c: string): string[] {
@@ -84,6 +94,8 @@ interface Head {
   hy: number;
   rx: number;
   ry: number;
+  /** how much the jaw narrows to the chin: 0.2 square .. 0.6 pointed */
+  jaw: number;
 }
 
 /** Half-width of the face at row y (an egg that narrows to the chin), or -1 outside. */
@@ -92,7 +104,7 @@ function faceHalf(h: Head, y: number): number {
   if (dy < -1 || dy > 1) return -1;
   // a rounder, squarer jaw below the cheekbones, tapering only near the chin
   let w = dy < 0 ? Math.sqrt(1 - dy * dy) : Math.pow(1 - Math.pow(dy, 2.6), 1 / 2.6);
-  if (dy > 0.3) w *= 1 - (dy - 0.3) * 0.38;
+  if (dy > 0.3) w *= 1 - (dy - 0.3) * h.jaw;
   return h.rx * w;
 }
 
@@ -248,7 +260,7 @@ function hairPixel(img: Img, x: number, y: number, pal: string[], nx: number, ny
 }
 
 function hairBack(img: Img, h: Head, b: Bust, rimC: string): void {
-  const pal = ramp(b.hair);
+  const pal = hairRamp(b.hair);
   const { cx, hy, rx } = h;
   const blob = (bx: number, by: number, brx: number, bry: number, curly: boolean, seed: number) => {
     for (let y = Math.floor(by - bry); y <= by + bry; y++)
@@ -289,7 +301,7 @@ function hairFront(img: Img, h: Head, b: Bust, rimC: string): void {
     glow(img, h.cx - 20, h.hy - 56, 16, 8, "#ffffff", 0.3);
     return;
   }
-  const pal = ramp(b.hair);
+  const pal = hairRamp(b.hair);
   const crx = h.rx + 7;
   const cry = h.ry + 9;
   const cy = h.hy - 3;
@@ -398,7 +410,8 @@ function headphones(img: Img, h: Head, kind: "on" | "neck", accent: string | und
 
 function bust(img: Img, b: Bust, cx = 468): void {
   const fig = new Img(img.w, img.h);
-  const h: Head = { cx, hy: 122, rx: 60, ry: 80 };
+  const [rx, ry, jaw] = b.shape ?? [60, 80, 0.38];
+  const h: Head = { cx, hy: 122, rx, ry, jaw };
   const rimC = mix(b.field[2], "#ffffff", 0.35);
   hairBack(fig, h, b, rimC);
   shoulders(fig, h, b, rimC);
@@ -521,17 +534,17 @@ function swanHead(img: Img, cx = 470): void {
 }
 
 const BUSTS: Record<string, Bust> = {
-  receptionist: { field: ["#4a1050", "#8a2088", "#c03aa8"], body: "#e85ac8", skin: "#f0c4a4", hair: "#ffe08a", hairStyle: "bob", headphones: "on", accent: "#ffd0f0", eyes: "#3a8ac0", collar: "round", smile: 0.8, lids: 0.15 },
-  lyrix: { field: ["#0a1a3a", "#103a6a", "#1a5a8a"], body: "#66e0ff", skin: "#c8f4ff", hair: "#ffffff", hairStyle: "long", accent: "#ff7ae0", eyes: "#ff7ae0", hologram: true, collar: "high", smile: 0.9 },
-  lyra: { field: ["#3a1a14", "#6a3420", "#9a5a30"], body: "#c8683e", skin: "#e2b08a", hair: "#5a2c1a", hairStyle: "ponytail", eyes: "#5a3a20", collar: "v", accent: "#f0d0a0", brow: -0.4, smile: -0.2 },
-  engineer: { field: ["#0a0c20", "#14204a", "#22346a"], body: "#3a5a8a", skin: "#c89a78", hair: "#8a8a8a", hairStyle: "short", headphones: "on", collar: "round", lids: 0.45, stubble: true },
-  coach: { field: ["#3a1430", "#6a2450", "#9a3a6a"], body: "#9a4478", skin: "#ecc0a0", hair: "#2a1414", hairStyle: "bun", accent: "#ffd090", collar: "v", smile: 0.6, brow: -0.2 },
-  marcus: { field: ["#2a1a3a", "#5a3a5a", "#9a6a6a"], body: "#3a6a9a", skin: "#7a4a30", hair: "#1a1010", hairStyle: "short", collar: "round", stubble: true, smile: 0.3, headphones: "on", accent: "#e8c040" },
-  commuter: { field: ["#1a1e2a", "#2e3446", "#4a5266"], body: "#5a6272", skin: "#d8a888", hair: "#4a3424", hairStyle: "short", headphones: "on", collar: "jacket", accent: "#c8ccd8", lids: 0.3 },
-  choreographer: { field: ["#1a0a20", "#3a0c30", "#6a1440"], body: "#26242e", skin: "#e0b090", hair: "#ececf4", hairStyle: "short", accent: "#ff4040", collar: "high", brow: 0.9, smile: -0.4 },
-  juno: { field: ["#0e1a12", "#1a3a24", "#2a5a36"], body: "#2a7a54", skin: "#8a5a3c", hair: "#1a1010", hairStyle: "puffs", headphones: "neck", accent: "#7fe0a0", collar: "round", smile: 0.5 },
-  host: { field: ["#3a2a1a", "#6a5034", "#9a7a50"], body: "#c89a58", skin: "#ecc0a0", hair: "#7a3a1e", hairStyle: "long", accent: "#ffffff", eyes: "#3a6a3a", collar: "jacket", smile: 1 },
-  dominic: { field: ["#1a0e08", "#3a2014", "#5a3420"], body: "#76685a", skin: "#e0b090", hair: "#a4a4a4", hairStyle: "short", headphones: "neck", accent: "#ff9a3a", collar: "jacket", glasses: true, brow: 0.5, stubble: true },
+  receptionist: { shape: [56, 78, 0.5], field: ["#4a1050", "#8a2088", "#c03aa8"], body: "#e85ac8", skin: "#f0c4a4", hair: "#ffe08a", hairStyle: "bob", headphones: "on", accent: "#ffd0f0", eyes: "#3a8ac0", collar: "round", smile: 0.8, lids: 0.15 },
+  lyrix: { shape: [55, 80, 0.5], field: ["#0a1a3a", "#103a6a", "#1a5a8a"], body: "#66e0ff", skin: "#c8f4ff", hair: "#ffffff", hairStyle: "long", accent: "#ff7ae0", eyes: "#ff7ae0", hologram: true, collar: "high", smile: 0.9 },
+  lyra: { shape: [56, 80, 0.46], field: ["#3a1a14", "#6a3420", "#9a5a30"], body: "#c8683e", skin: "#e2b08a", hair: "#5a2c1a", hairStyle: "ponytail", eyes: "#5a3a20", collar: "v", accent: "#f0d0a0", brow: -0.4, smile: -0.2 },
+  engineer: { shape: [63, 78, 0.28], field: ["#0a0c20", "#14204a", "#22346a"], body: "#3a5a8a", skin: "#c89a78", hair: "#8a8a8a", hairStyle: "short", headphones: "on", collar: "round", lids: 0.45, stubble: true },
+  coach: { shape: [58, 80, 0.42], field: ["#3a1430", "#6a2450", "#9a3a6a"], body: "#9a4478", skin: "#ecc0a0", hair: "#2a1414", hairStyle: "bun", accent: "#ffd090", collar: "v", smile: 0.6, brow: -0.2 },
+  marcus: { shape: [62, 82, 0.26], field: ["#2a1a3a", "#5a3a5a", "#9a6a6a"], body: "#3a6a9a", skin: "#7a4a30", hair: "#1a1010", hairStyle: "short", collar: "round", stubble: true, smile: 0.3, headphones: "on", accent: "#e8c040" },
+  commuter: { shape: [57, 85, 0.36], field: ["#1a1e2a", "#2e3446", "#4a5266"], body: "#5a6272", skin: "#d8a888", hair: "#4a3424", hairStyle: "short", headphones: "on", collar: "jacket", accent: "#c8ccd8", lids: 0.3 },
+  choreographer: { shape: [53, 84, 0.52], field: ["#1a0a20", "#3a0c30", "#6a1440"], body: "#26242e", skin: "#e0b090", hair: "#ececf4", hairStyle: "short", accent: "#ff4040", collar: "high", brow: 0.9, smile: -0.4 },
+  juno: { shape: [59, 77, 0.4], field: ["#0e1a12", "#1a3a24", "#2a5a36"], body: "#2a7a54", skin: "#8a5a3c", hair: "#1a1010", hairStyle: "puffs", headphones: "neck", accent: "#7fe0a0", collar: "round", smile: 0.5 },
+  host: { shape: [56, 81, 0.46], field: ["#3a2a1a", "#6a5034", "#9a7a50"], body: "#c89a58", skin: "#ecc0a0", hair: "#7a3a1e", hairStyle: "long", accent: "#ffffff", eyes: "#3a6a3a", collar: "jacket", smile: 1 },
+  dominic: { shape: [62, 80, 0.3], field: ["#1a0e08", "#3a2014", "#5a3420"], body: "#76685a", skin: "#e0b090", hair: "#a4a4a4", hairStyle: "short", headphones: "neck", accent: "#ff9a3a", collar: "jacket", glasses: true, brow: 0.5, stubble: true },
 };
 
 export function closeup(id: string): Img {

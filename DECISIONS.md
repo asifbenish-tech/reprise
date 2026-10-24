@@ -248,10 +248,22 @@ a ♪ button on the panel and in Settings; the choice is remembered.
 
 **D-047 · The owner's story arc (§3, §2, owner direction).** `STORY.md` replaces the plan for Release 2:
 worlds of music (rock, country and more) instead of the Studios and the Lawyers; a note back for every
-world that finds its own sound; a finale at the top of the Producers' Guild tower, inside their building, where the head of the Guild releases the catchiest
-song yet, everyone Bobbin helped and the swans fall under it, and three attempts at held notes braid their
-styles into a burst that frees them all. The genres, the head of the Guild and the fate of the Monotone are
-open questions for the owner. The end card already points down this road.
+world that finds its own sound; a finale at the top of the Producers' Guild tower, inside their building,
+where the head of the Guild releases the catchiest song yet, everyone Bobbin helped and the swans fall under
+it, and three attempts at held notes braid their styles into a burst that frees them all. The genres, the
+head of the Guild and the fate of the Monotone are open questions for the owner. The end card already points
+down this road.
+
+**D-048 · Art pass in the same style (§7, owner direction).** Same palette, scale and lighting, better
+drawing. People are built from parts (legs, torso, arms with an elbow, head, hair) that are each shaded as a
+volume lit from the upper left and outlined in a dark shade of their own colour, with a face (eyes, brows,
+nose, mouth, ears), clothes with a cut (tee, open jacket or coat over a shirt, hoodie, hi-vis vest,
+turtleneck, dress) and hair with a sheen; props sit in the hands the painter reports. Bobbin keeps his
+silhouette and gains a mantle, a lined hood, sleeves, a cord belt and a carved Distaff wound with thread
+(the staff tip is where it was, so the casting light still lines up). Swans have an S-neck, layered wing
+feathers and the black knob on the beak; Skein is a grey cygnet. Close-ups get a face shape each and black
+hair that stays black. Everyone on the ground casts a soft shadow. The plainest rooms (the fitting room, the
+focus lounge, the talent elevator) are furnished.
 
 ## Data formats (§9.5) extensions
 

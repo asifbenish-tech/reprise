@@ -21,6 +21,25 @@ interface Walk {
   done: () => void;
 }
 
+
+/** Where people stand inside each character sprite: an x offset from its centre and a shadow width. */
+const FEET: Record<string, [number, number][]> = {
+  jogger: [[0, 16]],
+  marcus: [[0, 54]],
+  commuter: [[0, 18]],
+  receptionist: [[0, 16]],
+  lyra: [[0, 16]],
+  engineer: [[0, 20]],
+  coach: [[0, 16]],
+  dancers: [[-39, 16], [0, 16], [39, 16]],
+  choreographer: [[0, 16]],
+  juno: [[0, 16]],
+  host: [[0, 16]],
+  foreman: [[0, 20]],
+  dominic: [[0, 18]],
+  panelists: [[-48, 30], [0, 30], [48, 30]],
+  mic: [[0, 10]],
+};
 export class RoomScene extends Phaser.Scene implements View {
   private g!: Game;
   private layers: Phaser.GameObjects.Image[] = [];
@@ -41,6 +60,7 @@ export class RoomScene extends Phaser.Scene implements View {
   private lit = true;
   private fx!: CastFx;
   private selMark!: Phaser.GameObjects.Graphics;
+  private shadows!: Phaser.GameObjects.Graphics;
   private drainFx!: Phaser.GameObjects.Graphics;
   private drains: { from: string; to: string | [number, number]; start: number; until: number }[] = [];
   private weaveFx!: Phaser.GameObjects.Graphics;
@@ -95,6 +115,8 @@ export class RoomScene extends Phaser.Scene implements View {
       quiet: () => this.g.fast || this.g.settings.lowDetail || reduced,
     });
     this.selMark = this.add.graphics().setDepth(4800);
+    // contact shadows sit on the floor: above every back layer, under everyone standing on it
+    this.shadows = this.add.graphics().setDepth(-1);
     this.drainFx = this.add.graphics().setDepth(4700).setBlendMode(Phaser.BlendModes.ADD);
     this.weaveFx = this.add.graphics().setDepth(4950).setBlendMode(Phaser.BlendModes.ADD);
     this.g.bus.on("note", ({ n, cracked }) => this.fx.note(n, cracked));
@@ -549,6 +571,25 @@ export class RoomScene extends Phaser.Scene implements View {
     }
   }
 
+  /** A soft dark ellipse under each person on the ground, so nobody floats over the floor. */
+  private drawShadows(): void {
+    const g = this.shadows;
+    g.clear();
+    const under = (x: number, y: number, w: number) => {
+      g.fillStyle(0x000000, 0.16);
+      g.fillEllipse(x, y - 1, w + 6, 6);
+      g.fillStyle(0x000000, 0.22);
+      g.fillEllipse(x, y - 1, w, 4);
+    };
+    if (this.bobbin.visible && !this.swan) under(this.bobbin.x + (this.bobbin.flipX ? -3 : 3), this.bobbin.y, 22);
+    if (this.skein.visible && !this.swan) under(this.skein.x, this.skein.y, 10);
+    for (const [id, s] of this.sprites) {
+      const feet = FEET[this.spriteDefs.get(id)?.sprite?.image ?? ""];
+      if (!s.visible || !feet) continue;
+      for (const [dx, w] of feet) under(s.x + dx, s.y, w);
+    }
+  }
+
   openLoom(song: Song): void {
     this.scene.launch("loom", { game: this.g, song });
   }
@@ -583,6 +624,7 @@ export class RoomScene extends Phaser.Scene implements View {
       }
     }
     this.bobbin.setDepth(this.bobbin.y);
+    this.drawShadows();
     this.fx.update(delta);
     const now = performance.now();
     this.drawSelection(now);

@@ -1,7 +1,7 @@
 // tools/rooms.ts: every room's layers. Drawn to the colour script (GDD 7.3) with dithered gradients,
 // textures and light pools; positions come from the room JSON so art and hotspots always line up.
 import { readFileSync } from "node:fs";
-import { Img, mix } from "./pixel";
+import { Img, hex, mix } from "./pixel";
 import { beam, branch, bricks, clouds, fbm, foliage, glow, hgrad, planks, rng, skyline, stars, texture, tiles, vgrad, vignette } from "./paint";
 import { lamp, metal, swan } from "./figures";
 
@@ -80,6 +80,52 @@ function mirror(img: Img, [x, y, w, h]: Rect, frame: string, glassPal: string[])
   metal(img, x - 3, y - 3, w + 6, h + 6, frame);
   vgrad(img, x, y, w, h, glassPal);
   for (let i = 0; i < 3; i++) img.line(x + 6 + i * 9, y + h - 6, x + w * 0.45 + i * 9, y + 6, "#ffffff", 70 - i * 18);
+}
+
+/** The lower part of a wall in wooden panels with raised frames, a rail on top. */
+function wainscot(img: Img, y0: number, y1: number, pal: string[], every = 80): void {
+  vgrad(img, 0, y0, img.w, y1 - y0, pal);
+  const hi = mix(pal[0], "#ffffff", 0.25);
+  const lo = mix(pal[pal.length - 1], "#000000", 0.35);
+  img.rect(0, y0 - 3, img.w, 3, mix(pal[0], "#ffffff", 0.12));
+  img.rect(0, y0 - 3, img.w, 1, hi);
+  img.rect(0, y0, img.w, 1, lo);
+  for (let x = 6; x + every - 12 < img.w + every; x += every) {
+    const w = every - 12;
+    img.rect(x, y0 + 6, w, 1, lo);
+    img.rect(x, y0 + 6, 1, y1 - y0 - 12, lo);
+    img.rect(x, y1 - 6, w, 1, hi);
+    img.rect(x + w - 1, y0 + 6, 1, y1 - y0 - 12, hi);
+  }
+}
+
+/** A picture frame with a bevelled moulding; the picture is painted by `inside`. */
+function framed(img: Img, [x, y, w, h]: Rect, moulding: string, inside: (x: number, y: number, w: number, h: number) => void): void {
+  metal(img, x, y, w, h, moulding);
+  img.rect(x + 2, y + 2, w - 4, h - 4, mix(moulding, "#000000", 0.55));
+  inside(x + 3, y + 3, w - 6, h - 6);
+  img.rect(x + 3, y + 3, w - 6, 1, mix(moulding, "#000000", 0.3));
+}
+
+/** A framed record: a disc with grooves, a label and a glint (the Guild hangs its hits). */
+function record(img: Img, r: Rect, disc: string, label: string): void {
+  framed(img, r, "#2a2018", (x, y, w, h) => {
+    vgrad(img, x, y, w, h, ["#1a1420", "#241c2a"]);
+    const cx = x + w / 2;
+    const cy = y + h / 2;
+    const rad = Math.min(w, h) / 2 - 3;
+    img.circle(cx, cy, rad, mix(disc, "#000000", 0.25));
+    for (let k = rad - 2; k > rad * 0.45; k -= 2) for (let a = 0; a < 48; a++) img.px(cx + Math.cos((a / 48) * Math.PI * 2) * k, cy + Math.sin((a / 48) * Math.PI * 2) * k, hex(a % 12 < 5 ? mix(disc, "#ffffff", 0.35) : disc));
+    img.circle(cx, cy, rad * 0.35, label);
+    img.circle(cx, cy, 1, "#100c10");
+    img.line(cx - rad * 0.7, cy - rad * 0.3, cx - rad * 0.3, cy - rad * 0.7, "#ffffff", 150);
+  });
+}
+
+/** Black and yellow hazard stripes along a strip. */
+function hazard(img: Img, x: number, y: number, w: number, h: number): void {
+  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) img.px(x + i, y + j, hex(((i + j) >> 2) % 2 ? "#e8c020" : "#1a1a1e"));
+  img.rect(x, y, w, 1, "#fff090");
 }
 
 function floorGrime(img: Img, y0: number, pal: string[], seed: number): void {
@@ -406,11 +452,54 @@ export const ROOMS: Record<string, (img: Img) => void> = {
 
   bg_fitting_room_far(img) {
     vgrad(img, 0, 0, img.w, 250, ["#3a1a30", "#5a2840", "#7a3a50", "#9a5060"]);
-    for (let x = 0; x < img.w; x += 16) for (let y = 4; y < 250; y += 16) img.px(x + ((y / 16) % 2) * 8, y, [255, 210, 220, 120]);
+    // striped wallpaper with a small motif in every other stripe
+    for (let x = 0; x < img.w; x += 24) img.shade(x, 0, 12, 250, "#4a2038", 0.35);
+    for (let x = 6; x < img.w; x += 24)
+      for (let y = 10; y < 250; y += 16) {
+        img.px(x, y, [255, 210, 220, 130]);
+        img.px(x - 1, y + 1, [255, 210, 220, 70]);
+        img.px(x + 1, y + 1, [255, 210, 220, 70]);
+        img.px(x, y + 2, [255, 210, 220, 130]);
+      }
+    // a cornice and soft light from the ceiling
+    img.rect(0, 0, img.w, 6, "#2a1020");
+    img.rect(0, 6, img.w, 1, "#c88898");
+    glow(img, 320, 0, 300, 40, "#ffd8c0", 0.25);
   },
   bg_fitting_room(img) {
+    wainscot(img, 196, 246, ["#5a2a38", "#4a2030", "#3a1828"], 70);
     planks(img, 0, 246, img.w, 114, ["#4a2418", "#6a3424", "#8a4a30", "#a0603e"], 5);
     skirting(img, FLOOR, "#e8c8b8");
+    // a practice barre between the mirror and the piano
+    for (const bx of [292, 410]) metal(img, bx, 172, 3, 12, "#b8a090");
+    img.rect(288, 170, 128, 3, "#e8d0b8");
+    img.rect(288, 170, 128, 1, "#fff0e0");
+    img.rect(288, 173, 128, 1, "#5a3a30");
+    // a poster of a singer under a star, and a schedule pinned beside it
+    framed(img, [62, 70, 50, 70], "#2a1420", (x, y, w, h) => {
+      vgrad(img, x, y, w, h, ["#ff7ae0", "#b03a9a", "#4a1a5a"]);
+      img.ellipse(x + w / 2, y + 26, 7, 8, "#2a0a2a");
+      img.poly([[x + w / 2 - 12, y + h], [x + w / 2 - 6, y + 34], [x + w / 2 + 6, y + 34], [x + w / 2 + 12, y + h]], "#2a0a2a");
+      img.line(x + w / 2 + 4, y + 30, x + w / 2 + 10, y + 20, "#2a0a2a");
+      img.circle(x + w / 2 + 11, y + 18, 2, "#2a0a2a");
+      img.poly([[x + 8, y + 4], [x + 10, y + 9], [x + 15, y + 9], [x + 11, y + 12], [x + 13, y + 17], [x + 8, y + 14], [x + 3, y + 17], [x + 5, y + 12], [x + 1, y + 9], [x + 6, y + 9]], "#fff0a0");
+    });
+    metal(img, 278, 92, 34, 44, "#ece4d8");
+    for (let k = 0; k < 6; k++) img.rect(283, 100 + k * 6, k % 3 === 2 ? 14 : 24, 2, "#8a7a8a");
+    img.circle(295, 94, 2, "#ff4060");
+    // a rail of stage costumes by the far wall
+    metal(img, 548, 120, 3, 126, "#b8b0c0");
+    metal(img, 626, 120, 3, 126, "#b8b0c0");
+    img.rect(548, 120, 81, 3, "#d8d0e0");
+    const coats = ["#ff7ae0", "#66e0ff", "#f0d060", "#c040a0", "#e8e8f0", "#8a4ad0"];
+    coats.forEach((c, k) => {
+      const x = 554 + k * 12;
+      img.line(x + 4, 123, x + 4, 128, "#d8d0e0");
+      img.poly([[x, 128], [x + 9, 128], [x + 10, 186 + (k % 3) * 6], [x - 1, 186 + (k % 3) * 6]], c);
+      img.rect(x, 128, 2, 58 + (k % 3) * 6, mix(c, "#ffffff", 0.3));
+      img.rect(x + 7, 128, 3, 58 + (k % 3) * 6, mix(c, "#000000", 0.3));
+      for (let y = 134; y < 182; y += 7) img.px(x + 3 + ((y >> 3) % 3), y, [255, 255, 255, 200]);
+    });
     const m = rectOf("fitting_room", "mirror");
     mirror(img, m, "#3a2030", ["#d8b0c0", "#a07890", "#704a60"]);
     for (let i = 0; i < 8; i++) {
@@ -430,6 +519,8 @@ export const ROOMS: Record<string, (img: Img) => void> = {
     img.line(mt[0] + mt[2] / 2, mt[1] + mt[3] - 2, mt[0] + mt[2] - 2, mt[1] + 4, "#ece8dc");
     door(img, rectOf("fitting_room", "door"), ["#3a2030", "#4a2a3a"], "#a07080");
     glow(img, 380, 160, 180, 90, "#fff0d0", 0.15);
+    // the mirror's bulbs pool on the boards
+    glow(img, m[0] + m[2] / 2, 262, 110, 14, "#ffe8b0", 0.22);
   },
 
   bg_mirror_corridor_far(img) {
@@ -474,16 +565,42 @@ export const ROOMS: Record<string, (img: Img) => void> = {
 
   bg_talent_elevator_far(img) {
     for (let x = 0; x < img.w; x += 40) hgrad(img, x, 0, 40, 260, ["#5a5a6a", "#8a8a9a", "#b4b4c4", "#8a8a9a"]);
-    for (let y = 30; y < 260; y += 50) img.rect(0, y, img.w, 1, "#4a4a58");
+    // brushed steel: fine horizontal streaks, seams and rivets
+    for (let y = 0; y < 260; y += 3) for (let x = 0; x < img.w; x++) if (fbm(x / 40, y / 2, 61) > 0.6) img.px(x, y, [255, 255, 255, 26]);
+    for (let y = 30; y < 260; y += 50) {
+      img.rect(0, y, img.w, 1, "#4a4a58");
+      img.rect(0, y + 1, img.w, 1, "#c4c4d4");
+      for (let x = 6; x < img.w; x += 20) {
+        img.px(x, y + 4, hex("#e8e8f4"));
+        img.px(x + 1, y + 5, hex("#4a4a58"));
+      }
+    }
     for (let x = 60; x < img.w; x += 130) lamp(img, x, 14, "#fff8e8", 4);
   },
   bg_talent_elevator(img) {
     tiles(img, 248, 360, ["#3a3a44", "#55556a", "#7a7a8c", "#a4a4b4"], 320, 19);
+    // a kick plate and a hazard strip where the wall meets the floor
+    metal(img, 0, 222, img.w, 22, "#6a6a7a");
+    hazard(img, 0, 242, img.w, 5);
     const d = rectOf("talent_elevator", "doors");
+    // the doors and the ceiling lamps shine on the polished floor
+    for (let y = 250; y < 300; y++) img.shade(d[0] + 6, y, d[2] - 12, 1, "#d0d0e0", 0.3 * (1 - (y - 250) / 50));
+    for (let x = 60; x < img.w; x += 130) glow(img, x, 262, 18, 6, "#fff8e8", 0.25);
     metal(img, d[0] - 8, d[1] - 8, d[2] + 16, d[3] + 8, "#d8d8e8");
     hgrad(img, d[0], d[1], d[2] / 2 - 1, d[3], ["#8a8a9a", "#c8c8d8", "#9a9aaa"]);
     hgrad(img, d[0] + d[2] / 2 + 1, d[1], d[2] / 2 - 1, d[3], ["#9a9aaa", "#c8c8d8", "#8a8a9a"]);
     img.text(d[0] + 22, d[1] - 18, "STAFF ONLY", "#ff4040");
+    // the floor dial above the doors: its needle points past the top
+    const fx = d[0] + d[2] / 2;
+    img.ellipse(fx, d[1] - 34, 20, 14, "#8a7a50");
+    img.ellipse(fx, d[1] - 34, 17, 11, "#f0e8d0");
+    img.rect(fx - 21, d[1] - 34, 42, 15, "#c8c8d8");
+    for (let k = 0; k <= 6; k++) {
+      const a = Math.PI + (k / 6) * Math.PI;
+      img.px(fx + Math.cos(a) * 14, d[1] - 34 + Math.sin(a) * 9, hex("#3a3a44"));
+    }
+    img.line(fx, d[1] - 34, fx + 15, d[1] - 40, "#c02020");
+    img.circle(fx, d[1] - 34, 1.5, "#2a2a34");
     glow(img, d[0] + d[2] / 2, d[1] - 16, 40, 8, "#ff4040", 0.3);
     const p = rectOf("talent_elevator", "panel");
     metal(img, p[0], p[1], p[2], p[3], "#3a3a44");
@@ -492,6 +609,11 @@ export const ROOMS: Record<string, (img: Img) => void> = {
       img.circle(p[0] + 11 + (i % 2) * 20, p[1] + 11 + Math.floor(i / 2) * 18, 2, "#ffffff");
     }
     img.rect(0, 150, 40, 146, "#24242c");
+    // a camera watches whoever waits for the lift
+    metal(img, 590, 34, 4, 12, "#3a3a44");
+    metal(img, 576, 44, 26, 12, "#d8d8e4");
+    img.rect(572, 46, 5, 8, "#2a2a34");
+    lamp(img, 598, 48, "#ff3030", 1.5);
   },
 
   bg_factory_night_far(img) {
@@ -571,11 +693,32 @@ export const ROOMS: Record<string, (img: Img) => void> = {
 
   bg_focus_lounge_far(img) {
     wallPanels(img, 0, 250, ["#7a6050", "#a08870", "#c8b090", "#d8c4a4"], 90, 5);
+    // a lit cove along the ceiling and a picture rail
+    img.rect(0, 0, img.w, 8, "#3a2a20");
+    img.rect(0, 8, img.w, 2, "#fff0d0");
+    glow(img, 320, 10, 340, 30, "#fff0d0", 0.35);
+    img.rect(0, 40, img.w, 2, "#8a6a50");
+    img.rect(0, 40, img.w, 1, "#e8d0b0");
     for (let x = 60; x < img.w; x += 160) lamp(img, x, 20, "#fff4e0", 5);
   },
   bg_focus_lounge(img) {
     texture(img, 0, 246, img.w, 114, ["#5a4434", "#6e5644", "#826a54", "#967e66"], { scale: 4, seed: 21, contrast: 0.3, light: (_x, y) => 0.8 - (y - 246) / 150 });
+    // the carpet's lattice, wider apart as it comes towards us
+    for (let y = 250; y < 360; y++) {
+      const k = 10 + (y - 246) * 0.18;
+      for (let x = 0; x < img.w; x++) {
+        const u = ((x - 320) / k + (y - 246) / k) % 2;
+        const v = ((x - 320) / k - (y - 246) / k) % 2;
+        if (Math.abs(u) < 0.07 || Math.abs(v) < 0.07) img.px(x, y, [60, 40, 28, 90]);
+      }
+    }
+    wainscot(img, 204, 246, ["#6a4a34", "#5a3e2c", "#4a3224"], 90);
     skirting(img, FLOOR, "#e8d8c0");
+    // the hits the Guild is proudest of, framed
+    record(img, [64, 62, 52, 52], "#e8c050", "#c03a3a");
+    record(img, [128, 62, 52, 52], "#d8d8e8", "#3a6ac0");
+    record(img, [430, 54, 52, 52], "#e8c050", "#40a060");
+    record(img, [494, 54, 52, 52], "#e8c050", "#a040c0");
     const s = rectOf("focus_lounge", "screen");
     metal(img, s[0], s[1], s[2], s[3], "#1a140e");
     vgrad(img, s[0] + 5, s[1] + 5, s[2] - 10, s[3] - 10, ["#1a3020", "#24402a", "#1a3020"]);
