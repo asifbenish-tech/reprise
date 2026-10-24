@@ -1,0 +1,10 @@
+Spoken lines
+
+The voices in this game were generated offline with Piper (https://github.com/rhasspy/piper), using the
+voice model "en-us-libritts-high". That model was trained on LibriTTS (Zen et al., 2019,
+http://www.openslr.org/60/), which is licensed under Creative Commons Attribution 4.0
+(https://creativecommons.org/licenses/by/4.0/).
+
+Changes: each line was synthesised from the game's own text, trimmed, levelled, and for the face scanner,
+the klaxon and the LYRIX hologram passed through audio filters. tools/make-voices.py in the source
+repository makes them.

@@ -11,6 +11,8 @@
   and its light travels to the target; a wrong phrase fizzles (D-033).
 - Richer placeholder art: dithered, lit rooms; shaded characters; new close-ups; the staff as art (D-035).
 - Fix: two Distaff notes less than 5 ms apart (two keys at once) no longer throw in the harp voice.
+- Spoken lines: every character's lines voiced (generated offline, 417 lines), Settings switch and level,
+  music dips under speech (D-044).
 - The hook drowns every other sound, on screen, in the film and the park; Bobbin works out that this is
   what is starving the flock (D-043).
 - Bobbin stands beside what he walks up to, never on it; the landing shows the swan becoming a man, his

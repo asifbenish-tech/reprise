@@ -8,6 +8,16 @@ export class Mixer {
   readonly distaff = new Tone.Gain(0.9).connect(this.master);
   readonly sfx = new Tone.Gain(0.7).connect(this.master);
   readonly voices = new Tone.Gain(0.35).connect(this.master);
+  /** Spoken lines (D-044): their own level, and the score steps back while someone speaks. */
+  readonly speech = new Tone.Gain(0.9).connect(this.master);
+
+  setSpeechVolume(v: number): void {
+    this.speech.gain.rampTo(v, 0.1);
+  }
+
+  speaking(on: boolean): void {
+    this.music.gain.rampTo(on ? this.musicLevel * 0.55 : this.musicLevel, on ? 0.15 : 0.7);
+  }
 
   setVolumes(music: number, effects: number): void {
     this.musicLevel = music;

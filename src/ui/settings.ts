@@ -79,6 +79,8 @@ export class SettingsPanel {
       this.row(t("set.music"), this.slider(s.music, (v) => { s.music = v; this.g.mixer?.setVolumes(s.music, s.effects); })),
       this.row(t("set.effects"), this.slider(s.effects, (v) => { s.effects = v; this.g.mixer?.setVolumes(s.music, s.effects); })),
       this.row(t("set.captions"), this.check(s.captions, (v) => (s.captions = v))),
+      this.row(t("set.voices"), this.check(s.voices, (v) => { s.voices = v; if (!v) this.g.lines?.stop(); })),
+      this.row(t("set.voicevolume"), this.slider(s.voiceVolume, (v) => { s.voiceVolume = v; this.g.mixer?.setSpeechVolume(v); })),
       h("div", { class: "set-row" }, h("span", {}, t("set.latency", { ms: Math.round(s.calibrationSec * 1000) })), h("button", { onclick: () => { this.close(); void runCalibration(this.g); } }, t("set.calibrate"))),
       h("h3", {}, t("menu.reading")),
       this.row(t("set.textsize"), this.select(s.textSize, [["s", t("set.small")], ["m", t("set.medium")], ["l", t("set.large")]], (v) => (s.textSize = v))),

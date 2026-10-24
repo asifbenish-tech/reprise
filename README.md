@@ -68,8 +68,19 @@ the generators never overwrite `final` files. To drop in a recorded stem, put `<
 - **itch.io:** `npm run build`, zip the contents of `dist/`, upload as an HTML5 game ("This file will be
   played in the browser"), viewport 1280x720.
 
+## Voices
+
+Spoken lines live in `assets/voice/` (MP3 sprites and an index) and are made by `tools/make-voices.py`.
+To regenerate after changing text: install `piper-tts` and `numpy` (pip) and ffmpeg, download the voice
+pack `voice-en-us-libritts-high.tar.gz` from the Piper project's v0.0.2 release, unpack it, then run
+`PIPER_MODEL=/path/en-us-libritts-high.onnx python3 tools/make-voices.py`. Only new or changed lines are
+spoken again (cached in `.voice-cache/`). The cast (which speaker each character gets) is the `CAST` table
+at the top of the script.
+
 ## Third-party
 
 - [Phaser](https://phaser.io) and [Tone.js](https://tonejs.github.io), MIT.
 - [Pixelify Sans](https://github.com/eifetx/Pixelify-Sans) via `@fontsource/pixelify-sans`, SIL Open Font
   License 1.1; the license ships with every build as `licenses/pixelify-sans-OFL.txt`.
+- Voices generated with [Piper](https://github.com/rhasspy/piper) from a model trained on LibriTTS, CC BY
+  4.0; see `licenses/voices.txt`.

@@ -86,9 +86,18 @@ export class HudImpl implements Hud {
       );
       this.speech.classList.add("show");
       this.announce(`${sp ? t(sp.name) : speaker}: ${text}`);
+      const voiced = this.g.fast ? null : (this.g.lines?.play(speaker, text) ?? null);
       await new Promise<void>((res) => {
-        const ms = this.g.fast ? 0 : this.g.settings.textSpeed === "click" ? 1e9 : Math.max(1700, 900 + text.length * 55);
-        const timer = window.setTimeout(done, ms);
+        const auto = this.g.settings.textSpeed !== "click";
+        const reading = Math.max(1700, 900 + text.length * 55);
+        const ms = this.g.fast ? 0 : !auto || voiced ? 1e9 : reading;
+        let timer = window.setTimeout(done, ms);
+        // a spoken line moves on when the voice has finished, after a breath; if the audio failed, by reading time
+        if (voiced && auto)
+          void voiced.then((ok) => {
+            window.clearTimeout(timer);
+            timer = window.setTimeout(done, ok ? 350 : reading);
+          });
         function done() {
           window.clearTimeout(timer);
           res();
@@ -96,6 +105,7 @@ export class HudImpl implements Hud {
         this.skipSpeech = done;
       });
       this.skipSpeech = null;
+      this.g.lines?.stop();
       this.speech.classList.remove("show");
     };
     this.sayChain = this.sayChain.then(run, run);
@@ -125,8 +135,10 @@ export class HudImpl implements Hud {
     this.dialog.append(body);
     this.root.classList.add("conversing");
     this.announce(`${t(sp.name)}: ${text}`);
+    if (!this.g.fast) void this.g.lines?.play(sp.id, text);
     return new Promise((res) => {
       const finish = (i: number) => {
+        this.g.lines?.stop();
         this.advance = null;
         this.dialog.onclick = null;
         // the next line usually follows at once; only an empty gap closes the close-up

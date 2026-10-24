@@ -6,6 +6,7 @@ import { GameBus } from "../core/bus";
 import { Conductor } from "../audio/conductor";
 import { Mixer } from "../audio/mixer";
 import { NoteVoice, noteMidi } from "../audio/note-voice";
+import { VoiceLines } from "../audio/voice-lines";
 import { Song, type StemData } from "../audio/song";
 import { DraftLibrary } from "../core/drafts";
 import { Distaff } from "../core/distaff";
@@ -103,6 +104,8 @@ export class Game {
   readonly conductor = new Conductor();
   readonly effects = new Effects();
   mixer: Mixer | null = null;
+  /** Spoken lines; null until audio starts. */
+  lines: VoiceLines | null = null;
   voice: NoteVoice;
   library!: DraftLibrary;
   distaff!: Distaff;
@@ -135,6 +138,9 @@ export class Game {
     this.mixer = new Mixer();
     this.mixer.setVolumes(this.settings.music, this.settings.effects);
     this.voice = new NoteVoice(this.mixer);
+    this.mixer.setSpeechVolume(this.settings.voiceVolume);
+    const mixer = this.mixer;
+    this.lines = new VoiceLines(() => (this.settings.voices && !this.fast ? mixer.speech : null), (on) => mixer.speaking(on));
     this.conductor.calibrationSec = this.settings.calibrationSec;
   }
 

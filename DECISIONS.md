@@ -219,6 +219,18 @@ which every call greys and falls; Bobbin narrates the cause. In the park the jog
 rings of the hook spread from his phone, the flock's calls and then Bobbin's own note are swallowed, and
 Bobbin says what it means before the swans grey.
 
+**D-044 · Spoken lines (§ at a glance "Voice", §8.8, owner direction).** The document says no voice acting.
+The owner asked for it. With no actors, every line is generated offline by `tools/make-voices.py` with
+Piper and an open multi-speaker model trained on LibriTTS (CC BY 4.0, credited on the end card and in
+`licenses/voices.txt`). Each character has one speaker from the model, cast by pitch because the tools
+cannot listen; the cast is one table in the script. Stage directions in lower-case parentheses are not
+spoken; the swans stay silent (their instrument signatures still play, as §8.8 wants). Lines are keyed by
+speaker and the exact text on screen, so a reworded line is regenerated and a line filled in at runtime
+(a thread's name, say) stays text. The browser's own speech was not used: it varies by device and some
+browsers send the text to an online service. A spoken line moves on when the voice ends; Settings can
+turn voices off and set their level, and the score dips under them. Real actors can replace the files
+later without code changes.
+
 ## Data formats (§9.5) extensions
 
 **D-025 · Extra fields.** `HotspotDef` gains `name`, `talk`, `listen`, `person`, `stand`, `when`, `sprite`

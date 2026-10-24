@@ -93,6 +93,9 @@ export interface Settings {
   lowDetail: boolean;
   /** The pixel typeface; off falls back to a plain serif for readability (GDD 7.9). */
   pixelFont: boolean;
+  /** Spoken lines (D-044), and how loud they are. */
+  voices: boolean;
+  voiceVolume: number;
   textSpeed: "auto" | "click";
   names: string;
 }
@@ -108,6 +111,8 @@ export const DEFAULT_SETTINGS: Settings = {
   resetBeats: 2,
   lowDetail: false,
   pixelFont: true,
+  voices: true,
+  voiceVolume: 0.9,
   textSpeed: "auto",
   names: "",
 };

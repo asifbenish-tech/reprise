@@ -4,3 +4,4 @@ dist-bot/
 test-results/
 playwright-report/
 *.log
+.voice-cache/
