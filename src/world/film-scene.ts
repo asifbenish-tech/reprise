@@ -20,6 +20,8 @@ interface Ring {
 }
 
 const PINK = 0xff7ae0;
+const GOLD = 0xffd27a;
+const CAGE = 10; // notes in the loop that circles the flock
 const CYAN = 0x66e0ff;
 const RIFT: [number, number] = [330, 66];
 const TOWER: [number, number] = [226, 34];
@@ -48,6 +50,10 @@ export class FilmScene extends Phaser.Scene implements FilmControl {
   private lastNote = 0;
   /** Threads being pulled out of a swan and back to where the song plays. */
   private pulls: { f: Flier; until: number; seed: number }[] = [];
+  /** The hook going round and round the flock, and how solid it has become. */
+  private cage: Phaser.GameObjects.Image[] = [];
+  private cageA = { v: 0 };
+  private lastCall = 0;
 
   constructor() {
     super({ key: "film" });
@@ -80,6 +86,8 @@ export class FilmScene extends Phaser.Scene implements FilmControl {
     this.fliers = [];
     this.rings = [];
     this.pulls = [];
+    this.cage = [];
+    this.cageA.v = 0;
     this.rift.v = 0;
     this.hunger = null;
     this.songFrom = null;
@@ -169,10 +177,39 @@ export class FilmScene extends Phaser.Scene implements FilmControl {
     } else if (id === "song") {
       this.songFrom = [540, 282];
       this.tweens.add({ targets: this.sick, v: 0.55, duration: 9000 });
+      // the hook closes round the flock: four notes and an "ooh", going round and never stopping
+      this.cage = Array.from({ length: CAGE }, (_, k) =>
+        this.keep(this.add.image(540, 282, "fx_note").setTint(k % 5 === 4 ? CYAN : PINK).setDepth(32).setBlendMode(Phaser.BlendModes.ADD).setAlpha(0)),
+      );
+      this.tweens.add({ targets: this.cageA, v: 1, duration: 3500, ease: "Sine.easeIn" });
     } else if (id === "falter") {
       this.tweens.add({ targets: this.sick, v: 1, duration: 5000 });
       this.tweens.add({ targets: this.anchor, x: this.anchor.x + 70, y: this.anchor.y + 46, duration: 7000, ease: "Sine.easeIn" });
     }
+  }
+
+  /** A golden call from one swan to another; if the hook is in the way it greys, falls and is gone. */
+  private call(from: Flier, to: Flier, blocked: boolean): void {
+    const n = this.keep(this.add.image(from.s.x + 16, from.s.y - 8, "fx_note").setTint(GOLD).setDepth(31).setBlendMode(Phaser.BlendModes.ADD));
+    const tx = to.s.x + 10;
+    const ty = to.s.y - 8;
+    if (!blocked) {
+      this.tweens.add({ targets: n, x: tx, y: ty, duration: 900, ease: "Sine.easeInOut", onComplete: () => n.destroy() });
+      return;
+    }
+    this.tweens.add({
+      targets: n,
+      x: n.x + (tx - n.x) * 0.45,
+      y: n.y + (ty - n.y) * 0.45 - 6,
+      duration: 480,
+      ease: "Sine.easeOut",
+      onComplete: () => {
+        const hit = this.keep(this.add.image(n.x, n.y, "fx_spark").setTint(PINK).setDepth(31).setBlendMode(Phaser.BlendModes.ADD));
+        this.tweens.add({ targets: hit, alpha: 0, duration: 300, onComplete: () => hit.destroy() });
+        n.setBlendMode(Phaser.BlendModes.NORMAL).setTint(0x77748a);
+        this.tweens.add({ targets: n, y: n.y + 22, alpha: 0, duration: 800, ease: "Quad.easeIn", onComplete: () => n.destroy() });
+      },
+    });
   }
 
   async end(fadeMs = 900): Promise<void> {
@@ -228,7 +265,7 @@ export class FilmScene extends Phaser.Scene implements FilmControl {
         fx.lineStyle(1, PINK, 0.8 * (1 - r.r / r.max));
         fx.strokeCircle(r.x, r.y, r.r);
       }
-      if (this.shotId === "space" && this.fliers.length && time - this.lastNote > 240) {
+      if (this.shotId === "space" && this.fliers.length && time - this.lastNote > 420) {
         this.lastNote = time;
         const f = this.fliers[Math.floor(Math.random() * this.fliers.length)];
         const n = this.keep(this.add.image(sx, sy, "fx_note").setTint(Math.random() < 0.6 ? PINK : CYAN).setDepth(30).setBlendMode(Phaser.BlendModes.ADD));
@@ -254,6 +291,26 @@ export class FilmScene extends Phaser.Scene implements FilmControl {
       fx.fillEllipse(404, 178, 70, 26);
       fx.fillStyle(0xffd0f4, 0.5 * k);
       fx.fillEllipse(404, 178, 16, 6);
+    }
+    // the flock's own song: calls passing from swan to swan. Once the hook is going round, none gets through.
+    if (this.shotId === "space" && this.fliers.length > 1 && time - this.lastCall > 620) {
+      this.lastCall = time;
+      const i = 1 + Math.floor(Math.random() * (this.fliers.length - 1));
+      // each swan hears the one ahead of it on its side of the V; the first pair hears the eldest
+      const from = this.fliers[i <= 2 ? 0 : i - 2];
+      const to = this.fliers[i];
+      this.call(from, to, this.cageA.v > 0.25);
+    }
+    if (this.cage.length) {
+      const cx = this.anchor.x - 52;
+      const cy = this.anchor.y;
+      fx.lineStyle(1, PINK, 0.22 * this.cageA.v);
+      fx.strokeEllipse(cx, cy, 300, 190);
+      this.cage.forEach((n, k) => {
+        const a = time / 850 + (k / CAGE) * Math.PI * 2;
+        n.setPosition(Math.round(cx + Math.cos(a) * 150), Math.round(cy + Math.sin(a) * 95));
+        n.setAlpha(0.9 * this.cageA.v);
+      });
     }
     // the drain made visible: threads of the flock's own light, unwinding towards the song
     if (this.songFrom) {

@@ -11,6 +11,8 @@
   and its light travels to the target; a wrong phrase fizzles (D-033).
 - Richer placeholder art: dithered, lit rooms; shaded characters; new close-ups; the staff as art (D-035).
 - Fix: two Distaff notes less than 5 ms apart (two keys at once) no longer throw in the harp voice.
+- The hook drowns every other sound, on screen, in the film and the park; Bobbin works out that this is
+  what is starving the flock (D-043).
 - Bobbin stands beside what he walks up to, never on it; the landing shows the swan becoming a man, his
   choice to stay and help, and the drain on the flock and on him (D-042).
 - Clicking a locked gate (or any exit) now selects it, and the selection is marked in the scene (D-039).

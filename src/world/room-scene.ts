@@ -44,6 +44,7 @@ export class RoomScene extends Phaser.Scene implements View {
   private drainFx!: Phaser.GameObjects.Graphics;
   private drains: { from: string; to: string | [number, number]; start: number; until: number }[] = [];
   private weaveFx!: Phaser.GameObjects.Graphics;
+  private hookRings: { x: number; y: number; start: number; until: number }[] = [];
   private cocoon: { x: number; y: number; t: number; fade: number } | null = null;
   private held: number | null = null;
   onHover: (label: string | null, sx: number, sy: number) => void = () => {};
@@ -128,6 +129,7 @@ export class RoomScene extends Phaser.Scene implements View {
     this.fx?.reset();
     this.drains = [];
     this.cocoon = null;
+    this.hookRings = [];
     this.weaveFx?.clear();
     this.onHover(null, 0, 0);
     if (lighting) {
@@ -344,6 +346,37 @@ export class RoomScene extends Phaser.Scene implements View {
     this.drains.push({ from, to, start: now, until: now + seconds * 1000 });
   }
 
+  muffle(from: string, by: string): void {
+    if (this.g.fast) return;
+    const song = this.sprites.get(by);
+    const src = from === "bobbin" ? this.bobbin : this.sprites.get(from);
+    if (!song || !src) return;
+    const now = performance.now();
+    this.hookRings.push({ x: song.x + 6, y: song.y - song.height * 0.55, start: now, until: now + 3200 });
+    const starts: [number, number][] =
+      from === "bobbin"
+        ? [this.fx.tip() ?? [src.x, src.y - 20]]
+        : Array.from({ length: 6 }, (_, i) => [src.x - src.width / 2 + 22 + (i * (src.width - 44)) / 5, src.y - 18] as [number, number]);
+    starts.forEach(([x0, y0], i) => {
+      const note = this.add.image(x0, y0, "fx_note").setTint(0xffd27a).setDepth(4960).setBlendMode(Phaser.BlendModes.ADD).setAlpha(0);
+      this.tweens.add({
+        targets: note,
+        alpha: 1,
+        y: y0 - 16,
+        delay: i * 170,
+        duration: 520,
+        ease: "Sine.easeOut",
+        onComplete: () => {
+          // the hook rolls over the note before it can carry: a pink flash, and it falls grey
+          const hit = this.add.image(note.x, note.y, "fx_spark").setTint(0xff7ae0).setDepth(4961).setBlendMode(Phaser.BlendModes.ADD);
+          this.tweens.add({ targets: hit, alpha: 0, duration: 380, onComplete: () => hit.destroy() });
+          note.setBlendMode(Phaser.BlendModes.NORMAL).setTint(0x77748a);
+          this.tweens.add({ targets: note, y: note.y + 18, alpha: 0, duration: 850, ease: "Quad.easeIn", onComplete: () => note.destroy() });
+        },
+      });
+    });
+  }
+
   transform(): Promise<void> {
     if (this.g.fast || !this.bobbin) {
       this.setSwan(false);
@@ -442,6 +475,19 @@ export class RoomScene extends Phaser.Scene implements View {
   private drawDrains(now: number): void {
     const d = this.drainFx;
     d.clear();
+    // the hook's rings, spreading from where it plays
+    this.hookRings = this.hookRings.filter((r) => r.until > now);
+    for (const r of this.hookRings) {
+      const life = Math.min(1, (r.until - now) / 600, (now - r.start) / 300);
+      for (let k = 0; k < 4; k++) {
+        const rad = ((now - r.start) / 1000) * 70 + k * 32;
+        const rr = rad % 128;
+        d.lineStyle(1, 0xff7ae0, 0.75 * (1 - rr / 128) * life);
+        d.strokeCircle(r.x, r.y, rr);
+        d.lineStyle(1, 0xff7ae0, 0.35 * (1 - rr / 128) * life);
+        d.strokeCircle(r.x, r.y, rr + 1);
+      }
+    }
     this.drains = this.drains.filter((x) => x.until > now);
     for (const dr of this.drains) {
       const a = this.sprites.get(dr.from);

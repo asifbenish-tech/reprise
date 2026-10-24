@@ -57,6 +57,8 @@ export interface View {
   film?(): FilmControl;
   /** Threads of light pulled out of one hotspot's sprite into another's (or towards a point): the drain made visible. */
   drain?(from: string, to: string | [number, number], seconds: number): void;
+  /** Notes rising from one sprite ("bobbin" for him) that the song playing from another swallows before they carry. */
+  muffle?(from: string, by: string): void;
   /** The swan weaves himself into a man: threads close round him, a flash, the hooded figure on one knee. */
   transform?(): Promise<void>;
   /** Holds Bobbin in one sprite frame (11: on one knee, spent), or null to let him stand again. */

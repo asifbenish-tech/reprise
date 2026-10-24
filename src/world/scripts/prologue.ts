@@ -108,18 +108,29 @@ export const scripts: Record<string, ScriptFn> = {
       g.setFlag("jogger_here");
       g.playSong("again_again");
       g.caption("caption.again_again_phone");
-      const move = g.view?.moveSprite("jogger", 700, 280, 7) ?? Promise.resolve();
-      g.view?.drain?.("flock_rest", "jogger", 7);
+      // he slows to a stop by the water, phone up, the hook pouring out of it
+      const arrive = g.view?.moveSprite("jogger", 420, 280, 4) ?? Promise.resolve();
       await g.say("jogger", "pond.jogger");
       await g.say("bobbin", "pond.jogger2");
+      await arrive;
       await g.say("bobbin", "pond.that_song");
       await g.say("bobbin", "pond.your_head");
+      // nothing else gets through: the flock's calls, then his own note, swallowed by the hook
+      g.view?.muffle?.("flock_rest", "jogger");
+      await g.say("bobbin", "pond.blocked1");
+      g.view?.muffle?.("bobbin", "jogger");
+      g.voice.playCracked(0);
+      await g.say("bobbin", "pond.blocked2");
+      await g.say("bobbin", "pond.understand1");
+      await g.say("bobbin", "pond.understand2");
+      g.view?.drain?.("flock_rest", "jogger", 8);
       g.setFlag("flock_grey");
       g.refreshLook();
       g.view?.flash(0x606070, 400);
       await g.say("bobbin", "pond.grey");
+      const leave = g.view?.moveSprite("jogger", 700, 280, 4) ?? Promise.resolve();
       await g.say("bobbin", "pond.eldest");
-      await move;
+      await leave;
       g.setFlag("jogger_here", false);
       g.playSong("park");
       await g.say("bobbin", "pond.skein_fading");

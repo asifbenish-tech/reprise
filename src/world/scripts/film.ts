@@ -33,8 +33,9 @@ export async function openingFilm(g: Game): Promise<void> {
     if (!skipped) g.playSong("again_again");
     await line("film.song1");
     await line("film.song2");
-    event("falter");
     await line("film.song3");
+    event("falter");
+    await line("film.song4");
     await shot("earth");
     await line("film.earth1");
     await line("film.earth2");

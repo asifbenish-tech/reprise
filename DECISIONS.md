@@ -211,6 +211,14 @@ could fly on alone and chooses not to; threads close round the swan in a cocoon,
 down on one knee (a new sprite frame), greyed and spent; the Distaff cracks; he stands and says the drain
 is taking him too.
 
+**D-043 · The hook lets nothing else through (premise, owner direction).** The premise says each play of
+the hit pulls a thread from the flock. The owner wanted the why to be visible and understood early: the
+hook never stops, and while it plays no other music gets through, and a swan lives on song. The film
+shows the flock's calls passing from swan to swan until a ring of pink notes closes round them, after
+which every call greys and falls; Bobbin narrates the cause. In the park the jogger stops by the water,
+rings of the hook spread from his phone, the flock's calls and then Bobbin's own note are swallowed, and
+Bobbin says what it means before the swans grey.
+
 ## Data formats (§9.5) extensions
 
 **D-025 · Extra fields.** `HotspotDef` gains `name`, `talk`, `listen`, `person`, `stand`, `when`, `sprite`
