@@ -381,9 +381,9 @@
   {
    "id": "bobbin",
    "path": "art/chars/bobbin.png",
-   "w": 440,
+   "w": 480,
    "h": 80,
-   "frames": 11,
+   "frames": 12,
    "frameW": 40,
    "normal": "art/chars/bobbin_n.png",
    "status": "placeholder",

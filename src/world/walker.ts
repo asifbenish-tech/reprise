@@ -120,3 +120,22 @@ export function findPath(poly: Pt[], from: Pt, to: Pt): Pt[] {
   for (let i = 1; i !== 0; i = prev[i]) path.unshift(nodes[i]);
   return path;
 }
+
+/** Bobbin's half-width in art pixels, and a little air. */
+const BESIDE_GAP = 14;
+const WIDE = 140;
+
+/**
+ * Where to stand to use something: beside it, never on it, on the side nearer to where Bobbin is now.
+ * Something wide (a hedge, the water) is approached from the front, at the point straight ahead.
+ */
+export function standBeside(poly: Pt[], rect: [number, number, number, number], fromX: number): Pt {
+  const [x, y, w, h] = rect;
+  const foot = y + h + 4;
+  if (w > WIDE) return clampInside(poly, [Math.max(x + 16, Math.min(x + w - 16, fromX)), foot]);
+  const cx = x + w / 2;
+  const sides = [clampInside(poly, [x - BESIDE_GAP, foot]), clampInside(poly, [x + w + BESIDE_GAP, foot])];
+  const clear = sides.filter(([sx]) => Math.abs(sx - cx) >= w / 2 + BESIDE_GAP - 2);
+  const pool = clear.length ? clear : sides;
+  return pool.reduce((a, b) => (Math.abs(b[0] - fromX) < Math.abs(a[0] - fromX) ? b : a));
+}

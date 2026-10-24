@@ -42,7 +42,10 @@ export class RoomScene extends Phaser.Scene implements View {
   private fx!: CastFx;
   private selMark!: Phaser.GameObjects.Graphics;
   private drainFx!: Phaser.GameObjects.Graphics;
-  private drains: { from: string; to: string; until: number }[] = [];
+  private drains: { from: string; to: string | [number, number]; start: number; until: number }[] = [];
+  private weaveFx!: Phaser.GameObjects.Graphics;
+  private cocoon: { x: number; y: number; t: number; fade: number } | null = null;
+  private held: number | null = null;
   onHover: (label: string | null, sx: number, sy: number) => void = () => {};
   onReady: () => void = () => {};
   /** Every image has loaded (the title's backdrop can start). */
@@ -92,6 +95,7 @@ export class RoomScene extends Phaser.Scene implements View {
     });
     this.selMark = this.add.graphics().setDepth(4800);
     this.drainFx = this.add.graphics().setDepth(4700).setBlendMode(Phaser.BlendModes.ADD);
+    this.weaveFx = this.add.graphics().setDepth(4950).setBlendMode(Phaser.BlendModes.ADD);
     this.g.bus.on("note", ({ n, cracked }) => this.fx.note(n, cracked));
     this.g.bus.on("phraseFailed", () => this.fx.fail());
     this.g.bus.on("cast", (e) => this.fx.cast(e.target?.kind === "hotspot" ? this.hotspotCenter(e.target.id) : null, e.fromLoop));
@@ -123,6 +127,8 @@ export class RoomScene extends Phaser.Scene implements View {
     for (const l of [...this.lights.lights]) this.lights.removeLight(l);
     this.fx?.reset();
     this.drains = [];
+    this.cocoon = null;
+    this.weaveFx?.clear();
     this.onHover(null, 0, 0);
     if (lighting) {
       this.lights.enable();
@@ -162,6 +168,7 @@ export class RoomScene extends Phaser.Scene implements View {
   setSwan(swan: boolean): void {
     this.swan = swan;
     if (!this.bobbin) return;
+    if (this.g.save) this.skein?.setVisible(this.g.flag("skein") && !swan);
     if (swan) {
       this.bobbin.setTexture("bobbin_swan");
       this.bobbin.play("bobbin_swan");
@@ -179,7 +186,8 @@ export class RoomScene extends Phaser.Scene implements View {
       const fw = h.sprite?.frameWhen?.find(([, c]) => this.g.cond(c));
       if (fw) this.setSprite(id, { frame: fw[0] });
     }
-    this.skein?.setVisible(this.g.flag("skein") && !this.g.room.swan);
+    // Skein walks beside him once he is a man; while he is a swan she swims, and her sprite is the room's own
+    this.skein?.setVisible(this.g.flag("skein") && !this.swan);
   }
 
   hotspotCenter(id: string): [number, number] | null {
@@ -256,7 +264,7 @@ export class RoomScene extends Phaser.Scene implements View {
   private idle(): void {
     if (this.swan) return;
     this.bobbin.anims.stop();
-    this.bobbin.setFrame(0);
+    this.bobbin.setFrame(this.held ?? 0);
   }
 
   setSprite(id: string, s: { anim?: string; frame?: number; visible?: boolean; flipX?: boolean; alpha?: number }): void {
@@ -330,9 +338,80 @@ export class RoomScene extends Phaser.Scene implements View {
     return fs;
   }
 
-  drain(from: string, to: string, seconds: number): void {
+  drain(from: string, to: string | [number, number], seconds: number): void {
     if (this.g.fast) return;
-    this.drains.push({ from, to, until: performance.now() + seconds * 1000 });
+    const now = performance.now();
+    this.drains.push({ from, to, start: now, until: now + seconds * 1000 });
+  }
+
+  transform(): Promise<void> {
+    if (this.g.fast || !this.bobbin) {
+      this.setSwan(false);
+      return Promise.resolve();
+    }
+    const b = this.bobbin;
+    const c = { x: b.x, y: b.y, t: 0, fade: 1 };
+    this.cocoon = c;
+    // the swan rises a little into the light as the threads close round it
+    this.tweens.add({ targets: b, y: c.y - 8, duration: 2600, ease: "Sine.easeInOut" });
+    return new Promise((res) => {
+      this.tweens.add({
+        targets: c,
+        t: 1,
+        duration: 2900,
+        ease: "Sine.easeIn",
+        onComplete: () => {
+          this.flash(0xffffff, 800);
+          this.setSwan(false);
+          b.setY(c.y);
+          this.bobbinFrame(11);
+          this.tweens.add({ targets: c, fade: 0, duration: 1000, onComplete: () => { this.cocoon = null; this.weaveFx.clear(); res(); } });
+        },
+      });
+    });
+  }
+
+  bobbinFrame(frame: number | null): void {
+    this.held = frame;
+    if (!this.bobbin || this.swan) return;
+    this.bobbin.anims.stop();
+    this.bobbin.setFrame(frame ?? 0);
+    // spent: a little of his own colour has gone with the weaving
+    this.bobbin.setTint(frame === 11 ? 0xb4b0c4 : 0xffffff);
+  }
+
+  /** Threads of light spiralling up round the swan, closing into a cocoon. */
+  private drawWeave(now: number): void {
+    const c = this.cocoon;
+    if (!c) return;
+    const g = this.weaveFx;
+    g.clear();
+    const t = c.t;
+    const f = c.fade;
+    const hgt = 12 + 70 * t;
+    g.fillStyle(0xffe9b0, 0.16 * (0.3 + t) * f);
+    g.fillEllipse(c.x, c.y - hgt / 2, 34 + 26 * t, hgt + 24);
+    g.fillStyle(0xffffff, 0.22 * t * t * f);
+    g.fillEllipse(c.x, c.y - hgt / 2, 16 + 10 * t, hgt * 0.8);
+    for (let i = 0; i < 8; i++) {
+      g.lineStyle(1, i % 2 ? 0xffd27a : 0xd8c8ff, (0.45 + 0.5 * t) * f);
+      let px = 0;
+      let py = 0;
+      for (let k = 0; k <= 26; k++) {
+        const u = k / 26;
+        const ang = now / 240 + i * (Math.PI / 4) + u * 6.5;
+        const r = (18 - 7 * u) * (0.55 + 0.45 * Math.sin(u * Math.PI)) * (1.3 - 0.4 * t);
+        const x = c.x + Math.cos(ang) * r;
+        const y = c.y - u * hgt + Math.sin(ang) * 3;
+        if (k) g.lineBetween(px, py, x, y);
+        px = x;
+        py = y;
+      }
+    }
+    for (let j = 0; j < 8; j++) {
+      g.fillStyle(0xffffff, Math.random() * f);
+      g.fillRect(c.x + (Math.random() - 0.5) * 40, c.y - Math.random() * (hgt + 20), 1, 1);
+    }
   }
 
   /** Gold corners around the selected thing, so the player can see what the next draft will touch. */
@@ -366,11 +445,11 @@ export class RoomScene extends Phaser.Scene implements View {
     this.drains = this.drains.filter((x) => x.until > now);
     for (const dr of this.drains) {
       const a = this.sprites.get(dr.from);
-      const b = this.sprites.get(dr.to);
-      if (!a || !b || !b.visible) continue;
-      const fade = Math.min(1, (dr.until - now) / 800);
-      const tx = b.x + 6;
-      const ty = b.y - b.height * 0.55;
+      const b = typeof dr.to === "string" ? this.sprites.get(dr.to) : null;
+      if (!a || !a.visible || (typeof dr.to === "string" && (!b || !b.visible))) continue;
+      const fade = Math.min(1, (dr.until - now) / 800, (now - dr.start) / 500);
+      const tx = b ? b.x + 6 : (dr.to as [number, number])[0];
+      const ty = b ? b.y - b.height * 0.55 : (dr.to as [number, number])[1];
       for (let k = 0; k < 6; k++) {
         const sx = a.x - a.width / 2 + 18 + ((k * 37) % Math.max(1, a.width - 36));
         const sy = a.y - 14 - (k % 2) * 4;
@@ -435,6 +514,7 @@ export class RoomScene extends Phaser.Scene implements View {
     const now = performance.now();
     this.drawSelection(now);
     this.drawDrains(now);
+    this.drawWeave(now);
     const room = this.g.room;
     if (room.width > WORLD_W) this.cameras.main.centerOn(this.bobbin.x, WORLD_H / 2);
 

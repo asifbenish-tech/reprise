@@ -152,17 +152,21 @@ export function bobbin(img: Img, ox: number, fw: number, frame: number): void {
   const fig = new Img(fw, img.h);
   const cx = Math.floor(fw / 2) - 2;
   const bottom = img.h - 2;
-  const top = bottom - 62;
+  // frame 11: down on one knee, spent, leaning on the Distaff
+  const kneel = frame === 11;
+  const top = bottom - (kneel ? 46 : 62);
   const walk = frame >= 1 && frame <= 8 ? Math.sin(((frame - 1) / 8) * Math.PI * 2) : 0;
-  const pose = frame === 9 ? 1 : frame === 10 ? 2 : 0;
+  const pose = frame === 9 ? 1 : frame === 10 ? 2 : kneel ? 3 : 0;
   const cloak = "#7c7c8c";
   const pal = { hi: "#b4b4c2", mid: cloak, lo: "#56566a", deep: "#3a3a4c" };
   // legs and feet under the hem
-  fig.rect(cx - 5 + Math.round(walk * 3), bottom - 4, 4, 4, "#2e2a30");
-  fig.rect(cx + 2 - Math.round(walk * 3), bottom - 4, 4, 4, "#26222a");
+  if (!kneel) {
+    fig.rect(cx - 5 + Math.round(walk * 3), bottom - 4, 4, 4, "#2e2a30");
+    fig.rect(cx + 2 - Math.round(walk * 3), bottom - 4, 4, 4, "#26222a");
+  }
   // cloak body: wide at the hem, swaying when walking or lifted when casting
-  const hemL = cx - 11 - Math.round(walk * 1.5) - (pose ? 1 : 0);
-  const hemR = cx + 11 - Math.round(walk * 1.5) + (pose ? 2 : 0);
+  const hemL = cx - 11 - Math.round(walk * 1.5) - (pose ? 1 : 0) - (kneel ? 3 : 0);
+  const hemR = cx + 11 - Math.round(walk * 1.5) + (pose ? 2 : 0) + (kneel ? 3 : 0);
   fig.poly([[hemL, bottom - 2], [cx - 7, top + 20], [cx - 6, top + 12], [cx + 6, top + 12], [cx + 8, top + 20], [hemR, bottom - 2]], pal.mid);
   // folds
   for (const [fx, k] of [[cx - 5, 0.3], [cx + 1, 0.5], [cx + 6, 0.7]] as const) {
@@ -189,8 +193,9 @@ export function bobbin(img: Img, ox: number, fw: number, frame: number): void {
   fig.poly([[cx - 8, top + 15], [cx - 8, top + 6], [cx - 4, top], [cx + 2, top - 1], [cx + 7, top + 4], [cx + 8, top + 15]], pal.mid);
   fig.poly([[cx - 8, top + 15], [cx - 8, top + 6], [cx - 4, top], [cx - 3, top + 2], [cx - 6, top + 9], [cx - 6, top + 15]], pal.hi);
   fig.ellipse(cx + 1, top + 9, 4.5, 5.5, "#0a080e");
-  fig.px(cx - 1, top + 9, hex("#9fe4ff"));
-  fig.px(cx + 3, top + 9, hex("#9fe4ff"));
+  const eye = kneel ? "#4a7aa0" : "#9fe4ff";
+  fig.px(cx - 1, top + 9 + (kneel ? 1 : 0), hex(eye));
+  fig.px(cx + 3, top + 9 + (kneel ? 1 : 0), hex(eye));
   fig.px(cx - 1, top + 8, hex("#4aa8ff", 160));
   fig.px(cx + 3, top + 8, hex("#4aa8ff", 160));
   // arms and the Distaff
@@ -207,6 +212,12 @@ export function bobbin(img: Img, ox: number, fw: number, frame: number): void {
     fig.line(cx + 7, top + 16, cx + 12, top + 34, pal.mid);
     staff(cx + 15, bottom - 1, cx + 15, top + 4);
     fig.rect(cx + 12, top + 33, 4, 3, "#c8a888");
+  } else if (pose === 3) {
+    // the staff planted beside him, full length, one hand hanging on to it
+    staff(cx + 15, bottom - 1, cx + 13, bottom - 58);
+    fig.line(cx + 6, top + 16, cx + 12, top + 10, pal.lo);
+    fig.line(cx + 7, top + 16, cx + 13, top + 10, pal.mid);
+    fig.rect(cx + 11, top + 8, 4, 3, "#c8a888");
   } else if (pose === 1) {
     fig.line(cx + 6, top + 15, cx + 12, top + 2, pal.mid);
     fig.line(cx + 7, top + 15, cx + 13, top + 2, pal.hi);

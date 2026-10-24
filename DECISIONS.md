@@ -201,6 +201,16 @@ song" with the original set. The original LOOM logo artwork is never copied (§7
 default stays `original` (§1); the owner chose the loom set for the published page, knowing §1's
 takedown warning.
 
+**D-042 · Standing beside things, and the landing told on screen (§3 Prologue, owner direction).**
+Bobbin walks up beside what he uses, on the side nearer to him, never on top of it (a unit test checks
+every hotspot in every room); something wide is approached from the front, and an open way out is walked
+into. The park is now a swan room until he weaves himself a body, as §3 tells it (before, he arrived
+already a man). The landing shows the story instead of telling it: the eldest gives up; the flock keeps
+losing threads of light up into the Spire every few bars while the city's hit has them; Bobbin says he
+could fly on alone and chooses not to; threads close round the swan in a cocoon, a flash, and he is a man
+down on one knee (a new sprite frame), greyed and spent; the Distaff cracks; he stands and says the drain
+is taking him too.
+
 ## Data formats (§9.5) extensions
 
 **D-025 · Extra fields.** `HotspotDef` gains `name`, `talk`, `listen`, `person`, `stand`, `when`, `sprite`

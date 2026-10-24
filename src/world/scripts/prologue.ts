@@ -118,6 +118,7 @@ export const scripts: Record<string, ScriptFn> = {
       g.refreshLook();
       g.view?.flash(0x606070, 400);
       await g.say("bobbin", "pond.grey");
+      await g.say("bobbin", "pond.eldest");
       await move;
       g.setFlag("jogger_here", false);
       g.playSong("park");
@@ -134,17 +135,29 @@ export const scripts: Record<string, ScriptFn> = {
       await g.say("bobbin", "pond.skein_follow");
       g.setFlag("skein");
       g.setFlag("skein_healed");
+      // the choice: he could leave; he stays for them
+      g.view?.drain?.("flock_rest", [300, 64], 5);
+      await g.say("bobbin", "pond.resolve1");
+      await g.say("bobbin", "pond.resolve2");
+      await g.say("bobbin", "pond.resolve3");
       await g.say("bobbin", "pond.weave1");
       await g.say("bobbin", "pond.weave2");
-      g.view?.flash(0xffffff, 900);
+      // swan to man, on screen: threads close round him, a flash, and he is down on one knee
+      if (g.view?.transform) await g.view.transform();
+      else {
+        g.view?.flash(0xffffff, 900);
+        g.view?.setSwan(false);
+      }
       g.setFlag("human");
-      g.view?.setSwan(false);
       g.view?.refreshHotspots();
-      await g.waitSeconds(0.5);
+      await g.say("bobbin", "pond.spent");
       g.crackDistaff();
+      g.view?.flash(0x40384c, 350);
       g.caption("caption.crack");
       await g.say("bobbin", "pond.crack1");
       await g.say("bobbin", "pond.crack2");
+      g.view?.bobbinFrame?.(null);
+      await g.say("bobbin", "pond.spent2");
       await g.say("skein", "pond.skein_hint_intro");
     });
   },
@@ -183,4 +196,11 @@ export const scripts: Record<string, ScriptFn> = {
   },
 };
 
-export const logic: Record<string, LogicFactory> = { crossing, park_gate: parkGate };
+/** While the city's hit has them, the flock keeps losing threads to it, up towards the Spire. */
+const pond: LogicFactory = (g) => ({
+  bar(bar) {
+    if (bar % 4 === 1 && g.flag("flock_grey") && !g.busy) g.view?.drain?.("flock_rest", [300, 64], 2.5);
+  },
+});
+
+export const logic: Record<string, LogicFactory> = { crossing, park_gate: parkGate, pond };

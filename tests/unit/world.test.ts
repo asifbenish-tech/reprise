@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import type { RoomDef } from "../../src/content/types";
 import { check, validCondition } from "../../src/world/flags";
-import { clampInside, findPath, inside, type Pt } from "../../src/world/walker";
+import { clampInside, findPath, inside, standBeside, type Pt } from "../../src/world/walker";
 import { STAFF_TIP } from "../../src/world/staff-tip";
 import { BOBBIN_TIP } from "../../tools/figures";
 
@@ -59,5 +59,26 @@ describe("the LOOM layout (GDD 4.1)", () => {
   });
   it("puts the casting light where the sprite painter drew the Distaff's tip", () => {
     expect(STAFF_TIP).toEqual(BOBBIN_TIP);
+  });
+});
+
+describe("standing beside things (owner: never on top of them)", () => {
+  const rooms = readdirSync(new URL("../../content/rooms/", import.meta.url)).map(
+    (f) => JSON.parse(readFileSync(new URL(`../../content/rooms/${f}`, import.meta.url), "utf8")) as RoomDef,
+  );
+  it("puts Bobbin clear of every small thing he walks up to, from either side of the room", () => {
+    const blocked: string[] = [];
+    for (const r of rooms) {
+      if (r.swan && r.id === "crossing") continue;
+      for (const h of r.hotspots) {
+        const [x, , w] = h.rect;
+        if (h.id === "_self" || w > 140 || x + w < 0 || x > r.width) continue;
+        for (const from of [0, r.width]) {
+          const [sx] = standBeside(r.walk as Pt[], h.rect as [number, number, number, number], from);
+          if (Math.abs(sx - (x + w / 2)) < w / 2 + 10) blocked.push(`${r.id}/${h.id} from ${from}: x ${Math.round(sx)}`);
+        }
+      }
+    }
+    expect(blocked).toEqual([]);
   });
 });

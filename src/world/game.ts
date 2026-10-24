@@ -19,6 +19,7 @@ import { dialogues, drafts, puzzles as puzzleDefs, rooms, songs, speakers, stemH
 import { t, has } from "../content/strings";
 import { check, noteCount, NOTE_NAMES, type CondState } from "./flags";
 import { PuzzleTracker } from "./puzzles";
+import { standBeside, type Pt } from "./walker";
 import { LOGIC, SCRIPTS } from "./scripts";
 
 export const START_ROOM = "crossing";
@@ -54,8 +55,12 @@ export interface View {
   setRestored(level: number): void;
   setFlockWhite(level: number): void;
   film?(): FilmControl;
-  /** Threads of light pulled out of one hotspot's sprite into another's, for a while: the drain made visible. */
-  drain?(from: string, to: string, seconds: number): void;
+  /** Threads of light pulled out of one hotspot's sprite into another's (or towards a point): the drain made visible. */
+  drain?(from: string, to: string | [number, number], seconds: number): void;
+  /** The swan weaves himself into a man: threads close round him, a flash, the hooded figure on one knee. */
+  transform?(): Promise<void>;
+  /** Holds Bobbin in one sprite frame (11: on one knee, spent), or null to let him stand again. */
+  bobbinFrame?(frame: number | null): void;
 }
 
 export interface Hud {
@@ -330,7 +335,10 @@ export class Game {
 
   async walkToHotspot(h: HotspotDef): Promise<void> {
     const [x, y, w, hh] = h.rect;
-    const stand = h.stand ?? [x + w / 2, y + hh + 6];
+    // through an open way out you walk to its middle; anything else you stand beside, so it stays in view
+    const through = h.exit && this.cond(h.exit.when);
+    const from = this.view?.bobbinPos()[0] ?? x + w / 2;
+    const stand = h.stand ?? (through ? [x + w / 2, y + hh + 6] : standBeside(this.room.walk as Pt[], h.rect as [number, number, number, number], from));
     await this.view?.walkTo(stand[0], stand[1]);
     this.view?.face(x + w / 2);
   }

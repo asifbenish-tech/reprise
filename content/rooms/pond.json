@@ -166,5 +166,7 @@
    "color": "#ffd9a0",
    "intensity": 1.2
   }
- ]
+ ],
+ "logic": "pond",
+ "swan": true
 }
