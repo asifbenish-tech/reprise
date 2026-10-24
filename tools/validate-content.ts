@@ -130,7 +130,7 @@ const setKeys = Object.values(names.sets).map((s) => Object.keys(s).sort().join(
 if (new Set(setKeys).size !== 1) err("names.json: name sets must define the same keys");
 if (!(names.default in names.sets)) err("names.json: default set missing");
 const nameKeys = new Set(Object.keys(Object.values(names.sets)[0]));
-const VARS = new Set(["target", "thread", "draft", "note", "n", "i", "ms"]);
+const VARS = new Set(["target", "thread", "draft", "note", "n", "i", "ms", "total"]);
 for (const [k, v] of Object.entries(strings)) {
   for (const m of v.matchAll(/\{(\w+)\}/g)) if (!nameKeys.has(m[1]) && !VARS.has(m[1])) err(`strings ${k}: unknown placeholder {${m[1]}}`);
   for (const set of Object.values(names.sets)) for (const n of Object.values(set)) if (n.length > 4 && v.includes(n) && !["Reprise"].includes(n)) err(`strings ${k}: franchise name "${n}" must come from names.json`);

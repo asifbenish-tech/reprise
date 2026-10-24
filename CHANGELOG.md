@@ -2,6 +2,8 @@
 
 ## Look pass (owner feedback on Release 1)
 
+- How to play: a short illustrated guide before the first game (and on the title and in the menu), and
+  first-time tips in the scene, from answering the first call to Combing and the Spindle (D-049).
 - Art pass in the same style: people with real proportions, faces, clothes and shading; Bobbin with a
   mantle, sleeves and a carved Distaff; feathered swans and a cygnet Skein; varied close-up faces; shadows
   under everyone; the fitting room, focus lounge and talent elevator furnished (D-048).

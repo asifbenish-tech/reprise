@@ -161,13 +161,19 @@ function showMenu(): void {
   append(
     foot,
     save ? h("button", { class: "big", id: "continue", onclick: () => start(() => g.load(save)) }, t("menu.continue")) : null,
-    h("div", { class: "newgame" }, pick, h("button", { class: "big", id: "newgame", onclick: () => start(() => g.newGame(newSeed(), diff)) }, t("menu.new"))),
-    h("button", { class: "link", onclick: () => hud.settings.open() }, t("ui.menu")),
+    h("div", { class: "newgame" }, pick, h("button", { class: "big", id: "newgame", onclick: () => void newGame(diff) }, t("menu.new"))),
+    h("div", { class: "title-links" }, h("button", { class: "link", id: "howto", onclick: () => void hud.guide.open() }, t("ui.howto")), h("button", { class: "link", onclick: () => hud.settings.open() }, t("ui.menu"))),
   );
   append(title, h("div", { class: "title-head" }, h("h1", { "aria-label": t("title.name") }, t("title.logo")), weave(), h("p", { class: "subtitle" }, t("title.sub"))), foot);
   refreshTitleMusic();
   title.append(titleMusic);
   (title.querySelector("button.big") as HTMLButtonElement).focus();
+}
+
+/** A first new game opens with the guide to how to play (D-049); it stays in the menus after that. */
+async function newGame(diff: Difficulty): Promise<void> {
+  if (!settings.guideSeen) await hud.guide.open();
+  start(() => g.newGame(newSeed(), diff));
 }
 
 function newSeed(): number {
@@ -207,7 +213,7 @@ function typing(e: KeyboardEvent): boolean {
 
 window.addEventListener("keydown", (e) => {
   if (typing(e) || !g.save || !title.classList.contains("hidden")) return;
-  if (document.getElementById("calibration")) return;
+  if (document.getElementById("calibration") || hud.guide.isOpen) return;
   const k = e.key;
   if (hud.filming) {
     if (k === "Escape") hud.skipFilm();

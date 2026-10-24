@@ -100,6 +100,10 @@ export interface Settings {
   musicOn: boolean;
   textSpeed: "auto" | "click";
   names: string;
+  /** How to play (D-049): first-time tips in the scene, which ones were shown, and whether the guide was read. */
+  tips: boolean;
+  tipsSeen: string[];
+  guideSeen: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -118,16 +122,22 @@ export const DEFAULT_SETTINGS: Settings = {
   musicOn: true,
   textSpeed: "auto",
   names: "",
+  tips: true,
+  tipsSeen: [],
+  guideSeen: false,
 };
 
 export function readSettings(): Settings {
   try {
     const raw = localStorage.getItem(SETTINGS_KEY);
-    if (raw) return { ...DEFAULT_SETTINGS, ...(JSON.parse(raw) as Partial<Settings>) };
+    if (raw) {
+      const s = { ...DEFAULT_SETTINGS, ...(JSON.parse(raw) as Partial<Settings>) };
+      return { ...s, tipsSeen: Array.isArray(s.tipsSeen) ? [...s.tipsSeen] : [] };
+    }
   } catch {
     // fall back to defaults
   }
-  return { ...DEFAULT_SETTINGS };
+  return { ...DEFAULT_SETTINGS, tipsSeen: [] };
 }
 
 export function writeSettings(s: Settings): void {

@@ -11,6 +11,7 @@ import { threadRows } from "./loom-view";
 import { DistaffBar } from "./distaff-bar";
 import { BookOfPatterns } from "./book-of-patterns";
 import { SettingsPanel } from "./settings";
+import { Guide, Tips } from "./tutorial";
 import { NOTE_COLORS, NOTE_GLYPHS, clear, h, weave } from "./dom";
 
 export class HudImpl implements Hud {
@@ -37,6 +38,8 @@ export class HudImpl implements Hud {
   private card: HTMLElement;
   readonly book: BookOfPatterns;
   readonly settings: SettingsPanel;
+  readonly guide: Guide;
+  readonly tips: Tips;
   scene: RoomScene | null = null;
   phaser: Phaser.Game | null = null;
 
@@ -64,7 +67,11 @@ export class HudImpl implements Hud {
     this.distaff.onMenu = () => this.settings.open();
     this.distaff.onStrip = (on) => this.root.classList.toggle("notating", on);
     this.settings.onBook = () => this.book.open();
-    this.root = h("div", { id: "hud", dir: textDir() }, this.loomPanel, this.revealEl, this.hoverEl, this.speech, this.captionEl, this.toastEl, this.dialog, this.wheel, this.card, this.distaff.el, this.book.el, this.settings.el, this.live);
+    this.guide = new Guide(g);
+    this.settings.onGuide = () => void this.guide.open();
+    // tips keep out of the way of speech, conversations, the film, the Loom View and every panel
+    this.tips = new Tips(g, () => this.speech.classList.contains("show") || this.root.classList.contains("conversing") || this.filming || this.root.classList.contains("loom-open") || this.book.isOpen || this.settings.isOpen || this.guide.isOpen);
+    this.root = h("div", { id: "hud", dir: textDir() }, this.loomPanel, this.revealEl, this.hoverEl, this.speech, this.captionEl, this.toastEl, this.dialog, this.wheel, this.card, this.tips.el, this.distaff.el, this.book.el, this.settings.el, this.guide.el, this.live);
     parent.append(this.root);
     g.hudSelectThread = (id) => this.selectThread(id);
     g.bus.on("learned", () => this.book.render());
@@ -308,6 +315,7 @@ export class HudImpl implements Hud {
 
   tick(): void {
     this.distaff.tick();
+    this.tips.tick();
     if (this.g.loom) this.renderLoom(false);
   }
 

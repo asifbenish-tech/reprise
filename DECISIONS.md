@@ -265,6 +265,15 @@ feathers and the black knob on the beak; Skein is a grey cygnet. Close-ups get a
 hair that stays black. Everyone on the ground casts a soft shadow. The plainest rooms (the fitting room, the
 focus lounge, the talent elevator) are furnished.
 
+**D-049 · How to play (owner direction).** Two layers, both skippable. A five-page guide (walk and look, the
+Distaff, drafts, the Book of Patterns, getting unstuck) drawn with the game's own sprites, note colours and
+key caps: it opens before the first new game on a device and is kept on the title screen and in the menu.
+Then tips in the scene, one at a time and only when the scene is quiet: how to answer the eldest's call in the
+Crossing, how to move and look in the park, how to weave a draft on something, where the Book is, Skein after
+ninety seconds without progress, and Combing and the Spindle when they arrive. Each shows once per device;
+"No more tips" and a Settings switch turn them off (switching them on again starts them over). The bot plays
+with `fast` on, which hides both.
+
 ## Data formats (§9.5) extensions
 
 **D-025 · Extra fields.** `HotspotDef` gains `name`, `talk`, `listen`, `person`, `stand`, `when`, `sprite`

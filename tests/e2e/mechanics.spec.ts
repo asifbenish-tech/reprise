@@ -78,3 +78,27 @@ test("a click selects the locked gate, so the player can aim Opening at it with 
   await page.waitForFunction(() => (window as any).__reprise.g.flag("gate_open"), null, { timeout: 10000 });
   expect(errors).toEqual([]);
 });
+
+test("a first new game opens the guide, and the Crossing shows how to answer the call", async ({ page }) => {
+  const errors = watchErrors(page);
+  // a first visit, with the latency check already done
+  await page.addInitScript(() => localStorage.setItem("reprise.settings.v1", JSON.stringify({ calibrated: true })));
+  await page.goto("/");
+  await page.waitForSelector("#title.live", { timeout: 30000 });
+  await page.click("#begin");
+  await page.click("#newgame");
+  await expect(page.locator("#guide")).toBeVisible();
+  for (let i = 0; i < 5; i++) await page.evaluate(() => (document.getElementById("guide-next") as HTMLButtonElement).click());
+  await expect(page.locator("#guide")).toBeHidden();
+  await page.waitForSelector(".film-skip", { timeout: 60000 });
+  await page.click(".film-skip");
+  await page.waitForFunction(() => (window as any).__reprise.g.flag("await_opening"), null, { timeout: 120000 });
+  await expect(page.locator("#tip")).toBeVisible({ timeout: 20000 });
+  // answering the call takes the tip away
+  const ph: number[] = await page.evaluate(() => (window as any).__reprise.phrase("opening"));
+  for (const n of ph) await page.keyboard.press(String(n + 1));
+  await page.waitForFunction(() => !(window as any).__reprise.g.flag("await_opening"), null, { timeout: 20000 });
+  await expect(page.locator("#tip")).toBeHidden();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("reprise.settings.v1")!).guideSeen)).toBe(true);
+  expect(errors).toEqual([]);
+});

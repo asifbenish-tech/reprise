@@ -14,6 +14,7 @@ export class SettingsPanel {
   private status = h("p", { class: "fine", role: "status" });
   onQuit: () => void = () => {};
   onBook: () => void = () => {};
+  onGuide: () => void = () => {};
   onApply: () => void = () => {};
 
   constructor(private g: Game) {
@@ -74,7 +75,8 @@ export class SettingsPanel {
       inGame ? h("div", { class: "set-actions" },
         h("button", { onclick: () => { this.close(); void this.g.hint(); } }, t("menu.hint")),
         h("button", { onclick: () => { this.close(); this.onBook(); } }, t("ui.book")),
-      ) : null,
+        h("button", { onclick: () => { this.close(); this.onGuide(); } }, t("ui.howto")),
+      ) : h("div", { class: "set-actions" }, h("button", { onclick: () => { this.close(); this.onGuide(); } }, t("ui.howto"))),
       h("h3", {}, t("menu.sound")),
       this.row(t("set.musicon"), this.check(s.musicOn, (v) => this.g.setMusicOn(v))),
       this.row(t("set.music"), this.slider(s.music, (v) => { s.music = v; this.g.applyVolumes(); })),
@@ -89,6 +91,8 @@ export class SettingsPanel {
       this.row(t("set.contrast"), this.check(s.contrast, (v) => (s.contrast = v))),
       this.row(t("set.lowdetail"), this.check(s.lowDetail, (v) => (s.lowDetail = v))),
       this.row(t("set.pixelfont"), this.check(s.pixelFont, (v) => (s.pixelFont = v))),
+      // switching tips back on starts them over
+      this.row(t("set.tips"), this.check(s.tips, (v) => { s.tips = v; if (v) s.tipsSeen = []; })),
       this.row(t("set.reset"), this.select(s.resetBeats, [[2, t("set.reset.2")], [4, t("set.reset.4")], [999, t("set.reset.never")]], (v) => { s.resetBeats = v; if (this.g.distaff) this.g.distaff.resetBeats = v; })),
       inGame ? this.row(t("set.difficulty"), this.select(this.g.save.difficulty, [["practice", t("diff.practice")], ["standard", t("diff.standard")], ["expert", t("diff.expert")]], (v: Difficulty) => { this.g.save.difficulty = v; this.g.persist(true); this.g.hud?.refresh(); })) : null,
       typeof __DEBUG__ !== "undefined" && __DEBUG__ ? this.row(t("set.names"), this.select(nameSet(), [["loom", "loom"], ["original", "original"]], (v) => { setNameSet(v); s.names = v; })) : null,

@@ -27,6 +27,9 @@ BOT_SEEDS=5 npm run bot
 
 ## How to play
 
+The game teaches itself: a five-page guide opens before the first new game (it stays under "How to play" on
+the title and in the menu), and tips appear in the scene the first time they are useful. In short:
+
 - Click to walk; click an object to select it; double-click to look at it or talk. Hold **H** to show
   everything you can click.
 - The Distaff along the bottom has eight notes (keys **1-8**). Four notes make a draft; play one with

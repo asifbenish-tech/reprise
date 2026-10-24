@@ -365,3 +365,64 @@ body.portrait #app::after {
 }
 
 .save-text { width: 100%; margin: 0.4em 0; font: 0.8em ui-monospace, monospace; background: #0d0b14; color: var(--ink); border: 1px solid var(--line); border-radius: 4px; user-select: text; }
+
+/* ---- how to play (D-049): the guide, and tips in the scene ---- */
+#guide { z-index: 6; text-align: center; width: min(94%, calc(var(--s) * 360px + 120px)); background: #120e22; }
+#guide .modal-head h2 { color: var(--gold); }
+.guide-page h3 { margin: 0.6em 0 0.2em; font-size: 1.1em; color: #ffe9b0; text-transform: none; letter-spacing: 0.04em; }
+.guide-page p { margin: 0.2em auto 0.4em; max-width: 34em; line-height: 1.4; }
+.guide-picture {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5em;
+  min-height: calc(var(--s) * 92px); margin-top: 0.6em; padding: 0.6em; border-radius: calc(var(--s) * 3px);
+  background: radial-gradient(ellipse at 50% 30%, #3a2a6a 0%, #1a1230 70%); border: 1px solid var(--line);
+}
+.guide-sprite { display: inline-block; background-repeat: no-repeat; image-rendering: pixelated; image-rendering: crisp-edges; flex: none; }
+.guide-scene { position: relative; display: flex; align-items: flex-end; gap: calc(var(--s) * 30px); }
+.guide-path { position: absolute; left: calc(var(--s) * 34px); right: calc(var(--s) * 34px); bottom: calc(var(--s) * 2px); border-bottom: calc(var(--s) * 1px) dashed rgba(243, 198, 75, 0.7); }
+.guide-target { position: relative; display: inline-flex; }
+.guide-target::after {
+  content: ""; position: absolute; left: 50%; bottom: calc(var(--s) * -4px); transform: translateX(-50%);
+  width: calc(var(--s) * 30px); height: calc(var(--s) * 8px); border: calc(var(--s) * 1px) solid var(--gold); border-radius: 50%;
+  box-shadow: 0 0 calc(var(--s) * 4px) rgba(243, 198, 75, 0.7); animation: guidepulse 1.4s ease-in-out infinite;
+}
+@keyframes guidepulse { 50% { opacity: 0.35; } }
+.guide-cursor { position: absolute; right: calc(var(--s) * -4px); top: 40%; color: #fff; font-size: 1.4em; transform: rotate(-120deg); text-shadow: 0 1px 0 #000; }
+.guide-bubble { align-self: flex-start; padding: 0 0.5em; border-radius: 1em; background: #f4ecff; color: #1a1230; font-weight: 600; }
+.guide-keys { margin: 0; color: var(--muted); font-size: 0.9em; }
+kbd {
+  display: inline-block; min-width: 1.5em; padding: 0 0.3em; border-radius: calc(var(--s) * 1.5px); text-align: center; font: inherit; font-size: 0.85em;
+  color: #f4ecff; background: linear-gradient(180deg, #4a3a7a, #2a1e4a); border: 1px solid #8a7ac8; box-shadow: 0 calc(var(--s) * 1px) 0 #120a24;
+}
+.guide-notes, .guide-draft { display: flex; gap: 0.45em; align-items: center; flex-wrap: wrap; justify-content: center; }
+.guide-note { display: flex; flex-direction: column; align-items: center; gap: 0.15em; color: var(--nc); font-size: 1.3em; line-height: 1; }
+.guide-note small { color: #d8cff0; font-size: 0.55em; }
+.guide-note kbd { font-size: 0.55em; }
+.guide-arrow { color: var(--gold); font-size: 1.4em; }
+.guide-book { display: flex; align-items: center; gap: 0.8em; }
+.guide-book-icon { font-size: 2em; color: var(--gold); }
+.guide-book-entry { display: flex; align-items: center; gap: 0.3em; }
+.guide-book-entry strong { margin-right: 0.4em; }
+.guide-foot { display: flex; align-items: center; justify-content: space-between; gap: 1em; margin-top: 0.6em; }
+.guide-btn { padding: 0.3em 0.9em; border-radius: 4px; background: rgba(123,108,240,0.18); border: 1px solid rgba(123,108,240,0.6); }
+.guide-btn:disabled { opacity: 0.35; cursor: default; }
+.guide-btn.primary { border-color: var(--gold); background: rgba(243,198,75,0.16); color: #ffe9b0; }
+#guide .big { font-size: 1em; padding: 0.35em 1.2em; }
+.guide-dots { display: flex; gap: 0.4em; }
+.guide-dots span { width: 0.5em; height: 0.5em; border-radius: 50%; background: rgba(216, 207, 240, 0.3); }
+.guide-dots span.on { background: var(--gold); box-shadow: 0 0 0.4em rgba(243, 198, 75, 0.8); }
+.title-links { display: flex; gap: 1.4em; }
+#tip {
+  position: absolute; left: 50%; top: calc(var(--s) * 8px); transform: translateX(-50%); z-index: 2;
+  display: flex; align-items: flex-start; gap: 0.6em; width: max-content; max-width: calc(var(--s) * 420px);
+  padding: 0.5em 0.8em; background: rgba(8, 6, 18, 0.9); border: calc(var(--s) * 1px) solid var(--gold); border-radius: calc(var(--s) * 2px);
+  box-shadow: 0 0 calc(var(--s) * 8px) rgba(243, 198, 75, 0.25); animation: tipin 0.35s ease-out;
+}
+@keyframes tipin { from { opacity: 0; transform: translate(-50%, calc(var(--s) * -6px)); } }
+.tip-mark { color: var(--gold); }
+.tip-text { margin: 0; color: #fff3c0; line-height: 1.35; }
+.tip-actions { display: flex; flex-direction: column; gap: 0.3em; flex: none; }
+.tip-actions button { padding: 0.15em 0.6em; border-radius: 3px; font-size: 0.85em; background: rgba(243,198,75,0.16); border: 1px solid rgba(243,198,75,0.6); color: #ffe9b0; }
+.tip-actions .tip-off { background: none; border-color: transparent; color: var(--muted); text-decoration: underline; }
+#hud.cinema #tip { display: none; }
+#guide .modal-head { position: relative; justify-content: center; }
+#guide .modal-head .icon-btn { top: 50%; right: 0; transform: translateY(-50%); }

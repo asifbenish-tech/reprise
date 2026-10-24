@@ -63,7 +63,7 @@ FX = {
 UNSPOKEN = ("ui.", "set.", "menu.", "cal.", "book.", "diff.", "save.", "title.", "name.", "speaker.", "draft.",
             "caption.", "toast.", "puzzle.", "meta.", "end.", "thread.", "loom.pull", "loom.put_back", "loom.isolate",
             "loom.copy", "loom.drop", "loom.undrop", "loom.close", "loom.tag", "loom.threads", "loom.spool_thread",
-            "film.episode")
+            "film.episode", "tip.", "guide.")
 
 
 def fnv1a(s: str) -> str:
