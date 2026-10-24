@@ -285,6 +285,11 @@ exists. His speaking signature is one low note, twice: the Monotone under him. T
 first entry to the Spire's lobby; the debug harness now waits for the room scene before loading a save,
 which this scene's timing exposed.
 
+**D-051 · The Chairman's fate and the K-pop world (owner direction, recorded in `STORY.md`).** In the
+finale the burst also wakes the Chairman's own people, who go and sign the originals; he loses his power by
+being left with no one to work for him and no one who wants his hook. The K-pop act centres on a girl who
+doesn't meet the agency's standards and finds her own sound. Nothing is built yet: both are Release 2.
+
 ## Data formats (§9.5) extensions
 
 **D-025 · Extra fields.** `HotspotDef` gains `name`, `talk`, `listen`, `person`, `stand`, `when`, `sprite`

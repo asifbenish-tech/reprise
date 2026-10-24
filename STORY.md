@@ -42,6 +42,12 @@ because it is formula perfected.
   Producers' production floor under the city, Juno, Dominic), where the formulas are made.
 - **Release 2 (to build):** Act III, Rock (a), and Act IV, K-pop (b). The high C waits for the finale.
 
+**K-pop (owner direction):** at its heart is a girl who wants to be a K-pop star and doesn't meet the
+agency's standards: the wrong height, the wrong voice, a dance she can't stop making her own. The agency
+measures everything and she never fits. Bobbin helps her stop trying to fit: her own sound, her own moves,
+and the note b comes back. The satire is at the standards and the agency that answers to the Chairman, never
+at her or at the idols.
+
 ## The Chairman
 
 The head of the Producers' Guild is a new character, the Chairman: a white suit, dark glasses indoors, silver
@@ -87,6 +93,12 @@ is free of the Producers. The swans' choir comes back last, and Skein sings her 
 As everywhere in this game, nothing is lost by failing: a missed attempt costs only a retry, and Skein
 helps after a few.
 
+**What becomes of the Chairman (owner direction):** the burst wakes his own people too: the assistants,
+the producers and the scouts who ran the formula for him. They hear the originals the way everyone else
+does, and they want to sign the songwriters, the musicians and the singers with their own music. Nobody
+wants his four bars any more, and nobody works for him. That is how he loses his power: not beaten, just
+left behind, with one flat note in the speakers.
+
 ## The ending
 
 The swans are free and white again. They lift off and go on with their journey through the stars, and
@@ -95,7 +107,8 @@ Bobbin flies with them.
 ## Open questions for the owner
 
 Answered on 24.10.2026: the genres and their order (pop, rock, K-pop), the Monotone (kept, behind the
-Chairman) and the head of the Guild (the Chairman, new, hinted throughout). Still open:
+Chairman), the head of the Guild (the Chairman, new, hinted throughout), his fate (his own people wake up
+and sign the originals; he loses his power) and the heart of the K-pop world (a girl who doesn't meet the
+standards). Still open:
 
-1. What becomes of the Chairman at the end: freed like everyone else, or left alone with his one note?
-2. Who are the people Bobbin helps in the rock and K-pop worlds?
+1. Who is at the heart of the rock world?
