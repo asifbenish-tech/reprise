@@ -689,6 +689,29 @@ export function cygnet(img: Img, x: number, y: number, bob: number, sitting = fa
   }
 }
 
+/** Preset Zero's front: old wood among steel drawers, no label, the Guild's seal pressed into red wax. */
+export function oldDrawer(img: Img, x: number, y: number, w: number, h: number): void {
+  for (let j = 0; j < h; j++)
+    for (let i = 0; i < w; i++) {
+      const grain = Math.sin((i + Math.sin(j * 0.9) * 2) * 0.7) * 0.5 + 0.5;
+      img.px(x + i, y + j, hex(mix("#5a3418", "#8a5a30", grain * 0.6 + (j < 2 ? 0.4 : 0))));
+    }
+  img.rect(x, y, w, 1, "#b08050");
+  img.rect(x, y + h - 1, w, 1, "#2a160a");
+  img.rect(x + w - 1, y, 1, h, "#2a160a");
+  img.rect(x, y, 1, h, "#a07040");
+  const cx = x + Math.floor(w / 2);
+  const cy = y + Math.floor(h / 2);
+  img.ellipse(cx, cy + 1, 4.5, 4, "#7a1c18");
+  img.ellipse(cx - 0.5, cy + 0.5, 3.5, 3, "#a82a22");
+  img.px(cx, cy - 1, hex("#f0c040"));
+  img.px(cx, cy, hex("#f0c040"));
+  img.px(cx, cy + 1, hex("#f0c040"));
+  img.px(cx - 1, cy + 1, hex("#f0c040"));
+  img.px(cx - 2, cy - 1, hex("#ff8a70"));
+  img.rect(cx - 2, y + h - 4, 5, 1, "#c8a050");
+}
+
 export function frames(img: Img, n: number, draw: (ox: number, fw: number, i: number) => void): void {
   const fw = img.w / n;
   for (let i = 0; i < n; i++) draw(i * fw, fw, i);

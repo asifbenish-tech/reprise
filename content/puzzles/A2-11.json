@@ -1,0 +1,24 @@
+{
+ "id": "A2-11",
+ "title": "puzzle.A2-11",
+ "room": "floor3",
+ "focus": "shelves",
+ "needs": [
+  "draft:unmasking",
+  "puzzle:A2-5"
+ ],
+ "gives": [],
+ "solvedWhen": "song_found",
+ "hints": [
+  "hint.A2-11.look",
+  "hint.A2-11.nudge",
+  "hint.A2-11.answer"
+ ],
+ "bot": [
+  "walk:floor3",
+  "cast:unmasking>hotspot:shelves",
+  "flag:library_unmasked",
+  "cast:opening>hotspot:preset_zero",
+  "flag:song_found"
+ ]
+}

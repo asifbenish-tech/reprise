@@ -1,7 +1,7 @@
 // tools/recipes.ts: placeholder drawings for every manifest entry. Rooms come from rooms.ts, close-ups from
 // portraits.ts, characters and machines from figures.ts; this file maps a manifest recipe to its drawing.
 import { Img, hex } from "./pixel";
-import { FIGS, bobbin, cygnet, frames, lamp, metal, person, swan } from "./figures";
+import { FIGS, bobbin, cygnet, frames, lamp, metal, oldDrawer, person, swan } from "./figures";
 import { band, dither, fbm, glow, vgrad } from "./paint";
 import { ROOMS } from "./rooms";
 import { closeup } from "./portraits";
@@ -174,6 +174,27 @@ const CHARS: Record<string, (img: Img, n: number) => void> = {
       glow(img, ox + fw / 2, 12, 9, 9, c, 0.6);
       img.circle(ox + fw / 2, 12, 3, c);
       img.rect(ox + 6, 22, fw - 12, 4, c);
+    });
+  },
+  preset_zero(img, n) {
+    frames(img, n, (ox, _fw, i) => {
+      if (i === 0) {
+        // unmasked: the old drawer, warm light leaking round its edges
+        glow(img, ox + 16, 12, 18, 12, "#ffd27a", 0.35);
+        oldDrawer(img, ox + 2, 1, 28, 21);
+        return;
+      }
+      // open: the drawer pulled out on to the floor of the shelf, a wax cylinder glowing inside
+      glow(img, ox + 16, 9, 20, 14, "#ffe9a0", 0.7);
+      img.rect(ox + 2, 1, 28, 9, "#1a0e08");
+      img.rect(ox + 3, 2, 26, 7, "#2a160c");
+      img.ellipse(ox + 16, 6, 7, 3, "#c8902a");
+      img.rect(ox + 9, 3, 14, 5, "#e8b84a");
+      img.rect(ox + 9, 3, 14, 1, "#fff0b0");
+      for (let k = 0; k < 4; k++) img.rect(ox + 11 + k * 3, 4, 1, 3, "#b07820");
+      img.ellipse(ox + 23, 5.5, 1.5, 2.5, "#f8d070");
+      oldDrawer(img, ox + 1, 9, 30, 16);
+      for (const [dx, dy] of [[-9, -1], [9, -1], [0, -2]]) img.line(ox + 16, 3, ox + 16 + dx, Math.max(0, 3 + dy * 2), "#fff6d0", 120);
     });
   },
   beat_press(img, n) {

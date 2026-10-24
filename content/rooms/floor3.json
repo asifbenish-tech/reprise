@@ -53,7 +53,36 @@
     156
    ],
    "look": "look.floor3.shelves",
-   "name": "name.shelves"
+   "name": "name.shelves",
+   "drafts": {
+    "unmasking": "script:act2.unmask_library"
+   }
+  },
+  {
+   "id": "preset_zero",
+   "rect": [
+    211,
+    206,
+    36,
+    32
+   ],
+   "look": "look.floor3.preset_zero",
+   "name": "name.preset_zero",
+   "when": "flag:library_unmasked",
+   "sprite": {
+    "image": "preset_zero",
+    "x": 229,
+    "y": 238,
+    "frameWhen": [
+     [
+      1,
+      "flag:song_found"
+     ]
+    ]
+   },
+   "drafts": {
+    "opening": "script:act2.open_preset_zero"
+   }
   },
   {
    "id": "sign",

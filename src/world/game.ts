@@ -14,7 +14,7 @@ import { Spindle } from "../core/spindle";
 import { Effects } from "../core/effects";
 import { LoomModel } from "../core/loom";
 import { newSave, writeSave, writeSettings, type Difficulty, type SaveData, type Settings } from "../core/save";
-import type { HotspotDef, NoteIndex, Phrase, RoomDef, SpeakerDef, Target } from "../content/types";
+import type { HotspotDef, NoteIndex, RoomDef, SpeakerDef, Target } from "../content/types";
 import { targetKey } from "../content/types";
 import { dialogues, drafts, puzzles as puzzleDefs, rooms, songs, speakers, stemHits, stemNotes } from "../content/load";
 import { t, has } from "../content/strings";
@@ -75,7 +75,7 @@ export interface Hud {
   toast(text: string): void;
   selection(label: string | null, target: Target | null): void;
   refresh(): void;
-  teachNotes(phrase: Phrase, times: number[], draftId: string | null): void;
+  teachNotes(phrase: readonly NoteIndex[], times: number[], draftId: string | null): void;
   loomOpened(): void;
   loomClosed(): void;
   episodeEnd(): Promise<void>;

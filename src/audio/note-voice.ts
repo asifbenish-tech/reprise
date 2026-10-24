@@ -1,6 +1,6 @@
 // src/audio/note-voice.ts: the Distaff's voice and the teaching voices (GDD 8.5, 8.8).
 import * as Tone from "tone";
-import type { NoteIndex, Phrase } from "../content/types";
+import type { NoteIndex } from "../content/types";
 import { SEMITONES } from "../core/drafts";
 import { makeInstrument, type Instrument } from "./instruments";
 import type { Mixer } from "./mixer";
@@ -54,7 +54,7 @@ export class NoteVoice {
   }
 
   /** A teaching source performs a phrase from its eight single notes. Returns note times. */
-  teach(voice: string, phrase: Phrase, start: number, beat: number): number[] {
+  teach(voice: string, phrase: readonly NoteIndex[], start: number, beat: number): number[] {
     const times = phrase.map((_, i) => start + i * beat);
     const inst = this.teacher(voice);
     if (!inst) return times;

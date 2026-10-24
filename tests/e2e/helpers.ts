@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
 
 export const RELEASE_1 = ["P1", "P2", "P3", "P4", "P5", "P6", "A1-1", "A1-2", "A1-3", "A1-4", "A1-5", "A1-6", "A1-7",
-  "A2-1", "A2-2", "A2-3", "A2-4", "A2-5", "A2-6", "A2-7", "A2-8", "A2-9", "A2-10"];
+  "A2-1", "A2-2", "A2-3", "A2-4", "A2-5", "A2-11", "A2-6", "A2-7", "A2-8", "A2-9", "A2-10"];
 
 /** Console errors and uncaught exceptions: the definition of done allows none. */
 export function watchErrors(page: Page): string[] {

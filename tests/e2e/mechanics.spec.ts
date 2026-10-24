@@ -58,8 +58,8 @@ test("the conveyor needs a loop, and the Sidechain Gate punishes the wrong order
   await step(page, "flag:said_two_kicks").catch(() => {});
   await page.waitForFunction(() => (window as any).__reprise.g.spindle.spool(1) === null, null, { timeout: 60_000 });
   expect((await state(page)).flags.gate_passed).toBeFalsy();
-  // the right order still works afterwards
-  await solve(page, ["A2-6"]);
+  // the right order still works afterwards, once Preset Zero is open
+  await solve(page, ["A2-11", "A2-6"]);
   expect((await state(page)).room).toBe("dominic_studio");
 });
 
@@ -115,5 +115,18 @@ test("the Chairman meets Bobbin once, at the first visit to the Spire, and is re
   await step(page, "walk:spire_lobby");
   expect(await page.evaluate(() => (window as any).__reprise.g.busy)).toBe(false);
   await solve(page, ["A1-1"]);
+  expect(errors).toEqual([]);
+});
+
+test("the factory gate waits until Bobbin has found the Song of Originality", async ({ page }) => {
+  const errors = watchErrors(page);
+  await boot(page, 31);
+  await solve(page, upTo("A2-11"));
+  await step(page, "walk:floor3");
+  await step(page, "exit:gate");
+  expect((await state(page)).room).toBe("floor3");
+  expect((await state(page)).flags.gate_passed).toBeFalsy();
+  await solve(page, ["A2-11", "A2-6"]);
+  expect((await state(page)).flags.gate_passed).toBe(true);
   expect(errors).toEqual([]);
 });

@@ -14,7 +14,17 @@
   },
   "n2": {
    "speaker": "juno",
-   "text": "dlg.juno_gate.n2"
+   "text": "dlg.juno_gate.n2",
+   "next": "n3"
+  },
+  "n3": {
+   "speaker": "juno",
+   "text": "dlg.juno_gate.n3",
+   "next": "n4"
+  },
+  "n4": {
+   "speaker": "juno",
+   "text": "dlg.juno_gate.n4"
   }
  }
 }

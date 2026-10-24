@@ -2,6 +2,9 @@
 
 ## Look pass (owner feedback on Release 1)
 
+- Act II: Preset Zero, a new puzzle in the Preset Library. Bobbin finds the Song of Originality: eight
+  notes, more than the Distaff holds, won back as sparks of originality from everyone he helps. The Book
+  keeps a page for it (D-052). Panels' close buttons no longer cover their titles.
 - The Chairman, head of the Producers' Guild: his seal on the city's billboards, a first meeting in the
   Spire's lobby (a demo, a contract, Bobbin's refusal), and his voice after the encore. STORY.md: pop, rock,
   then K-pop; the Monotone kept behind him (D-050).

@@ -1,6 +1,8 @@
-// src/world/scripts/act2.ts: the Guild of Producers, "How is it made?" (A2-1 to A2-10).
+// src/world/scripts/act2.ts: the Guild of Producers, "How is it made?" (A2-1 to A2-11).
 import * as Tone from "tone";
+import { t } from "../../content/strings";
 import { targetKey } from "../../content/types";
+import { ORIGINALITY } from "../../core/drafts";
 import type { Game, LogicFactory, ScriptFn } from "../game";
 
 function once(g: Game, flag: string, key: string, speaker = "bobbin"): void {
@@ -165,6 +167,11 @@ const gate: LogicFactory = (g) => {
     },
     async exit(id) {
       if (id !== "gate" || g.flag("gate_passed")) return true;
+      // the hum under the Preset Library comes first: the story turns on what is in that drawer (D-052)
+      if (!g.flag("song_found")) {
+        await g.say("bobbin", "gate3.not_yet");
+        return false;
+      }
       const open = Tone.now() - lastKick > g.conductor.barSeconds() * 0.9 && kickSilent();
       if (open && carrying(g, "factory", "kick") && looped(g, "thread:factory:kick", "hushing")) {
         await g.cutscene(async () => {
@@ -293,7 +300,42 @@ async function resolve(g: Game): Promise<void> {
   });
 }
 
+/** Plays the Song of Originality from the wax cylinder, on the Distaff's light: lost notes spark. */
+async function originality(g: Game): Promise<void> {
+  const beat = g.conductor.beatSeconds();
+  const times = g.voice.teach("harp", ORIGINALITY, Tone.now() + 0.15, beat);
+  g.hud?.teachNotes(ORIGINALITY, times, null);
+  await g.waitSeconds(beat * ORIGINALITY.length + 0.4);
+}
+
 export const scripts: Record<string, ScriptFn> = {
+  /** Preset Zero, 1: Unmasking the library shows every preset cut from one older song (owner direction, D-052). */
+  async unmask_library(g) {
+    if (g.flag("library_unmasked")) return void (await g.say("bobbin", "floor3.unmasked_again"));
+    await g.cutscene(async () => {
+      g.view?.flash(0xffd27a, 500);
+      await g.say("bobbin", "floor3.unmask1");
+      g.setFlag("library_unmasked");
+      await g.say("bobbin", "floor3.unmask2");
+    });
+  },
+
+  /** Preset Zero, 2: the drawer opens on the Song of Originality, and more notes than the Distaff holds. */
+  async open_preset_zero(g) {
+    if (g.flag("song_found")) return void (await g.say("bobbin", "floor3.zero_again"));
+    await g.cutscene(async () => {
+      g.setFlag("song_found");
+      g.caption("caption.originality");
+      await g.say("bobbin", "floor3.zero1");
+      await originality(g);
+      await g.say("bobbin", "floor3.zero2");
+      await g.say("bobbin", "floor3.zero3");
+      await g.say("bobbin", "floor3.zero4");
+      g.hud?.toast(t("toast.song", { n: String(g.library.ownedNotes) }));
+      await g.say("bobbin", "floor3.zero5");
+    });
+  },
+
   async mute_pedal(g) {
     if (!g.flag("juno_ally")) return void (await g.say("bobbin", "factory.mute_before"));
     if (g.library.learned.has("hushing")) return void (await g.say("bobbin", "look.factory_night.mute_pedal"));

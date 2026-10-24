@@ -2,7 +2,7 @@
 
 The owner's arc (24.10.2026). It replaces the design document's plan for Release 2 (its Acts III and IV,
 the Studios and the Lawyers, and its finale at the top of the Chart). Release 1 already follows it.
-`DECISIONS.md` D-045 to D-047 and D-050 record what changed and why.
+`DECISIONS.md` D-045 to D-047 and D-050 to D-052 record what changed and why.
 
 ## What is wrong with the world
 
@@ -25,10 +25,35 @@ Bobbin helps someone get there, he takes back one of his notes.
 | Prologue, the street | The song is everywhere; it takes the e | c d |
 | Prologue, Marcus | Marcus's memory, his own rhythm; the e comes back | c d e |
 | Act I, Pop | Lyra sings her own song again | f |
+| Act II, the Preset Library | He finds the Song of Originality: eight notes, and he has four | (none) |
 | Act II, the Hit Factory | Juno's riff, a live show | g |
 | Act III, Rock | A rock world that finds its own sound again | a |
 | Act IV, K-pop | The most perfect formula of all, undone | b |
 | The finale | Everyone he helped joins in | high C |
+
+Every note that comes back is a **spark of originality**: someone found their own sound again, and the
+Distaff caught the spark. The game says so each time a note returns.
+
+## The Song of Originality (owner direction, built)
+
+In Act II, deep in the Hit Factory, Juno warns Bobbin off the bottom drawer of the Preset Library: Preset
+Zero, "corrupted", though it hums. Bobbin has to do something and find something:
+
+1. He weaves **Unmasking** on the library. The labels (SAD 4, HAPPY 12, ANTHEMIC (MILD)) come off like
+   masks: under every one, the same few bars, cut and cut again, all from one older song, and every cut
+   leads down to the drawer with no label.
+2. He weaves **Opening** on Preset Zero. Inside is a wax cylinder: a voice, a fiddle and a clapping room, a
+   tune nobody owns. It is the **Song of Originality**, the thing the Guild cut every preset from and then
+   locked away. Played whole, it makes everyone who hears it remember their own sound, all at once, the
+   flock too.
+3. The Distaff knows it and tries to answer, but the song climbs to the high C and back: eight notes, and he
+   can play four. The lost sockets only spark.
+4. He understands the road: the missing notes aren't in any drawer. They come back as sparks, one each time
+   someone finds their own sound. That is why he travels from world to world helping people back to their
+   originality: helping them is how he helps himself.
+
+He won't go through the factory's gate until he has found it, and from then on the Book of Patterns keeps a
+page for the song: all eight notes, lit as far as the Distaff can play them, a spark for each still to win.
 
 ## The journey: worlds of music
 
@@ -86,7 +111,8 @@ Everyone Bobbin helped falls under it again: Lyra, Juno, Marcus, the rockers, th
 flock, the swans' choir, Skein too. Bobbin sees them all greyed, swaying on the beat.
 
 Bobbin has three attempts to play long notes: held notes, a new way of playing the Distaff, that braid
-the different styles together. Each attempt brings back more. With the last, a burst of creativity
+the different styles together. What he plays is the Song of Originality, whole at last now that the high C
+is back, carrying every style he gathered on the way. Each attempt brings back more. With the last, a burst of creativity
 breaks the hook: one by one, the people he helped join in, each in their own style, until the whole world
 is free of the Producers. The swans' choir comes back last, and Skein sings her first note.
 

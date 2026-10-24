@@ -3,6 +3,7 @@
 import * as Tone from "tone";
 import type { NoteIndex, Phrase } from "../content/types";
 import { drafts } from "../content/load";
+import { ORIGINALITY } from "../core/drafts";
 import { t } from "../content/strings";
 import type { Game } from "../world/game";
 import { NOTE_COLORS, NOTE_GLYPHS, NOTE_LETTERS, clear, h } from "./dom";
@@ -44,6 +45,7 @@ export class BookOfPatterns {
     (this.el.querySelector(".book-help") as HTMLElement).textContent = t(`book.help.${diff}`);
     clear(this.list);
     const learned = drafts.drafts.filter((d) => this.g.library.learned.has(d.id));
+    if (this.g.flag("song_found")) this.list.append(this.song());
     if (!learned.length) this.list.append(h("p", { class: "empty" }, t("book.empty")));
     for (const d of learned) {
       const notes = this.g.bookNotes(d.id);
@@ -76,6 +78,31 @@ export class BookOfPatterns {
       const rev = d.reverseId ? h("span", { class: "rev" }, t("book.reversed", { draft: t(`draft.${d.id}_rev`) })) : null;
       this.list.append(h("div", { class: "book-entry" }, h("div", { class: "book-name" }, h("strong", {}, t(`draft.${d.id}`)), rev, h("small", {}, t(`draft.${d.id}.effect`))), slots, hear));
     }
+  }
+
+  /** The Song of Originality: all eight notes, lit as far as the Distaff can play them; a spark marks each one still to win back. */
+  private song(): HTMLElement {
+    const owned = this.g.library.ownedNotes;
+    const slots = h("div", { class: "book-notes song-notes" });
+    for (const n of ORIGINALITY) {
+      const have = n < owned;
+      slots.append(h("span", { class: `book-slot${have ? " filled" : " spark"}`, style: have ? `--nc:${NOTE_COLORS[n]}` : "", "aria-label": have ? NOTE_LETTERS[n] : t("book.song.missing") }, have ? `${NOTE_GLYPHS[n]} ${NOTE_LETTERS[n]}` : "✦"));
+    }
+    const hear = h("button", { class: "hear", onclick: () => this.hearSong() }, t("book.hear"));
+    return h(
+      "div",
+      { class: "book-entry book-song" },
+      h("div", { class: "book-name" }, h("strong", {}, t("book.song.title")), h("small", {}, t("book.song.help", { n: String(owned) }))),
+      slots,
+      hear,
+    );
+  }
+
+  private hearSong(): void {
+    if (!this.g.mixer) return;
+    const beat = Math.max(0.3, this.g.conductor.beatSeconds());
+    const times = this.g.voice.teach("harp", ORIGINALITY, Tone.now() + 0.05, beat);
+    this.g.hud?.teachNotes(ORIGINALITY, times, null);
   }
 
   /** Standard and Expert: the player writes the notes, cycling through the notes the Distaff owns. */

@@ -290,6 +290,15 @@ finale the burst also wakes the Chairman's own people, who go and sign the origi
 being left with no one to work for him and no one who wants his hook. The K-pop act centres on a girl who
 doesn't meet the agency's standards and finds her own sound. Nothing is built yet: both are Release 2.
 
+**D-052 · The Song of Originality (owner direction).** Act II gains a puzzle, A2-11 "Preset Zero", in the
+Preset Library before the sidechain gate: Unmasking on the library shows every preset cut from one older song
+and reveals an unlabelled drawer; Opening on it plays the Song of Originality from a wax cylinder. The song is
+eight notes, c e g C′ b a f d, up to the high C and down, so only the full Distaff can play it; the Distaff
+shows it with the lost sockets sparking. It gives Bobbin's road its reason: notes come back as sparks of
+originality, one for each person who finds their own sound (the note-return message now says so). The gate
+waits until the song is found, the Book gains a page for it, and Juno warns him about the drawer. Both drafts
+are ones he already has, so no new draft enters Release 1.
+
 ## Data formats (§9.5) extensions
 
 **D-025 · Extra fields.** `HotspotDef` gains `name`, `talk`, `listen`, `person`, `stand`, `when`, `sprite`

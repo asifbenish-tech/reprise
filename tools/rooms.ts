@@ -3,7 +3,7 @@
 import { readFileSync } from "node:fs";
 import { Img, hex, mix } from "./pixel";
 import { beam, branch, bricks, clouds, fbm, foliage, glow, hgrad, planks, rng, skyline, stars, texture, tiles, vgrad, vignette } from "./paint";
-import { lamp, metal, swan } from "./figures";
+import { lamp, metal, oldDrawer, swan } from "./figures";
 
 type Rect = [number, number, number, number];
 interface RoomJson {
@@ -758,6 +758,11 @@ export const ROOMS: Record<string, (img: Img) => void> = {
     metal(img, sh[0], sh[1], sh[2], sh[3], "#3a1e10");
     for (let r = 0; r < 6; r++)
       for (let c = 0; c < 6; c++) {
+        // one drawer is older than the rest, and has no label: Preset Zero (D-052)
+        if (r === 5 && c === 5) {
+          oldDrawer(img, sh[0] + 4 + c * 31, sh[1] + 4 + r * 25, 28, 21);
+          continue;
+        }
         metal(img, sh[0] + 4 + c * 31, sh[1] + 4 + r * 25, 28, 21, "#6e3a1c");
         img.rect(sh[0] + 12 + c * 31, sh[1] + 12 + r * 25, 12, 3, "#ffd090");
       }

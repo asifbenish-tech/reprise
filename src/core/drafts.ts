@@ -15,6 +15,9 @@ export function mulberry32(seed: number): () => number {
 }
 
 export const reversed = (p: Phrase): Phrase => [p[3], p[2], p[1], p[0]];
+
+/** The Song of Originality (D-052): up to the high C and down again, so it takes all eight notes to play. */
+export const ORIGINALITY: readonly NoteIndex[] = [0, 2, 4, 7, 6, 5, 3, 1];
 export const distance = (a: Phrase, b: Phrase): number =>
   a.reduce<number>((d, n, i) => d + (n === b[i] ? 0 : 1), 0);
 

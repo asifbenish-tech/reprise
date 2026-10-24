@@ -662,6 +662,16 @@
    "recipe": "char:gate_factory"
   },
   {
+   "id": "preset_zero",
+   "path": "art/chars/preset_zero.png",
+   "w": 64,
+   "h": 26,
+   "frames": 2,
+   "frameW": 32,
+   "status": "placeholder",
+   "recipe": "char:preset_zero"
+  },
+  {
    "id": "dominic",
    "path": "art/chars/dominic.png",
    "w": 80,

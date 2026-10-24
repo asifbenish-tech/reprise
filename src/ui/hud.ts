@@ -2,7 +2,7 @@
 // conversations, captions, the Distaff, the Loom View's controls and the menus. Screen readers read it
 // (GDD 4.1, 4.7, 7.9).
 import type * as Phaser from "phaser";
-import type { Phrase, SpeakerDef, Target } from "../content/types";
+import type { NoteIndex, SpeakerDef, Target } from "../content/types";
 import { manifest, artUrl, speakers } from "../content/load";
 import { t, textDir } from "../content/strings";
 import type { Game, Hud } from "../world/game";
@@ -253,7 +253,7 @@ export class HudImpl implements Hud {
     if (this.g.loom) this.renderLoom(true);
   }
 
-  teachNotes(phrase: Phrase, times: number[]): void {
+  teachNotes(phrase: readonly NoteIndex[], times: number[]): void {
     this.distaff.showPhrase(phrase, times);
   }
 

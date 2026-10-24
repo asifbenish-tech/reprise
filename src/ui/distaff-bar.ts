@@ -3,7 +3,7 @@
 // a played note rises off its socket like a music box's tine. Above the staff a five-line strip writes
 // the notes as they sound. The Spindle rings the staff's head; the selected object's close-up sits right.
 import * as Tone from "tone";
-import type { NoteIndex, Phrase } from "../content/types";
+import type { NoteIndex } from "../content/types";
 import { artUrl, manifest } from "../content/load";
 import { t } from "../content/strings";
 import type { Game } from "../world/game";
@@ -138,15 +138,17 @@ export class DistaffBar {
   }
 
   /** A heard draft: notes glow as they sound, with or without labels by difficulty (GDD 4.1). */
-  showPhrase(phrase: Phrase, times: number[]): void {
+  showPhrase(phrase: readonly NoteIndex[], times: number[]): void {
     const expert = this.g.save.difficulty === "expert";
     const shown: NoteIndex[] = [];
+    // a note the Distaff has lost sparks on its cracked socket instead of lifting off (the Song of Originality)
+    const owned = this.g.library.ownedNotes;
     phrase.forEach((n, i) => {
       Tone.getDraw().schedule(() => {
         shown.push(n);
-        if (!expert) this.pulse(n, false);
+        if (!expert || n >= owned) this.pulse(n, n >= owned);
         this.drawStrip(shown, expert);
-        if (i === 3) this.fadeStrip(true);
+        if (i === phrase.length - 1) this.fadeStrip(true);
       }, times[i]);
     });
   }

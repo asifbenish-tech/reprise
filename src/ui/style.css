@@ -286,7 +286,8 @@ body.plainfont .logo, body.plainfont #title h1 { font-family: var(--plain); font
 }
 .modal h2 { margin: 0; font-size: 1.25em; }
 .modal h3 { margin: 0.9em 0 0.3em; font-size: 0.95em; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
-.modal-head { display: flex; justify-content: space-between; align-items: center; gap: 1em; }
+.modal-head { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 1em; min-height: calc(var(--s) * 16px); }
+.modal-head .icon-btn { top: 50%; right: 0; transform: translateY(-50%); }
 .book-help, .fine { color: var(--muted); font-size: 0.85em; }
 .book-entry { display: grid; grid-template-columns: 1fr auto auto; gap: 0.6em; align-items: center; padding: 0.45em 0; border-top: 1px solid var(--line); }
 .book-name { display: flex; flex-direction: column; }
@@ -424,5 +425,9 @@ kbd {
 .tip-actions button { padding: 0.15em 0.6em; border-radius: 3px; font-size: 0.85em; background: rgba(243,198,75,0.16); border: 1px solid rgba(243,198,75,0.6); color: #ffe9b0; }
 .tip-actions .tip-off { background: none; border-color: transparent; color: var(--muted); text-decoration: underline; }
 #hud.cinema #tip { display: none; }
-#guide .modal-head { position: relative; justify-content: center; }
-#guide .modal-head .icon-btn { top: 50%; right: 0; transform: translateY(-50%); }
+#guide .modal-head { justify-content: center; }
+/* the Song of Originality in the Book (D-052) */
+.book-song { border-top-color: var(--gold); background: linear-gradient(90deg, rgba(243, 198, 75, 0.08), transparent); }
+.book-song .book-name strong { color: #ffe9b0; }
+.song-notes { flex-wrap: wrap; }
+.book-slot.spark { color: var(--gold); border-style: dashed; opacity: 0.7; text-align: center; }

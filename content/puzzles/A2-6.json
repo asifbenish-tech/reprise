@@ -5,7 +5,8 @@
  "focus": "speakers",
  "needs": [
   "draft:hushing",
-  "puzzle:A2-5"
+  "puzzle:A2-5",
+  "puzzle:A2-11"
  ],
  "gives": [],
  "solvedWhen": "gate_passed",
