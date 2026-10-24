@@ -46,6 +46,8 @@ export class FilmScene extends Phaser.Scene implements FilmControl {
   private songFrom: [number, number] | null = null;
   private lastRing = 0;
   private lastNote = 0;
+  /** Threads being pulled out of a swan and back to where the song plays. */
+  private pulls: { f: Flier; until: number; seed: number }[] = [];
 
   constructor() {
     super({ key: "film" });
@@ -77,6 +79,7 @@ export class FilmScene extends Phaser.Scene implements FilmControl {
     this.objs = [];
     this.fliers = [];
     this.rings = [];
+    this.pulls = [];
     this.rift.v = 0;
     this.hunger = null;
     this.songFrom = null;
@@ -236,10 +239,11 @@ export class FilmScene extends Phaser.Scene implements FilmControl {
           duration: 1500,
           ease: "Sine.easeIn",
           onComplete: () => {
-            // a thread pulled out of the swan
-            const p = this.keep(this.add.image(n.x, n.y, "fx_spark").setTint(0x9a96a8).setDepth(30));
+            // the note lands, and a thread of the swan is pulled out after it, back towards the song
             n.destroy();
-            this.tweens.add({ targets: p, y: p.y + 14, alpha: 0, duration: 700, onComplete: () => p.destroy() });
+            this.pulls.push({ f, until: this.time.now + 1600, seed: Math.random() * 10 });
+            const p = this.keep(this.add.image(f.s.x - 4, f.s.y, "fx_spark").setTint(0xc8c4d4).setDepth(30));
+            this.tweens.add({ targets: p, y: p.y + 18, x: p.x - 6, alpha: 0, duration: 900, onComplete: () => p.destroy() });
           },
         });
       }
@@ -251,6 +255,36 @@ export class FilmScene extends Phaser.Scene implements FilmControl {
       fx.fillStyle(0xffd0f4, 0.5 * k);
       fx.fillEllipse(404, 178, 16, 6);
     }
+    // the drain made visible: threads of the flock's own light, unwinding towards the song
+    if (this.songFrom) {
+      const [sx, sy] = this.songFrom;
+      this.pulls = this.pulls.filter((p) => p.until > time);
+      for (const p of this.pulls) {
+        const a = Math.min(1, (p.until - time) / 600);
+        const x0 = p.f.s.x - 6;
+        const y0 = p.f.s.y + 2;
+        const reach = Math.min(1, 1 - (p.until - time) / 1600 + 0.25);
+        fx.lineStyle(1, 0xfff0c8, 0.75 * a);
+        let px = x0;
+        let py = y0;
+        for (let i = 1; i <= 18; i++) {
+          const t = (i / 18) * reach;
+          const x = x0 + (sx - x0) * t;
+          const y = y0 + (sy - y0) * t + Math.sin(t * 14 + time / 120 + p.seed) * 4 * (1 - t);
+          fx.lineBetween(px, py, x, y);
+          px = x;
+          py = y;
+        }
+      }
+    }
+    // their strength: a soft light around each swan that dims as the song takes it
+    if (this.shotId === "space")
+      for (const f of this.fliers) {
+        fx.fillStyle(0xe8e4ff, 0.16 * (1 - sick));
+        fx.fillEllipse(f.s.x, f.s.y, 46, 26);
+        fx.fillStyle(0xffffff, 0.12 * (1 - sick));
+        fx.fillEllipse(f.s.x, f.s.y, 30, 16);
+      }
     // the flock: a formation that wavers, greys and slows as the song takes hold
     const tint = lerpColor(0xffffff, 0x8a8898, this.shotId === "earth" ? 1 : sick);
     for (const f of this.fliers) {

@@ -62,3 +62,19 @@ test("the conveyor needs a loop, and the Sidechain Gate punishes the wrong order
   await solve(page, ["A2-6"]);
   expect((await state(page)).room).toBe("dominic_studio");
 });
+
+test("a click selects the locked gate, so the player can aim Opening at it with the keys", async ({ page }) => {
+  const errors = watchErrors(page);
+  await boot(page, 77);
+  await solve(page, ["P1", "P2", "P3"]);
+  await step(page, "walk:park_gate");
+  const box = (await page.locator("#stage").boundingBox())!;
+  // the gate's centre in art pixels (490, 200), scaled to the stage
+  await page.mouse.click(box.x + (490 / 640) * box.width, box.y + (200 / 360) * box.height);
+  await page.waitForFunction(() => (window as any).__reprise.g.selection?.id === "gate", null, { timeout: 5000 });
+  await page.waitForFunction(() => !(window as any).__reprise.g.busy, null, { timeout: 10000 });
+  const ph: number[] = await page.evaluate(() => (window as any).__reprise.phrase("opening"));
+  for (const n of ph) await page.keyboard.press(String(n + 1));
+  await page.waitForFunction(() => (window as any).__reprise.g.flag("gate_open"), null, { timeout: 10000 });
+  expect(errors).toEqual([]);
+});

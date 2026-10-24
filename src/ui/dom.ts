@@ -27,3 +27,29 @@ export function clear(el: Element): void {
 export const NOTE_COLORS = ["#e05a4f", "#f08c3a", "#efc94c", "#6cc070", "#4fb3c8", "#5b7be0", "#9a6ad6", "#ece8f6"];
 export const NOTE_GLYPHS = ["●", "▲", "■", "◆", "★", "▼", "✚", "◎"];
 export const NOTE_LETTERS = ["c", "d", "e", "f", "g", "a", "b", "C′"];
+
+/** Two threads weaving round each other, gold and lavender, with a knot of light in the middle: the title's ornament. */
+export function weave(): SVGSVGElement {
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("viewBox", "0 0 160 10");
+  svg.setAttribute("class", "weave");
+  svg.setAttribute("aria-hidden", "true");
+  for (const [phase, color] of [[0, "#ffd27a"], [Math.PI, "#c8b8ff"]] as const) {
+    const pts: string[] = [];
+    for (let x = 0; x <= 160; x += 2) {
+      const fade = Math.sin((x / 160) * Math.PI);
+      pts.push(`${x},${(5 + Math.sin(x / 9 + phase) * 3.2 * fade).toFixed(2)}`);
+    }
+    const pl = document.createElementNS(NS, "polyline");
+    pl.setAttribute("points", pts.join(" "));
+    pl.setAttribute("fill", "none");
+    pl.setAttribute("stroke", color);
+    pl.setAttribute("stroke-width", "1");
+    svg.append(pl);
+  }
+  const knot = document.createElementNS(NS, "rect");
+  for (const [k, v] of Object.entries({ x: "78", y: "3", width: "4", height: "4", fill: "#fff6d8", transform: "rotate(45 80 5)" })) knot.setAttribute(k, v);
+  svg.append(knot);
+  return svg;
+}

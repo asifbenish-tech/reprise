@@ -183,6 +183,24 @@ painted night (a great moon rising behind the city, the Pattern faint in the sky
 the moon, shooting stars and pink notes rising off the rooftops: the Hum. The lettering is larger
 throughout: the speech line, close-up text, the letters under the Distaff and the menus.
 
+**D-039 · Exits can be selected (§4.1, a bug the owner found).** Clicking a hotspot that was also an exit
+walked there and tried the exit but never selected it, so the locked park gate (and the factory gate and
+the talent elevator) could not be the target of a draft by mouse; the bot selects targets directly, so it
+never noticed. Every click on a hotspot now selects it, and gold corners pulse around the selection in the
+scene, so the player sees what the next draft will touch.
+
+**D-040 · Moving text on, and the drain made visible (owner direction).** Every line of speech has a
+Next button (it still moves on by itself unless Settings asks for clicks); close-up conversations have a
+labelled Next button. The song's drain is drawn, not only told: in the film, threads of the swans' own
+light are pulled out of them back towards Earth while their glow dims; in the park, threads stream from
+the flock into the jogger's phone as he runs past.
+
+**D-041 · LOOM on the title (§1 names, owner direction).** The title shows the name set's short title in
+our own lettering (`title.logo`): "LOOM II" over "Reprise" with the loom set, "Reprise" over "a weaver's
+song" with the original set. The original LOOM logo artwork is never copied (§7.8). The repository
+default stays `original` (§1); the owner chose the loom set for the published page, knowing §1's
+takedown warning.
+
 ## Data formats (§9.5) extensions
 
 **D-025 · Extra fields.** `HotspotDef` gains `name`, `talk`, `listen`, `person`, `stand`, `when`, `sprite`

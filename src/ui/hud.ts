@@ -11,7 +11,7 @@ import { threadRows } from "./loom-view";
 import { DistaffBar } from "./distaff-bar";
 import { BookOfPatterns } from "./book-of-patterns";
 import { SettingsPanel } from "./settings";
-import { NOTE_COLORS, NOTE_GLYPHS, clear, h } from "./dom";
+import { NOTE_COLORS, NOTE_GLYPHS, clear, h, weave } from "./dom";
 
 export class HudImpl implements Hud {
   readonly root: HTMLElement;
@@ -51,7 +51,7 @@ export class HudImpl implements Hud {
     this.loomActions = h("div", { class: "loom-actions" });
     this.loomPanel = h("div", { id: "loom-panel", class: "hidden" }, this.loomActions, this.loomLabels);
     this.live = h("div", { class: "sr-only", "aria-live": "polite" });
-    this.card = h("div", { id: "title-card", "aria-hidden": "true" }, h("div", { class: "logo" }, t("title.name")), h("p", {}, t("film.episode")));
+    this.card = h("div", { id: "title-card", "aria-hidden": "true" }, h("div", { class: "logo" }, t("title.logo")), weave(), h("p", {}, t("film.episode")));
     this.wheel = h("div", { id: "wheel", class: "hidden", "aria-hidden": "true" });
     NOTE_GLYPHS.forEach((gl, i) => {
       const a = (i / 8) * Math.PI * 2 - Math.PI / 2;
@@ -78,7 +78,12 @@ export class HudImpl implements Hud {
       clear(this.speech);
       // as in the original: the line alone, in the speaker's colour, centred under the scene
       this.speech.style.setProperty("--who", sp?.color ?? "#ffffff");
-      this.speech.append(h("span", { class: "sr-only" }, `${sp ? t(sp.name) : speaker}: `), h("span", { class: "line" }, text));
+      this.speech.append(
+        h("span", { class: "sr-only" }, `${sp ? t(sp.name) : speaker}: `),
+        h("span", { class: "line" }, text),
+        // a visible way on: the line also moves on by itself unless Settings asks for clicks
+        h("button", { class: "next", title: t("ui.next"), "aria-label": t("ui.next"), onclick: (e: Event) => { e.stopPropagation(); this.skipSpeech?.(); } }, "▸"),
+      );
       this.speech.classList.add("show");
       this.announce(`${sp ? t(sp.name) : speaker}: ${text}`);
       await new Promise<void>((res) => {
@@ -139,7 +144,11 @@ export class HudImpl implements Hud {
         this.advance = this.g.fast ? () => finish(0) : null;
         if (this.g.fast) finish(0);
       } else {
-        const next = h("button", { class: "dlg-next", "aria-label": t("ui.continue"), onclick: () => finish(0) }, "▸");
+        const next = h("button", { class: "dlg-next", "aria-label": t("ui.next") }, t("ui.next_label"));
+        next.onclick = (e) => {
+          e.stopPropagation();
+          finish(0);
+        };
         body.append(next);
         this.dialog.onclick = (e) => {
           if (!(e.target as HTMLElement).closest("button")) finish(0);

@@ -109,6 +109,7 @@ export const scripts: Record<string, ScriptFn> = {
       g.playSong("again_again");
       g.caption("caption.again_again_phone");
       const move = g.view?.moveSprite("jogger", 700, 280, 7) ?? Promise.resolve();
+      g.view?.drain?.("flock_rest", "jogger", 7);
       await g.say("jogger", "pond.jogger");
       await g.say("bobbin", "pond.jogger2");
       await g.say("bobbin", "pond.that_song");

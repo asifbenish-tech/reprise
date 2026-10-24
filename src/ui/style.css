@@ -50,6 +50,12 @@ body.plainfont #hud { font-family: var(--plain); }
   opacity: 0; transition: opacity 0.12s; pointer-events: none;
 }
 #speech.show { opacity: 1; pointer-events: auto; cursor: pointer; }
+#speech .next {
+  margin-inline-start: 0.6em; padding: 0 0.35em; background: none; border: calc(var(--s) * 1px) solid currentColor; border-radius: calc(var(--s) * 2px);
+  color: inherit; line-height: 1.1; vertical-align: baseline; animation: nudge 1.1s ease-in-out infinite;
+}
+#speech .next:hover, #speech .next:focus-visible { background: rgba(255, 255, 255, 0.15); outline: none; }
+@keyframes nudge { 50% { transform: translateX(calc(var(--s) * 2px)); } }
 #hud.notating #speech { bottom: calc(var(--s) * 64px); }
 #caption {
   position: absolute; left: calc(var(--s) * 8px); top: calc(var(--s) * 40px);
@@ -85,8 +91,12 @@ body.plainfont #hud { font-family: var(--plain); }
 #dialog .choice::before { content: "\2022  "; color: #6a6080; }
 #dialog .choice:hover, #dialog .choice:focus-visible { color: var(--who); outline: none; }
 #dialog .choice:hover::before, #dialog .choice:focus-visible::before { content: "\25B8  "; color: var(--who); }
-#dialog .dlg-next { display: block; margin: 0.3em 0 0 auto; background: none; border: none; color: var(--who); animation: blink 1s steps(2) infinite; }
-@keyframes blink { 50% { opacity: 0; } }
+#dialog .dlg-next {
+  display: block; margin: 0.6em 0 0 auto; padding: 0.1em 0.7em; font-size: 0.8em; color: #1a0e08; cursor: pointer;
+  background: linear-gradient(180deg, #ffe9b0, #d8a86a); border: calc(var(--s) * 1px) solid #2a160a; border-radius: calc(var(--s) * 2px);
+  text-shadow: none; box-shadow: 0 calc(var(--s) * 1px) 0 #2a160a; animation: nudge 1.1s ease-in-out infinite;
+}
+#dialog .dlg-next:hover, #dialog .dlg-next:focus-visible { filter: brightness(1.15); outline: none; }
 #dialog.closeup-dlg { left: 0; top: 0; width: 100%; height: calc(var(--s) * 296px); background: #000; cursor: pointer; }
 #dialog.closeup-dlg .portrait { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }
 #dialog.closeup-dlg .who { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
@@ -130,6 +140,7 @@ body.plainfont #hud { font-family: var(--plain); }
   filter: drop-shadow(0 calc(var(--s) * 2px) 0 #2a1240) drop-shadow(calc(var(--s) * 1px) 0 0 #2a1240) drop-shadow(calc(var(--s) * -1px) 0 0 #2a1240) drop-shadow(0 0 calc(var(--s) * 10px) rgba(255, 190, 120, 0.45));
 }
 body.plainfont .logo, body.plainfont #title h1 { font-family: var(--plain); font-weight: 400; }
+.weave { display: block; width: calc(var(--s) * 200px); height: calc(var(--s) * 12px); margin: calc(var(--s) * 4px) auto 0; filter: drop-shadow(0 0 calc(var(--s) * 3px) rgba(255, 210, 122, 0.6)); overflow: visible; }
 
 /* ---- the panel: the carved Distaff on black ---- */
 #distaff {
@@ -299,7 +310,7 @@ body.plainfont #title, body.plainfont #episode-end { font-family: var(--plain); 
 #title.live { background: radial-gradient(ellipse at 50% 45%, transparent 40%, rgba(6, 4, 16, 0.55) 95%); justify-content: space-between; padding: calc(var(--s) * 26px) 1em calc(var(--s) * 14px); }
 #title .title-head, #title .title-foot { display: flex; flex-direction: column; align-items: center; gap: 0.6em; }
 #title .subtitle {
-  margin: 0; color: #e8dcff; font-size: 1.15em; letter-spacing: 0.12em;
+  margin: 0; color: #f0e6ff; font-size: 1.45em; letter-spacing: 0.14em;
   text-shadow: 0 calc(var(--s) * 1px) 0 #1a0c2a, 0 0 calc(var(--s) * 6px) rgba(160, 120, 255, 0.6);
 }
 #episode-end h2 { margin: 0; font-size: 2.6em; letter-spacing: 0.06em; font-weight: 400; color: #f4ecff; text-shadow: 0 0 18px rgba(123,108,240,0.8); }

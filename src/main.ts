@@ -13,7 +13,7 @@ import { FilmScene } from "./world/film-scene";
 import { TitleScene } from "./world/title-scene";
 import { HudImpl } from "./ui/hud";
 import { runCalibration } from "./ui/settings";
-import { h, clear, append } from "./ui/dom";
+import { h, clear, append, weave } from "./ui/dom";
 
 declare const __DEBUG__: boolean;
 
@@ -78,12 +78,18 @@ stage.append(title);
 
 // the living backdrop runs whenever the title is showing and the art has loaded
 let loaded = false;
+let backdropOn = false;
 function backdrop(on: boolean): void {
-  title.classList.toggle("live", on && loaded);
   stage.classList.toggle("at-title", on);
-  if (on && loaded) phaser.scene.run("title");
-  else if (phaser.scene.isActive("title")) phaser.scene.stop("title");
+  const want = on && loaded;
+  if (want === backdropOn) return;
+  backdropOn = want;
+  title.classList.toggle("live", want);
+  if (want) phaser.scene.run("title");
+  else phaser.scene.stop("title");
 }
+// however the title gets hidden or shown (the menu, a quit, the debug API), the backdrop follows it
+new MutationObserver(() => backdrop(!title.classList.contains("hidden"))).observe(title, { attributes: true, attributeFilter: ["class"] });
 room.onLoaded = () => {
   loaded = true;
   backdrop(!title.classList.contains("hidden"));
@@ -95,7 +101,7 @@ function showTitle(): void {
   clear(title);
   title.classList.remove("hidden");
   title.append(
-    h("div", { class: "title-head" }, h("h1", {}, t("title.name")), h("p", { class: "subtitle" }, t("title.sub"))),
+    h("div", { class: "title-head" }, h("h1", { "aria-label": t("title.name") }, t("title.logo")), weave(), h("p", { class: "subtitle" }, t("title.sub"))),
     h("div", { class: "title-foot" }, bar, h("button", { class: "big", id: "begin", onclick: begin }, t("ui.begin")), h("p", { class: "fine" }, t("title.free"))),
   );
   (title.querySelector("#begin") as HTMLButtonElement).focus();
@@ -129,7 +135,7 @@ function showMenu(): void {
     h("div", { class: "newgame" }, pick, h("button", { class: "big", id: "newgame", onclick: () => start(() => g.newGame(newSeed(), diff)) }, t("menu.new"))),
     h("button", { class: "link", onclick: () => hud.settings.open() }, t("ui.menu")),
   );
-  append(title, h("div", { class: "title-head" }, h("h1", {}, t("title.name")), h("p", { class: "subtitle" }, t("title.sub"))), foot);
+  append(title, h("div", { class: "title-head" }, h("h1", { "aria-label": t("title.name") }, t("title.logo")), weave(), h("p", { class: "subtitle" }, t("title.sub"))), foot);
   (title.querySelector("button.big") as HTMLButtonElement).focus();
 }
 

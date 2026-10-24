@@ -67,7 +67,7 @@
  "film.space2": "No maps out here. Only the stars, and the eldest's sense of direction, which is a generous word for it.",
  "film.song1": "Then a song found us, all the way out in the dark. It came from a small blue world.",
  "film.song2": "Four notes and an 'ooh'. It got into our heads, and it would not leave.",
- "film.song3": "Every time it came round, it took a little more of us with it. It always came round.",
+ "film.song3": "Every time it came round, it pulled another thread out of us. Our light went thin, our wings went heavy. And it always came round.",
  "film.earth1": "Too tired to fly on, we had to come down. On the very world that was singing at us.",
  "film.earth2": "The eldest says we should thank whoever made it. I would like a word with them too.",
  "film.episode": "Episode 1",
@@ -810,5 +810,8 @@
  "ui.spool.draft": "Spool {n}: {draft}, looping",
  "ui.spool.empty": "Spool {n}: empty",
  "ui.spool.thread": "Spool {n}: {thread}",
- "ui.skip_film": "Skip ▸▸"
+ "ui.skip_film": "Skip ▸▸",
+ "ui.next": "Next (click, Space or Enter)",
+ "ui.next_label": "Next ▸",
+ "title.logo": "{titleShort}"
 }

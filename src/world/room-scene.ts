@@ -40,6 +40,9 @@ export class RoomScene extends Phaser.Scene implements View {
   private skeinFacing: number | null = null;
   private lit = true;
   private fx!: CastFx;
+  private selMark!: Phaser.GameObjects.Graphics;
+  private drainFx!: Phaser.GameObjects.Graphics;
+  private drains: { from: string; to: string; until: number }[] = [];
   onHover: (label: string | null, sx: number, sy: number) => void = () => {};
   onReady: () => void = () => {};
   /** Every image has loaded (the title's backdrop can start). */
@@ -87,6 +90,8 @@ export class RoomScene extends Phaser.Scene implements View {
       lighting: () => this.lit && !this.g.settings.lowDetail,
       quiet: () => this.g.fast || this.g.settings.lowDetail || reduced,
     });
+    this.selMark = this.add.graphics().setDepth(4800);
+    this.drainFx = this.add.graphics().setDepth(4700).setBlendMode(Phaser.BlendModes.ADD);
     this.g.bus.on("note", ({ n, cracked }) => this.fx.note(n, cracked));
     this.g.bus.on("phraseFailed", () => this.fx.fail());
     this.g.bus.on("cast", (e) => this.fx.cast(e.target?.kind === "hotspot" ? this.hotspotCenter(e.target.id) : null, e.fromLoop));
@@ -117,6 +122,8 @@ export class RoomScene extends Phaser.Scene implements View {
     const lighting = this.lit && !this.g.settings.lowDetail;
     for (const l of [...this.lights.lights]) this.lights.removeLight(l);
     this.fx?.reset();
+    this.drains = [];
+    this.onHover(null, 0, 0);
     if (lighting) {
       this.lights.enable();
       this.lights.setAmbientColor(Phaser.Display.Color.HexStringToColor(room.ambient ?? "#b0b0b8").color);
@@ -323,6 +330,73 @@ export class RoomScene extends Phaser.Scene implements View {
     return fs;
   }
 
+  drain(from: string, to: string, seconds: number): void {
+    if (this.g.fast) return;
+    this.drains.push({ from, to, until: performance.now() + seconds * 1000 });
+  }
+
+  /** Gold corners around the selected thing, so the player can see what the next draft will touch. */
+  private drawSelection(now: number): void {
+    const m = this.selMark;
+    m.clear();
+    const sel = this.g.selection;
+    if (this.g.loom || sel?.kind !== "hotspot" || sel.id === "_self") return;
+    const h = this.g.hotspot(sel.id);
+    const sp = this.sprites.get(sel.id);
+    if (!h || (sp && !sp.visible)) return;
+    const [x, y, w, hh] = h.rect;
+    const k = 0.55 + 0.45 * Math.sin(now / 260);
+    const l = Math.min(7, Math.floor(Math.min(w, hh) / 3));
+    m.lineStyle(1, 0x2a1640, 0.8 * k);
+    for (const [cx, cy, dx, dy] of [[x, y, 1, 1], [x + w, y, -1, 1], [x, y + hh, 1, -1], [x + w, y + hh, -1, -1]] as const) {
+      m.lineBetween(cx + dx, cy + dy * 2, cx + dx + dx * l, cy + dy * 2);
+      m.lineBetween(cx + dx * 2, cy + dy, cx + dx * 2, cy + dy + dy * l);
+    }
+    m.lineStyle(1, 0xffe9a0, k);
+    for (const [cx, cy, dx, dy] of [[x, y, 1, 1], [x + w, y, -1, 1], [x, y + hh, 1, -1], [x + w, y + hh, -1, -1]] as const) {
+      m.lineBetween(cx, cy, cx + dx * l, cy);
+      m.lineBetween(cx, cy, cx, cy + dy * l);
+    }
+  }
+
+  /** Threads of light streaming out of the swans into whatever is playing the song (GDD premise). */
+  private drawDrains(now: number): void {
+    const d = this.drainFx;
+    d.clear();
+    this.drains = this.drains.filter((x) => x.until > now);
+    for (const dr of this.drains) {
+      const a = this.sprites.get(dr.from);
+      const b = this.sprites.get(dr.to);
+      if (!a || !b || !b.visible) continue;
+      const fade = Math.min(1, (dr.until - now) / 800);
+      const tx = b.x + 6;
+      const ty = b.y - b.height * 0.55;
+      for (let k = 0; k < 6; k++) {
+        const sx = a.x - a.width / 2 + 18 + ((k * 37) % Math.max(1, a.width - 36));
+        const sy = a.y - 14 - (k % 2) * 4;
+        const phase = now / 220 + k * 1.7;
+        const col = k % 2 ? 0xffe9a8 : 0xf0e8ff;
+        for (const [off, a] of [[0, 0.75], [1, 0.35]] as const) {
+          d.lineStyle(1, col, (a + 0.2 * Math.sin(phase)) * fade);
+          let px = sx;
+          let py = sy + off;
+          for (let i = 1; i <= 16; i++) {
+            const t = i / 16;
+            const x = sx + (tx - sx) * t;
+            const y = sy + off + (ty - sy) * t - Math.sin(t * Math.PI) * 22 + Math.sin(phase + t * 9) * 3 * (1 - t);
+            d.lineBetween(px, py, x, y);
+            px = x;
+            py = y;
+          }
+        }
+        // a bead of light running along each thread, towards the song
+        const t = (now / 900 + k / 6) % 1;
+        d.fillStyle(0xffffff, 0.95 * fade);
+        d.fillRect(sx + (tx - sx) * t - 1, sy + (ty - sy) * t - Math.sin(t * Math.PI) * 22 - 1, 3, 3);
+      }
+    }
+  }
+
   openLoom(song: Song): void {
     this.scene.launch("loom", { game: this.g, song });
   }
@@ -358,6 +432,9 @@ export class RoomScene extends Phaser.Scene implements View {
     }
     this.bobbin.setDepth(this.bobbin.y);
     this.fx.update(delta);
+    const now = performance.now();
+    this.drawSelection(now);
+    this.drawDrains(now);
     const room = this.g.room;
     if (room.width > WORLD_W) this.cameras.main.centerOn(this.bobbin.x, WORLD_H / 2);
 

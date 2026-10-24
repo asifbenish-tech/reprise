@@ -54,6 +54,8 @@ export interface View {
   setRestored(level: number): void;
   setFlockWhite(level: number): void;
   film?(): FilmControl;
+  /** Threads of light pulled out of one hotspot's sprite into another's, for a while: the drain made visible. */
+  drain?(from: string, to: string, seconds: number): void;
 }
 
 export interface Hud {
@@ -312,6 +314,8 @@ export class Game {
     const h = this.hotspot(id);
     if (!h) return;
     if (h.exit) {
+      // a way out can still be a target: a locked gate waits for Opening, so clicking selects it too
+      this.select({ kind: "hotspot", id });
       if (!double) await this.walkToHotspot(h);
       await this.useExit(h);
       return;

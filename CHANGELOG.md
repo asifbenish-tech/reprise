@@ -11,6 +11,10 @@
   and its light travels to the target; a wrong phrase fizzles (D-033).
 - Richer placeholder art: dithered, lit rooms; shaded characters; new close-ups; the staff as art (D-035).
 - Fix: two Distaff notes less than 5 ms apart (two keys at once) no longer throw in the harp voice.
+- Clicking a locked gate (or any exit) now selects it, and the selection is marked in the scene (D-039).
+- A Next button on every line of text; the drain drawn as threads of light in the film and the park
+  (D-040).
+- The title reads "LOOM II" in the loom name set, in our own lettering (D-041).
 - Opening film: the Island and the tear, the flock in space, the song wearing them down, the descent to
   Earth; narrated, skippable, once per new game (D-037).
 - A living title screen and larger lettering everywhere (D-038).
