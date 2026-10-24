@@ -5,6 +5,7 @@ import { FIGS, bobbin, frames, lamp, metal, person, swan } from "./figures";
 import { band, dither, fbm, glow, vgrad } from "./paint";
 import { ROOMS } from "./rooms";
 import { closeup } from "./portraits";
+import { filmEarth, filmIsland, filmSwanSmall, titleSky } from "./cinema";
 
 const CHARS: Record<string, (img: Img, n: number) => void> = {
   bobbin(img, n) {
@@ -295,6 +296,11 @@ export function draw(recipe: string, w: number, h: number, n: number): Img {
     const fn = CHARS[id];
     if (!fn) throw new Error(`No character recipe ${id}`);
     fn(img, n);
+  } else if (kind === "cinema") {
+    const fn = { island: filmIsland, earth: filmEarth, title: titleSky }[id];
+    if (id === "swan_small") filmSwanSmall(img, n);
+    else if (fn) fn(img);
+    else throw new Error(`No cinema recipe ${id}`);
   } else if (kind === "ui" && id === "distaff") distaff(img);
   else if (kind === "ui" && id === "crack") crack(img);
   else throw new Error(`Unknown recipe ${recipe}`);

@@ -11,6 +11,9 @@
   and its light travels to the target; a wrong phrase fizzles (D-033).
 - Richer placeholder art: dithered, lit rooms; shaded characters; new close-ups; the staff as art (D-035).
 - Fix: two Distaff notes less than 5 ms apart (two keys at once) no longer throw in the harp voice.
+- Opening film: the Island and the tear, the flock in space, the song wearing them down, the descent to
+  Earth; narrated, skippable, once per new game (D-037).
+- A living title screen and larger lettering everywhere (D-038).
 - Humour pass: why the flock stopped at Earth (a hit song caught across space), sharper satire in the
   guild rooms, and a few asides to the player (D-036).
 

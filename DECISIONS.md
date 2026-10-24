@@ -166,6 +166,23 @@ song greys the swans in the park. Bobbin's voice rules still hold (plain, short,
 to the player are parenthetical or come from Skein, and after three phrases in a row that are no draft he
 speaks kindly to the hands on the Distaff. The satire stays aimed at the system, never at a person.
 
+**D-037 · An opening film before the Crossing (§3 Prologue, §7.1, owner direction).** §3 makes the
+Prologue a playable title sequence. The owner asked for a short film first, in the game's own graphics,
+that tells how the first game ended and why the flock comes down on Earth. It plays once per new game
+and is skippable at any moment (Skip, Esc). It is four painted plates (the Island with the Pattern in
+its sky, the flock in space, the song reaching them, Earth up close) with sprites moved across them and
+light drawn on top; nothing is scaled or rotated, and the closer view of Earth is its own plate, as §7.1
+asks. Bobbin narrates in the black band, as the original's spoken prologue did. The tear shows "a hunger
+that followed the flock out of the first game" (§2) slipping through behind them, unnamed. The first
+game is told without its names: the name set supplies the island, the guild and the hero. The playable
+Crossing that follows is now the flock's descent, the eldest calling formations to bring them down
+together.
+
+**D-038 · A living title screen and larger lettering (owner direction).** The title screen runs over a
+painted night (a great moon rising behind the city, the Pattern faint in the sky) with the flock crossing
+the moon, shooting stars and pink notes rising off the rooftops: the Hum. The lettering is larger
+throughout: the speech line, close-up text, the letters under the Distaff and the menus.
+
 ## Data formats (§9.5) extensions
 
 **D-025 · Extra fields.** `HotspotDef` gains `name`, `talk`, `listen`, `person`, `stand`, `when`, `sprite`

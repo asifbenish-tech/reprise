@@ -32,6 +32,9 @@ export class HudImpl implements Hud {
   private loomThread: string | null = null;
   private loomSig = "";
   private dialogHide = 0;
+  private filmSkip: (() => void) | null = null;
+  private skipBtn: HTMLButtonElement | null = null;
+  private card: HTMLElement;
   readonly book: BookOfPatterns;
   readonly settings: SettingsPanel;
   scene: RoomScene | null = null;
@@ -48,6 +51,7 @@ export class HudImpl implements Hud {
     this.loomActions = h("div", { class: "loom-actions" });
     this.loomPanel = h("div", { id: "loom-panel", class: "hidden" }, this.loomActions, this.loomLabels);
     this.live = h("div", { class: "sr-only", "aria-live": "polite" });
+    this.card = h("div", { id: "title-card", "aria-hidden": "true" }, h("div", { class: "logo" }, t("title.name")), h("p", {}, t("film.episode")));
     this.wheel = h("div", { id: "wheel", class: "hidden", "aria-hidden": "true" });
     NOTE_GLYPHS.forEach((gl, i) => {
       const a = (i / 8) * Math.PI * 2 - Math.PI / 2;
@@ -60,7 +64,7 @@ export class HudImpl implements Hud {
     this.distaff.onMenu = () => this.settings.open();
     this.distaff.onStrip = (on) => this.root.classList.toggle("notating", on);
     this.settings.onBook = () => this.book.open();
-    this.root = h("div", { id: "hud", dir: textDir() }, this.loomPanel, this.revealEl, this.hoverEl, this.speech, this.captionEl, this.toastEl, this.dialog, this.wheel, this.distaff.el, this.book.el, this.settings.el, this.live);
+    this.root = h("div", { id: "hud", dir: textDir() }, this.loomPanel, this.revealEl, this.hoverEl, this.speech, this.captionEl, this.toastEl, this.dialog, this.wheel, this.card, this.distaff.el, this.book.el, this.settings.el, this.live);
     parent.append(this.root);
     g.hudSelectThread = (id) => this.selectThread(id);
     g.bus.on("learned", () => this.book.render());
@@ -148,6 +152,38 @@ export class HudImpl implements Hud {
   }
 
   advance: (() => void) | null = null;
+
+  // ---- the opening film -------------------------------------------------------------------------
+
+  /** Letterboxed narration: the panel goes dark, the line sits in it, a Skip button waits top right. */
+  cinema(on: boolean, onSkip?: () => void): void {
+    this.root.classList.toggle("cinema", on);
+    this.skipBtn?.remove();
+    this.skipBtn = null;
+    this.filmSkip = on ? (onSkip ?? null) : null;
+    if (!on) return;
+    this.skipBtn = h("button", { class: "film-skip", onclick: () => this.skipFilm() }, t("ui.skip_film"));
+    this.root.append(this.skipBtn);
+    this.skipBtn.focus({ preventScroll: true });
+  }
+
+  get filming(): boolean {
+    return this.filmSkip !== null;
+  }
+
+  skipFilm(): void {
+    const f = this.filmSkip;
+    this.filmSkip = null;
+    this.skipBtn?.remove();
+    this.skipBtn = null;
+    f?.();
+    this.skip();
+  }
+
+  titleCard(show: boolean): void {
+    this.card.classList.toggle("show", show);
+    if (show) this.announce(`${t("title.name")}. ${t("film.episode")}`);
+  }
 
   caption(text: string): void {
     this.captionEl.textContent = `♪ ${text}`;

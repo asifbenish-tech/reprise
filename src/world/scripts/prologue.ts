@@ -1,5 +1,6 @@
 // src/world/scripts/prologue.ts: the Crossing, the landing, and the park (P1-P6).
 import type { Game, LogicFactory, ScriptFn } from "../game";
+import { openingFilm } from "./film";
 
 async function callDraft(g: Game, draft: "opening" | "healing"): Promise<void> {
   g.view?.setSprite("lead_swan", { anim: "lead_swan" });
@@ -8,13 +9,13 @@ async function callDraft(g: Game, draft: "opening" | "healing"): Promise<void> {
 }
 
 async function crossingIntro(g: Game): Promise<void> {
+  if (!g.flag("film_seen")) {
+    await openingFilm(g);
+    g.setFlag("film_seen");
+  }
   await g.cutscene(async () => {
     g.caption("caption.crossing");
     await g.say("bobbin", "crossing.intro1");
-    // why here: the flock caught this world's hit from across the dark, and wants a word with its makers
-    await g.say("bobbin", "crossing.why1");
-    await g.say("bobbin", "crossing.why2");
-    await g.say("bobbin", "crossing.why3");
     await g.say("bobbin", "crossing.intro2");
     await callDraft(g, "opening");
     g.setFlag("await_opening");

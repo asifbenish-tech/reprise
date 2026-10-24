@@ -9,6 +9,8 @@ import type { NoteIndex } from "./content/types";
 import { Game } from "./world/game";
 import { RoomScene, WORLD_H, WORLD_W } from "./world/room-scene";
 import { LoomScene } from "./ui/loom-view";
+import { FilmScene } from "./world/film-scene";
+import { TitleScene } from "./world/title-scene";
 import { HudImpl } from "./ui/hud";
 import { runCalibration } from "./ui/settings";
 import { h, clear, append } from "./ui/dom";
@@ -42,6 +44,8 @@ const phaser = new Phaser.Game({
 hud.phaser = phaser;
 phaser.scene.add("room", room, true, { game: g });
 phaser.scene.add("loom", new LoomScene(), false);
+phaser.scene.add("film", new FilmScene(), false);
+phaser.scene.add("title", new TitleScene(), false);
 room.onHover = (label, x, y) => hud.hover(label, x, y);
 hud.scene = room;
 
@@ -71,6 +75,19 @@ hud.settings.onApply = layout;
 
 const title = h("div", { id: "title" });
 stage.append(title);
+
+// the living backdrop runs whenever the title is showing and the art has loaded
+let loaded = false;
+function backdrop(on: boolean): void {
+  title.classList.toggle("live", on && loaded);
+  stage.classList.toggle("at-title", on);
+  if (on && loaded) phaser.scene.run("title");
+  else if (phaser.scene.isActive("title")) phaser.scene.stop("title");
+}
+room.onLoaded = () => {
+  loaded = true;
+  backdrop(!title.classList.contains("hidden"));
+};
 const bar = h("div", { class: "load-bar" }, h("span"));
 room.onProgress = (p) => ((bar.firstChild as HTMLElement).style.width = `${Math.round(p * 100)}%`);
 
@@ -78,11 +95,8 @@ function showTitle(): void {
   clear(title);
   title.classList.remove("hidden");
   title.append(
-    h("h1", {}, t("title.name")),
-    h("p", { class: "subtitle" }, t("title.sub")),
-    bar,
-    h("button", { class: "big", id: "begin", onclick: begin }, t("ui.begin")),
-    h("p", { class: "fine" }, t("title.free")),
+    h("div", { class: "title-head" }, h("h1", {}, t("title.name")), h("p", { class: "subtitle" }, t("title.sub"))),
+    h("div", { class: "title-foot" }, bar, h("button", { class: "big", id: "begin", onclick: begin }, t("ui.begin")), h("p", { class: "fine" }, t("title.free"))),
   );
   (title.querySelector("#begin") as HTMLButtonElement).focus();
 }
@@ -108,13 +122,14 @@ function showMenu(): void {
     }
   };
   renderPick();
+  const foot = h("div", { class: "title-foot" });
   append(
-    title,
-    h("h1", {}, t("title.name")),
+    foot,
     save ? h("button", { class: "big", id: "continue", onclick: () => start(() => g.load(save)) }, t("menu.continue")) : null,
     h("div", { class: "newgame" }, pick, h("button", { class: "big", id: "newgame", onclick: () => start(() => g.newGame(newSeed(), diff)) }, t("menu.new"))),
     h("button", { class: "link", onclick: () => hud.settings.open() }, t("ui.menu")),
   );
+  append(title, h("div", { class: "title-head" }, h("h1", {}, t("title.name")), h("p", { class: "subtitle" }, t("title.sub"))), foot);
   (title.querySelector("button.big") as HTMLButtonElement).focus();
 }
 
@@ -127,6 +142,7 @@ function newSeed(): number {
 function start(fn: () => void): void {
   const go = () => {
     title.classList.add("hidden");
+    backdrop(false);
     fn();
   };
   if (g.view) go();
@@ -139,6 +155,7 @@ hud.settings.onQuit = () => {
   g.closeLoom();
   showMenu();
   title.classList.remove("hidden");
+  backdrop(true);
 };
 
 // ---- keyboard, gamepad, frame tick --------------------------------------------------------------------
@@ -155,6 +172,14 @@ window.addEventListener("keydown", (e) => {
   if (typing(e) || !g.save || !title.classList.contains("hidden")) return;
   if (document.getElementById("calibration")) return;
   const k = e.key;
+  if (hud.filming) {
+    if (k === "Escape") hud.skipFilm();
+    else if (k === " " || k === "Enter") {
+      e.preventDefault();
+      hud.skip();
+    }
+    return;
+  }
   if (k >= "1" && k <= "8" && !e.repeat) {
     g.playNote((Number(k) - 1) as NoteIndex);
     return;

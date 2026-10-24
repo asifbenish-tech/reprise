@@ -5,6 +5,7 @@
 import * as Phaser from "phaser";
 import { NOTE_COLORS } from "../ui/dom";
 import { STAFF_TIP } from "./staff-tip";
+import { ensureFxTextures } from "./fx-textures";
 
 const SWAN_TIP: [number, number] = [6, -14];
 const LIFT = 9;
@@ -32,15 +33,7 @@ export class CastFx {
   private flare = 0;
 
   constructor(private scene: Phaser.Scene, private host: CastHost) {
-    if (!scene.textures.exists("fx_spark")) {
-      const g = scene.make.graphics({}, false);
-      g.fillStyle(0xffffff, 1);
-      g.fillRect(2, 0, 1, 5);
-      g.fillRect(0, 2, 5, 1);
-      g.fillRect(1, 1, 3, 3);
-      g.generateTexture("fx_spark", 5, 5);
-      g.destroy();
-    }
+    ensureFxTextures(scene);
     this.glow = scene.add.graphics().setDepth(4900).setBlendMode(Phaser.BlendModes.ADD);
   }
 

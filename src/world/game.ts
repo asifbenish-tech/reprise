@@ -26,6 +26,16 @@ export const STATE_DRAFTS = new Set([
   "hushing", "hushing_rev", "quickening", "quickening_rev", "swelling", "swelling_rev", "tuning_rev",
 ]);
 
+export type FilmShot = "island" | "space" | "earth";
+export type FilmEvent = "tear" | "slip" | "song" | "falter";
+
+/** The opening film's stage (src/world/film-scene.ts). */
+export interface FilmControl {
+  shot(id: FilmShot): Promise<void>;
+  event(id: FilmEvent): void;
+  end(fadeMs?: number): Promise<void>;
+}
+
 export interface View {
   buildRoom(room: RoomDef, entry: string): void;
   walkTo(x: number, y: number, instant?: boolean): Promise<void>;
@@ -43,6 +53,7 @@ export interface View {
   closeLoom(): void;
   setRestored(level: number): void;
   setFlockWhite(level: number): void;
+  film?(): FilmControl;
 }
 
 export interface Hud {
@@ -57,6 +68,9 @@ export interface Hud {
   loomClosed(): void;
   episodeEnd(): Promise<void>;
   busy(on: boolean): void;
+  /** Letterboxed narration with a skip button; returns when the viewer can no longer skip. */
+  cinema?(on: boolean, onSkip?: () => void): void;
+  titleCard?(show: boolean): void;
 }
 
 export interface RoomLogic {

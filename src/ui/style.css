@@ -29,7 +29,7 @@ body {
 #stage { position: relative; --s: 1; --ts: 1; overflow: hidden; }
 #game, #game canvas { position: absolute; inset: 0; image-rendering: pixelated; image-rendering: crisp-edges; }
 #game canvas { margin: 0 !important; }
-#hud { position: absolute; inset: 0; font-size: calc(max(12px, var(--s) * 6.5px) * var(--ts)); line-height: 1.35; pointer-events: none; }
+#hud { position: absolute; inset: 0; font-size: calc(max(14px, var(--s) * 7.5px) * var(--ts)); line-height: 1.35; pointer-events: none; }
 #hud > * { pointer-events: auto; }
 #hud > #hover, #hud > #reveal, #hud > #caption, #hud > #toast { pointer-events: none; }
 button { font: inherit; color: inherit; cursor: pointer; }
@@ -46,14 +46,14 @@ body.plainfont #hud { font-family: var(--plain); }
   position: absolute; left: 50%; bottom: calc(var(--s) * 44px); transform: translateX(-50%); z-index: 2;
   width: max-content; max-width: calc(var(--s) * 440px); padding: calc(var(--s) * 2px) calc(var(--s) * 8px);
   background: #000; color: var(--who, #fff); text-align: center;
-  font-size: calc(max(13px, var(--s) * 8px) * var(--ts)); line-height: 1.2;
+  font-size: calc(max(16px, var(--s) * 9.5px) * var(--ts)); line-height: 1.2; letter-spacing: 0.02em;
   opacity: 0; transition: opacity 0.12s; pointer-events: none;
 }
 #speech.show { opacity: 1; pointer-events: auto; cursor: pointer; }
 #hud.notating #speech { bottom: calc(var(--s) * 64px); }
 #caption {
-  position: absolute; left: calc(var(--s) * 8px); top: calc(var(--s) * 40px); font-style: italic;
-  color: #d8cff0; font-size: 0.85em; opacity: 0; max-width: 45%; text-shadow: 0 1px 2px #000;
+  position: absolute; left: calc(var(--s) * 8px); top: calc(var(--s) * 40px);
+  color: #d8cff0; font-size: 0.9em; opacity: 0; max-width: 45%; text-shadow: 0 1px 0 #000, 1px 0 0 #000;
 }
 #caption.show { animation: fadeinout 6s forwards; }
 #hud.conversing #caption, #hud.loom-open #caption { top: auto; bottom: calc(var(--s) * 70px); }
@@ -93,21 +93,48 @@ body.plainfont #hud { font-family: var(--plain); }
 #dialog.closeup-dlg .dlg-body {
   position: absolute; left: calc(var(--s) * 22px); top: calc(var(--s) * 26px); width: calc(var(--s) * 290px);
   max-height: calc(var(--s) * 256px); overflow: auto; color: color-mix(in srgb, var(--who) 60%, #fff);
-  font-size: calc(max(14px, var(--s) * 10px) * var(--ts)); line-height: 1.22;
+  font-size: calc(max(17px, var(--s) * 12px) * var(--ts)); line-height: 1.22; letter-spacing: 0.02em;
   text-shadow: calc(var(--s) * 1px) calc(var(--s) * 1px) 0 #000, calc(var(--s) * -1px) 0 0 #000, 0 calc(var(--s) * -1px) 0 #000;
 }
 #dialog.inworld-dlg {
   left: 50%; transform: translateX(-50%); bottom: calc(var(--s) * 44px); width: max-content; max-width: calc(var(--s) * 480px);
   padding: calc(var(--s) * 2px) calc(var(--s) * 8px); background: #000; color: var(--who); text-align: center;
-  font-size: calc(max(13px, var(--s) * 8px) * var(--ts)); line-height: 1.2; cursor: pointer;
+  font-size: calc(max(16px, var(--s) * 9.5px) * var(--ts)); line-height: 1.2; cursor: pointer;
 }
 #dialog.inworld-dlg .choices { align-items: center; }
 #hud.conversing #speech { opacity: 0; }
 
+/* ---- the opening film: letterboxed narration, a Skip button, a title card ---- */
+#hud.cinema #distaff > *, #hud.cinema #caption, #hud.cinema #hover, #hud.cinema #toast, #hud.cinema #reveal { visibility: hidden; }
+#hud.cinema #speech {
+  bottom: calc(var(--s) * 14px); max-width: calc(var(--s) * 580px); color: #e8deff;
+  font-size: calc(max(17px, var(--s) * 10.5px) * var(--ts));
+}
+.film-skip {
+  position: absolute; right: calc(var(--s) * 8px); top: calc(var(--s) * 8px); z-index: 4; padding: 0.15em 0.7em;
+  background: rgba(0, 0, 0, 0.6); border: calc(var(--s) * 1px) solid rgba(232, 222, 255, 0.45); color: #e8deff; opacity: 0.8;
+}
+.film-skip:hover, .film-skip:focus-visible { opacity: 1; border-color: var(--gold); }
+#title-card {
+  position: absolute; left: 0; right: 0; top: calc(var(--s) * 54px); text-align: center; z-index: 2;
+  opacity: 0; transition: opacity 1.2s; pointer-events: none;
+}
+#title-card.show { opacity: 1; }
+#title-card p { margin: 0.2em 0 0; color: #ffe9b0; font-size: calc(max(16px, var(--s) * 10px) * var(--ts)); letter-spacing: 0.2em; text-shadow: 0 calc(var(--s) * 1px) 0 #000; }
+
+/* the title lettering, shared by the title screen and the film's card */
+.logo, #title h1 {
+  margin: 0; font-family: var(--pixel); font-weight: 600; font-size: calc(var(--s) * 46px); line-height: 1; letter-spacing: 0.06em;
+  color: #ffe9a8; background: linear-gradient(180deg, #fffbe8 0%, #ffe39a 40%, #ffb860 72%, #e07a4a 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 calc(var(--s) * 2px) 0 #2a1240) drop-shadow(calc(var(--s) * 1px) 0 0 #2a1240) drop-shadow(calc(var(--s) * -1px) 0 0 #2a1240) drop-shadow(0 0 calc(var(--s) * 10px) rgba(255, 190, 120, 0.45));
+}
+body.plainfont .logo, body.plainfont #title h1 { font-family: var(--plain); font-weight: 400; }
+
 /* ---- the panel: the carved Distaff on black ---- */
 #distaff {
   position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--s) * 64px); background: #000;
-  font-size: calc(max(10px, var(--s) * 6.5px) * var(--ts));
+  font-size: calc(max(12px, var(--s) * 7.5px) * var(--ts));
 }
 #distaff .staff { position: absolute; width: calc(var(--s) * 560px); height: calc(var(--s) * 44px); image-rendering: pixelated; pointer-events: none; }
 #distaff .notes { position: absolute; inset: 0; pointer-events: none; }
@@ -132,7 +159,7 @@ body.plainfont #hud { font-family: var(--plain); }
 }
 .note .letter {
   position: absolute; left: 50%; top: calc(var(--s) * 24px); transform: translateX(-50%); color: #e8d4b0;
-  font-size: max(9px, calc(var(--s) * 6px)); line-height: 1; white-space: nowrap; pointer-events: none;
+  font-size: max(11px, calc(var(--s) * 7px)); line-height: 1; white-space: nowrap; pointer-events: none;
 }
 .note.lit::before { animation: halo 0.8s ease-out; }
 .note.lit .spoolshape { animation: lit 0.8s ease-out; }
@@ -263,20 +290,38 @@ body.plainfont #hud { font-family: var(--plain); }
 #title, #episode-end {
   position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.7em; text-align: center;
   background: radial-gradient(ellipse at 50% 35%, rgba(70, 52, 140, 0.55), rgba(13, 11, 20, 0.97) 70%), var(--bg);
-  font-size: calc(max(13px, var(--s) * 7px) * var(--ts)); padding: 1em; z-index: 4;
+  font-family: var(--pixel); font-size: calc(max(14px, var(--s) * 8px) * var(--ts)); padding: 1em; z-index: 4;
 }
-#title h1, #episode-end h2 { margin: 0; font-size: 2.6em; letter-spacing: 0.06em; font-weight: 400; color: #f4ecff; text-shadow: 0 0 18px rgba(123,108,240,0.8); }
-#title .subtitle { margin: 0; font-style: italic; color: var(--gold); }
-.big { padding: 0.5em 1.6em; font-size: 1.05em; border-radius: 999px; background: linear-gradient(180deg, #4b3a96, #2e2366); border: 1px solid #9d8ff5; color: #fff; }
-.big:hover { filter: brightness(1.15); }
-.link { background: none; border: none; color: var(--muted); text-decoration: underline; }
-.load-bar { width: 12em; height: 4px; border-radius: 2px; background: #2a2050; overflow: hidden; }
+body.plainfont #title, body.plainfont #episode-end { font-family: var(--plain); }
+#stage.at-title #distaff, #stage.at-title #speech, #stage.at-title #hover { visibility: hidden; }
+#title.live .load-bar { visibility: hidden; }
+/* over the living backdrop: only a soft vignette, so the moon and the city show through */
+#title.live { background: radial-gradient(ellipse at 50% 45%, transparent 40%, rgba(6, 4, 16, 0.55) 95%); justify-content: space-between; padding: calc(var(--s) * 26px) 1em calc(var(--s) * 14px); }
+#title .title-head, #title .title-foot { display: flex; flex-direction: column; align-items: center; gap: 0.6em; }
+#title .subtitle {
+  margin: 0; color: #e8dcff; font-size: 1.15em; letter-spacing: 0.12em;
+  text-shadow: 0 calc(var(--s) * 1px) 0 #1a0c2a, 0 0 calc(var(--s) * 6px) rgba(160, 120, 255, 0.6);
+}
+#episode-end h2 { margin: 0; font-size: 2.6em; letter-spacing: 0.06em; font-weight: 400; color: #f4ecff; text-shadow: 0 0 18px rgba(123,108,240,0.8); }
+.big {
+  padding: 0.45em 1.6em; font-size: 1.1em; border-radius: calc(var(--s) * 3px); letter-spacing: 0.08em; color: #ffe9b0;
+  background: linear-gradient(180deg, #6e4220 0%, #4a2a14 55%, #2a160a 100%);
+  border: calc(var(--s) * 1px) solid #d8a86a; box-shadow: inset 0 calc(var(--s) * 1px) 0 rgba(255, 220, 160, 0.35), 0 calc(var(--s) * 2px) 0 #120a06, 0 0 calc(var(--s) * 8px) rgba(255, 190, 110, 0.25);
+}
+.big:hover, .big:focus-visible { filter: brightness(1.18); box-shadow: inset 0 calc(var(--s) * 1px) 0 rgba(255, 220, 160, 0.45), 0 calc(var(--s) * 2px) 0 #120a06, 0 0 calc(var(--s) * 12px) rgba(255, 200, 120, 0.6); }
+.link { background: none; border: none; color: #d8cff0; text-decoration: underline; text-shadow: 0 1px 0 #000; }
+.load-bar { width: 12em; height: calc(var(--s) * 2px); min-height: 3px; background: rgba(42, 32, 80, 0.8); overflow: hidden; }
 .load-bar span { display: block; height: 100%; width: 0; background: var(--gold); transition: width 0.2s; }
 .difficulty { display: flex; gap: 0.5em; flex-wrap: wrap; justify-content: center; }
-.difficulty button { display: flex; flex-direction: column; width: 11em; padding: 0.5em; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid var(--line); text-align: left; }
-.difficulty button.on { border-color: var(--gold); background: rgba(243,198,75,0.1); }
-.difficulty small { color: var(--muted); font-size: 0.8em; }
+.difficulty button {
+  display: flex; flex-direction: column; gap: 0.2em; width: 11em; padding: 0.5em 0.6em; text-align: start;
+  background: rgba(10, 6, 24, 0.78); border: calc(var(--s) * 1px) solid rgba(216, 207, 240, 0.3); border-radius: calc(var(--s) * 2px);
+}
+.difficulty button.on { border-color: var(--gold); background: rgba(60, 36, 20, 0.85); box-shadow: 0 0 calc(var(--s) * 6px) rgba(243, 198, 75, 0.35); }
+.difficulty strong { color: #ffe9b0; font-weight: 600; }
+.difficulty small { color: #c8bede; font-size: 0.8em; line-height: 1.25; }
 .newgame { display: flex; flex-direction: column; align-items: center; gap: 0.6em; }
+#title .fine { margin: 0; color: #b8aed0; font-size: 0.75em; text-shadow: 0 1px 0 #000; }
 #episode-end .credits { color: var(--muted); font-size: 0.85em; white-space: pre-line; }
 
 /* ---- gamepad radial note wheel ---- */

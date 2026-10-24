@@ -816,6 +816,43 @@
    "frames": 1,
    "status": "placeholder",
    "recipe": "ui:crack"
+  },
+  {
+   "id": "film_island",
+   "path": "art/film/island.png",
+   "w": 640,
+   "h": 296,
+   "frames": 1,
+   "status": "placeholder",
+   "recipe": "cinema:island"
+  },
+  {
+   "id": "film_earth",
+   "path": "art/film/earth.png",
+   "w": 640,
+   "h": 296,
+   "frames": 1,
+   "status": "placeholder",
+   "recipe": "cinema:earth"
+  },
+  {
+   "id": "film_swan",
+   "path": "art/film/swan_small.png",
+   "w": 80,
+   "h": 20,
+   "frames": 4,
+   "frameW": 20,
+   "status": "placeholder",
+   "recipe": "cinema:swan_small"
+  },
+  {
+   "id": "title_sky",
+   "path": "art/film/title.png",
+   "w": 640,
+   "h": 360,
+   "frames": 1,
+   "status": "placeholder",
+   "recipe": "cinema:title"
   }
  ],
  "audio": [

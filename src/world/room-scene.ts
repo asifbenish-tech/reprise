@@ -4,7 +4,8 @@ import * as Tone from "tone";
 import type { HotspotDef, RoomDef } from "../content/types";
 import { artUrl, manifest } from "../content/load";
 import type { Song } from "../audio/song";
-import type { Game, View } from "./game";
+import type { FilmControl, Game, View } from "./game";
+import type { FilmScene } from "./film-scene";
 import { clampInside, findPath, type Pt } from "./walker";
 import { CastFx } from "./cast-fx";
 
@@ -41,6 +42,8 @@ export class RoomScene extends Phaser.Scene implements View {
   private fx!: CastFx;
   onHover: (label: string | null, sx: number, sy: number) => void = () => {};
   onReady: () => void = () => {};
+  /** Every image has loaded (the title's backdrop can start). */
+  onLoaded: () => void = () => {};
   onSkein: () => void = () => {};
   onProgress: (p: number) => void = () => {};
 
@@ -88,6 +91,7 @@ export class RoomScene extends Phaser.Scene implements View {
     this.g.bus.on("phraseFailed", () => this.fx.fail());
     this.g.bus.on("cast", (e) => this.fx.cast(e.target?.kind === "hotspot" ? this.hotspotCenter(e.target.id) : null, e.fromLoop));
     this.g.view = this;
+    this.onLoaded();
     this.onReady();
   }
 
@@ -309,6 +313,14 @@ export class RoomScene extends Phaser.Scene implements View {
       cm.saturate(-0.55 * (1 - this.restored));
       cm.contrast(-0.08 * (1 - this.restored), true);
     }
+  }
+
+  /** Starts the opening film's scene on top of this one and hands back its controls. */
+  film(): FilmControl {
+    const fs = this.scene.get("film") as FilmScene;
+    fs.prepare();
+    this.scene.launch("film");
+    return fs;
   }
 
   openLoom(song: Song): void {
