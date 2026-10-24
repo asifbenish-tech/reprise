@@ -91,6 +91,8 @@ export interface Settings {
   effects: number;
   resetBeats: number; // 2 = GDD default; 4; 999 = never
   lowDetail: boolean;
+  /** The pixel typeface; off falls back to a plain serif for readability (GDD 7.9). */
+  pixelFont: boolean;
   textSpeed: "auto" | "click";
   names: string;
 }
@@ -105,6 +107,7 @@ export const DEFAULT_SETTINGS: Settings = {
   effects: 0.8,
   resetBeats: 2,
   lowDetail: false,
+  pixelFont: true,
   textSpeed: "auto",
   names: "",
 };

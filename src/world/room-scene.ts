@@ -6,9 +6,12 @@ import { artUrl, manifest } from "../content/load";
 import type { Song } from "../audio/song";
 import type { Game, View } from "./game";
 import { clampInside, findPath, type Pt } from "./walker";
+import { CastFx } from "./cast-fx";
 
 export const WORLD_W = 640;
 export const WORLD_H = 360;
+/** The scene ends here; below it is the black panel with the speech line and the Distaff (GDD 4.1). */
+export const SCENE_H = 296;
 const WALK_SPEED = 72; // px per second
 const DOUBLE_MS = 350;
 
@@ -35,6 +38,7 @@ export class RoomScene extends Phaser.Scene implements View {
   private swan = false;
   private skeinFacing: number | null = null;
   private lit = true;
+  private fx!: CastFx;
   onHover: (label: string | null, sx: number, sy: number) => void = () => {};
   onReady: () => void = () => {};
   onSkein: () => void = () => {};
@@ -72,6 +76,17 @@ export class RoomScene extends Phaser.Scene implements View {
     this.input.on("pointerdown", (p: Phaser.Input.Pointer) => this.click(p));
     this.input.on("pointermove", (p: Phaser.Input.Pointer) => this.hover(p));
     this.colour = this.cameras.main.filters.internal.addColorMatrix();
+    const reduced = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    this.fx = new CastFx(this, {
+      bobbin: () => this.bobbin ?? null,
+      walking: () => !!this.walk,
+      swan: () => this.swan,
+      lighting: () => this.lit && !this.g.settings.lowDetail,
+      quiet: () => this.g.fast || this.g.settings.lowDetail || reduced,
+    });
+    this.g.bus.on("note", ({ n, cracked }) => this.fx.note(n, cracked));
+    this.g.bus.on("phraseFailed", () => this.fx.fail());
+    this.g.bus.on("cast", (e) => this.fx.cast(e.target?.kind === "hotspot" ? this.hotspotCenter(e.target.id) : null, e.fromLoop));
     this.g.view = this;
     this.onReady();
   }
@@ -97,6 +112,7 @@ export class RoomScene extends Phaser.Scene implements View {
 
     const lighting = this.lit && !this.g.settings.lowDetail;
     for (const l of [...this.lights.lights]) this.lights.removeLight(l);
+    this.fx?.reset();
     if (lighting) {
       this.lights.enable();
       this.lights.setAmbientColor(Phaser.Display.Color.HexStringToColor(room.ambient ?? "#b0b0b8").color);
@@ -180,7 +196,7 @@ export class RoomScene extends Phaser.Scene implements View {
 
   private click(p: Phaser.Input.Pointer): void {
     if (this.g.loom || this.g.busy) return;
-    if (p.y >= 304) return; // the Distaff bar
+    if (p.y >= SCENE_H) return; // the panel under the scene
     const now = performance.now();
     const double = now - this.lastClick.t < DOUBLE_MS && Math.hypot(p.x - this.lastClick.x, p.y - this.lastClick.y) < 12;
     this.lastClick = { t: double ? 0 : now, x: p.x, y: p.y };
@@ -195,7 +211,7 @@ export class RoomScene extends Phaser.Scene implements View {
 
   private hover(p: Phaser.Input.Pointer): void {
     if (this.g.loom) return this.onHover(null, 0, 0);
-    const h = p.y < 304 ? this.hit(p.worldX, p.worldY) : null;
+    const h = p.y < SCENE_H ? this.hit(p.worldX, p.worldY) : null;
     this.onHover(h ? h.name : null, p.x, p.y);
   }
 
@@ -221,6 +237,7 @@ export class RoomScene extends Phaser.Scene implements View {
     const path = findPath(poly, [this.bobbin.x, this.bobbin.y], [x, y]);
     return new Promise((res) => {
       this.walk = { path, done: res };
+      this.fx.walked();
       if (!this.swan) this.bobbin.play("bobbin_walk", true);
     });
   }
@@ -328,6 +345,7 @@ export class RoomScene extends Phaser.Scene implements View {
       }
     }
     this.bobbin.setDepth(this.bobbin.y);
+    this.fx.update(delta);
     const room = this.g.room;
     if (room.width > WORLD_W) this.cameras.main.centerOn(this.bobbin.x, WORLD_H / 2);
 

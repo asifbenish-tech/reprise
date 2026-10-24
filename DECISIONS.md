@@ -124,6 +124,41 @@ whole numbers only.
 **D-024 · Close-up icons (§4.1).** The selected object's icon is the first frame of its sprite, drawn
 pixel for pixel; objects painted into the background show their initial.
 
+**D-030 · The LOOM layout, literally (§4.1, owner direction).** The owner asked for the original's screen:
+the scene fills the top 296 rows and a black panel takes the bottom 64. The panel holds the speech line
+(centred, in the speaker's colour, no name shown; screen readers still hear the name) and the carved
+Distaff drawn as art (`ui_distaff`), with a note button on each socket, the letters under the staff, the
+Spindle around its head and the close-up box at the right. Walkable floors stop at y 294 so feet stay in
+the scene; a unit test keeps it that way.
+
+**D-031 · Close-up conversations fill the scene (§4.1, §7.9, owner direction).** §7.9 sizes dialogue
+portraits at 160x160. The owner asked for the original's look instead: a conversation line replaces the
+scene with a 640x296 painted close-up, head and shoulders on the right and the words on the left. The
+`por_*` images are therefore 640x296. Speakers without a close-up speak in the world, above the panel.
+
+**D-032 · Pixel lettering is still HTML text (§7.9).** §7.9 says text is not pixel art: it must stay
+crisp, scale, reach screen readers and allow right-to-left languages. The lettering is a pixel typeface
+(Pixelify Sans, SIL Open Font License, bundled with the build, no network) set on the HTML layer, so all
+four still hold; scripts it lacks (Hebrew, for one) fall back to the serif. Settings has "Pixel lettering"
+to switch to the plain serif for readability.
+
+**D-033 · Casting is visible in the world (§4.1, §7.5, owner direction).** While notes sound, Bobbin
+lifts the Distaff (sprite frames 9 and 10) and its tip glows in each note's colour, lighting the room
+through the normal-mapped layers. A finished draft flares, sends sparks along an arc to its target and
+bursts there; a phrase that is no draft fizzles grey. The Spindle's looped casts only pulse at their
+target, so a loop never makes Bobbin wave the staff every bar. Low detail, reduced motion and the bot
+get fewer sparks and no flare.
+
+**D-034 · The notation strip (§4.1, §7.6).** The contour line above the Distaff became five thin lines with
+a coloured note head over each played socket (in Expert, evenly spaced, so only the contour shows), and
+a played note's glyph floats up off its socket. This is how the owner's "notes, like a music box" request
+is met without adding a second note display.
+
+**D-035 · Placeholder labels and signs (§7.9).** §7.9 labels placeholder characters with their ID. The
+owner asked for better-looking art, so the second-pass placeholders are drawn without ID labels; the
+manifest still marks every image `placeholder`. Signs painted into rooms use the words the strings
+already say (the billboard, the Spire's slogan), never a franchise name.
+
 ## Data formats (§9.5) extensions
 
 **D-025 · Extra fields.** `HotspotDef` gains `name`, `talk`, `listen`, `person`, `stand`, `when`, `sprite`

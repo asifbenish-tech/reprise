@@ -12,13 +12,14 @@ const hz = (m: number): number => 440 * Math.pow(2, (m - 69) / 12);
 
 type Node = Tone.ToneAudioNode & { dispose(): unknown };
 
-function build(nodes: Node[], output: Tone.ToneAudioNode, play: Instrument["play"]): Instrument {
+function build(nodes: Node[], output: Tone.ToneAudioNode, play: Instrument["play"], gap = 0.0005): Instrument {
   // Tone's monophonic voices and envelopes need start times in order; two callers scheduling the same
-  // instrument a few milliseconds apart (a loop and a stinger, say) must never throw.
+  // instrument a few milliseconds apart (a loop and a stinger, say) must never throw. `gap` is the
+  // shortest spacing the voice tolerates.
   let last = -1;
   return {
     play(m, d, t, v) {
-      if (t <= last) t = last + 0.0005;
+      if (t < last + gap) t = last + gap;
       last = t;
       play(m, d, t, v);
     },
@@ -51,7 +52,7 @@ const makers: Record<string, () => Instrument> = {
       clar.triggerAttackRelease(hz(m), d, t, v);
       harp.triggerAttack(hz(m), t);
       glass.triggerAttackRelease(hz(m + 12), d * 1.4, t, v * 0.8);
-    });
+    }, 0.012); // the pluck's noise burst lasts attackNoise / frequency (under 5 ms at c4); two notes inside it throw
   },
   swan() {
     const out = new Tone.Gain(1);

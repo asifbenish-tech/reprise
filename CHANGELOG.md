@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## Look pass (owner feedback on Release 1)
+
+- The original's screen: the scene on top, a black panel below with the speech line in the speaker's
+  colour and the carved Distaff, whose sockets hold glowing spools; a five-line notation strip writes the
+  notes as they sound and each played note floats up off its socket (DECISIONS.md D-030, D-034).
+- Conversations as painted close-ups that fill the scene, words on the left (D-031).
+- Pixel lettering on the HTML layer, with a Settings switch back to plain text (D-032).
+- Casting: Bobbin raises the staff, its tip lights the room in the note's colour, a finished draft flares
+  and its light travels to the target; a wrong phrase fizzles (D-033).
+- Richer placeholder art: dithered, lit rooms; shaded characters; new close-ups; the staff as art (D-035).
+- Fix: two Distaff notes less than 5 ms apart (two keys at once) no longer throw in the harp voice.
+
 ## Release 1 candidate: Episode 1 (Prologue, Act I, Act II)
 
 Everything below runs on placeholder art and placeholder music, so final assets drop in by replacing files.

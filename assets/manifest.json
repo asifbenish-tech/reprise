@@ -381,10 +381,10 @@
   {
    "id": "bobbin",
    "path": "art/chars/bobbin.png",
-   "w": 288,
-   "h": 64,
-   "frames": 9,
-   "frameW": 32,
+   "w": 440,
+   "h": 80,
+   "frames": 11,
+   "frameW": 40,
    "normal": "art/chars/bobbin_n.png",
    "status": "placeholder",
    "recipe": "char:bobbin"
@@ -685,8 +685,8 @@
   {
    "id": "por_bobbin",
    "path": "art/portraits/bobbin.png",
-   "w": 160,
-   "h": 160,
+   "w": 640,
+   "h": 296,
    "frames": 1,
    "status": "placeholder",
    "recipe": "portrait:bobbin"
@@ -694,8 +694,8 @@
   {
    "id": "por_skein",
    "path": "art/portraits/skein.png",
-   "w": 160,
-   "h": 160,
+   "w": 640,
+   "h": 296,
    "frames": 1,
    "status": "placeholder",
    "recipe": "portrait:skein"
@@ -703,8 +703,8 @@
   {
    "id": "por_receptionist",
    "path": "art/portraits/receptionist.png",
-   "w": 160,
-   "h": 160,
+   "w": 640,
+   "h": 296,
    "frames": 1,
    "status": "placeholder",
    "recipe": "portrait:receptionist"
@@ -712,8 +712,8 @@
   {
    "id": "por_lyrix",
    "path": "art/portraits/lyrix.png",
-   "w": 160,
-   "h": 160,
+   "w": 640,
+   "h": 296,
    "frames": 1,
    "status": "placeholder",
    "recipe": "portrait:lyrix"
@@ -721,8 +721,8 @@
   {
    "id": "por_lyra",
    "path": "art/portraits/lyra.png",
-   "w": 160,
-   "h": 160,
+   "w": 640,
+   "h": 296,
    "frames": 1,
    "status": "placeholder",
    "recipe": "portrait:lyra"
@@ -730,8 +730,8 @@
   {
    "id": "por_engineer",
    "path": "art/portraits/engineer.png",
-   "w": 160,
-   "h": 160,
+   "w": 640,
+   "h": 296,
    "frames": 1,
    "status": "placeholder",
    "recipe": "portrait:engineer"
@@ -739,8 +739,8 @@
   {
    "id": "por_coach",
    "path": "art/portraits/coach.png",
-   "w": 160,
-   "h": 160,
+   "w": 640,
+   "h": 296,
    "frames": 1,
    "status": "placeholder",
    "recipe": "portrait:coach"
@@ -748,8 +748,8 @@
   {
    "id": "por_marcus",
    "path": "art/portraits/marcus.png",
-   "w": 160,
-   "h": 160,
+   "w": 640,
+   "h": 296,
    "frames": 1,
    "status": "placeholder",
    "recipe": "portrait:marcus"
@@ -757,8 +757,8 @@
   {
    "id": "por_commuter",
    "path": "art/portraits/commuter.png",
-   "w": 160,
-   "h": 160,
+   "w": 640,
+   "h": 296,
    "frames": 1,
    "status": "placeholder",
    "recipe": "portrait:commuter"
@@ -766,8 +766,8 @@
   {
    "id": "por_choreographer",
    "path": "art/portraits/choreographer.png",
-   "w": 160,
-   "h": 160,
+   "w": 640,
+   "h": 296,
    "frames": 1,
    "status": "placeholder",
    "recipe": "portrait:choreographer"
@@ -775,8 +775,8 @@
   {
    "id": "por_juno",
    "path": "art/portraits/juno.png",
-   "w": 160,
-   "h": 160,
+   "w": 640,
+   "h": 296,
    "frames": 1,
    "status": "placeholder",
    "recipe": "portrait:juno"
@@ -784,8 +784,8 @@
   {
    "id": "por_host",
    "path": "art/portraits/host.png",
-   "w": 160,
-   "h": 160,
+   "w": 640,
+   "h": 296,
    "frames": 1,
    "status": "placeholder",
    "recipe": "portrait:host"
@@ -793,11 +793,29 @@
   {
    "id": "por_dominic",
    "path": "art/portraits/dominic.png",
-   "w": 160,
-   "h": 160,
+   "w": 640,
+   "h": 296,
    "frames": 1,
    "status": "placeholder",
    "recipe": "portrait:dominic"
+  },
+  {
+   "id": "ui_distaff",
+   "path": "art/ui/distaff.png",
+   "w": 560,
+   "h": 44,
+   "frames": 1,
+   "status": "placeholder",
+   "recipe": "ui:distaff"
+  },
+  {
+   "id": "ui_crack",
+   "path": "art/ui/crack.png",
+   "w": 16,
+   "h": 16,
+   "frames": 1,
+   "status": "placeholder",
+   "recipe": "ui:crack"
   }
  ],
  "audio": [

@@ -650,6 +650,7 @@
  "set.large": "Large",
  "set.latency": "Input latency: {ms} ms",
  "set.lowdetail": "Low detail (no lighting)",
+ "set.pixelfont": "Pixel lettering (off: plain text)",
  "set.medium": "Medium",
  "set.music": "Music",
  "set.names": "Name set (development builds)",

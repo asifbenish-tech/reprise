@@ -85,6 +85,7 @@ export class SettingsPanel {
       this.row(t("set.textspeed"), this.select(s.textSpeed, [["auto", t("set.auto")], ["click", t("set.click")]], (v) => (s.textSpeed = v))),
       this.row(t("set.contrast"), this.check(s.contrast, (v) => (s.contrast = v))),
       this.row(t("set.lowdetail"), this.check(s.lowDetail, (v) => (s.lowDetail = v))),
+      this.row(t("set.pixelfont"), this.check(s.pixelFont, (v) => (s.pixelFont = v))),
       this.row(t("set.reset"), this.select(s.resetBeats, [[2, t("set.reset.2")], [4, t("set.reset.4")], [999, t("set.reset.never")]], (v) => { s.resetBeats = v; if (this.g.distaff) this.g.distaff.resetBeats = v; })),
       inGame ? this.row(t("set.difficulty"), this.select(this.g.save.difficulty, [["practice", t("diff.practice")], ["standard", t("diff.standard")], ["expert", t("diff.expert")]], (v: Difficulty) => { this.g.save.difficulty = v; this.g.persist(true); this.g.hud?.refresh(); })) : null,
       typeof __DEBUG__ !== "undefined" && __DEBUG__ ? this.row(t("set.names"), this.select(nameSet(), [["loom", "loom"], ["original", "original"]], (v) => { setNameSet(v); s.names = v; })) : null,

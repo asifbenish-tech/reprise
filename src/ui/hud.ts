@@ -1,5 +1,6 @@
-// src/ui/hud.ts: the HTML layer over the canvas: speech, dialogue with portraits, captions,
-// the Distaff, the Loom View's controls and the menus. Screen readers read it (GDD 4.7, 7.9).
+// src/ui/hud.ts: the HTML layer over the canvas: the speech line in the black panel, close-up
+// conversations, captions, the Distaff, the Loom View's controls and the menus. Screen readers read it
+// (GDD 4.1, 4.7, 7.9).
 import type * as Phaser from "phaser";
 import type { Phrase, SpeakerDef, Target } from "../content/types";
 import { manifest, artUrl, speakers } from "../content/load";
@@ -30,6 +31,7 @@ export class HudImpl implements Hud {
   private skipSpeech: (() => void) | null = null;
   private loomThread: string | null = null;
   private loomSig = "";
+  private dialogHide = 0;
   readonly book: BookOfPatterns;
   readonly settings: SettingsPanel;
   scene: RoomScene | null = null;
@@ -56,6 +58,7 @@ export class HudImpl implements Hud {
     this.settings = new SettingsPanel(g);
     this.distaff.onBook = () => this.book.open();
     this.distaff.onMenu = () => this.settings.open();
+    this.distaff.onStrip = (on) => this.root.classList.toggle("notating", on);
     this.settings.onBook = () => this.book.open();
     this.root = h("div", { id: "hud", dir: textDir() }, this.loomPanel, this.revealEl, this.hoverEl, this.speech, this.captionEl, this.toastEl, this.dialog, this.wheel, this.distaff.el, this.book.el, this.settings.el, this.live);
     parent.append(this.root);
@@ -69,7 +72,9 @@ export class HudImpl implements Hud {
     const run = async () => {
       const sp = speakers.get(speaker);
       clear(this.speech);
-      this.speech.append(h("span", { class: "who", style: `color:${sp?.color ?? "#fff"}` }, sp ? t(sp.name) : speaker), h("span", { class: "line" }, text));
+      // as in the original: the line alone, in the speaker's colour, centred under the scene
+      this.speech.style.setProperty("--who", sp?.color ?? "#ffffff");
+      this.speech.append(h("span", { class: "sr-only" }, `${sp ? t(sp.name) : speaker}: `), h("span", { class: "line" }, text));
       this.speech.classList.add("show");
       this.announce(`${sp ? t(sp.name) : speaker}: ${text}`);
       await new Promise<void>((res) => {
@@ -96,32 +101,44 @@ export class HudImpl implements Hud {
     return false;
   }
 
+  /**
+   * A conversation line. Speakers with a close-up fill the scene with it: the painted head on the right,
+   * the words on the left (GDD 4.1). The rest speak in the world, above the panel.
+   */
   dialogue(sp: SpeakerDef, text: string, choices: string[] | null): Promise<number> {
+    window.clearTimeout(this.dialogHide);
     clear(this.dialog);
     const portrait = manifest.images.find((i) => i.id === sp.portrait);
-    const img = portrait ? h("img", { class: "portrait", src: artUrl(portrait.path), alt: "" }) : h("div", { class: "portrait" });
-    const body = h("div", { class: "dlg-body" }, h("div", { class: "who", style: `color:${sp.color}` }, t(sp.name)), h("p", { class: "dlg-text" }, text));
-    this.dialog.append(img, body);
-    this.dialog.classList.remove("hidden");
+    this.dialog.className = portrait ? "closeup-dlg" : "inworld-dlg";
+    this.dialog.style.setProperty("--who", sp.color);
+    if (portrait) this.dialog.append(h("img", { class: "portrait", src: artUrl(portrait.path), alt: "" }));
+    const body = h("div", { class: "dlg-body" }, h("div", { class: "who" }, t(sp.name)), h("p", { class: "dlg-text" }, text));
+    this.dialog.append(body);
+    this.root.classList.add("conversing");
     this.announce(`${t(sp.name)}: ${text}`);
     return new Promise((res) => {
       const finish = (i: number) => {
-        this.dialog.classList.add("hidden");
         this.advance = null;
+        this.dialog.onclick = null;
+        // the next line usually follows at once; only an empty gap closes the close-up
+        this.dialogHide = window.setTimeout(() => {
+          this.dialog.classList.add("hidden");
+          this.root.classList.remove("conversing");
+        }, 120);
         res(i);
       };
       if (choices && choices.length) {
         const list = h("div", { class: "choices", role: "menu" });
         choices.forEach((c, i) => list.append(h("button", { class: "choice", role: "menuitem", onclick: () => finish(i) }, c)));
         body.append(list);
-        (list.firstChild as HTMLButtonElement | null)?.focus();
+        (list.firstChild as HTMLButtonElement | null)?.focus({ preventScroll: true });
         this.advance = this.g.fast ? () => finish(0) : null;
         if (this.g.fast) finish(0);
       } else {
         const next = h("button", { class: "dlg-next", "aria-label": t("ui.continue"), onclick: () => finish(0) }, "▸");
         body.append(next);
         this.dialog.onclick = (e) => {
-          if (e.target === this.dialog || (e.target as HTMLElement).classList.contains("dlg-text")) finish(0);
+          if (!(e.target as HTMLElement).closest("button")) finish(0);
         };
         this.advance = () => finish(0);
         if (this.g.fast) finish(0);

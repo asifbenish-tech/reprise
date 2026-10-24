@@ -4,6 +4,10 @@ import { describe, expect, it } from "vitest";
 import type { RoomDef } from "../../src/content/types";
 import { check, validCondition } from "../../src/world/flags";
 import { clampInside, findPath, inside, type Pt } from "../../src/world/walker";
+import { STAFF_TIP } from "../../src/world/staff-tip";
+import { BOBBIN_TIP } from "../../tools/figures";
+
+const SCENE_H = 296; // src/world/room-scene.ts: the panel starts here
 
 describe("conditions", () => {
   const s = { flags: { a: true }, learned: ["tuning"], solved: ["P1"], ownedNotes: 4, tools: ["combing"], capacity: 2 };
@@ -43,5 +47,17 @@ describe("content", () => {
   it("passes schema and reference validation (tools/validate-content.ts)", () => {
     const out = execFileSync("npx", ["tsx", "tools/validate-content.ts"], { cwd: new URL("../../", import.meta.url), encoding: "utf8" });
     expect(out).toMatch(/content ok/);
+  });
+});
+
+describe("the LOOM layout (GDD 4.1)", () => {
+  const rooms = readdirSync(new URL("../../content/rooms/", import.meta.url)).map(
+    (f) => JSON.parse(readFileSync(new URL(`../../content/rooms/${f}`, import.meta.url), "utf8")) as RoomDef,
+  );
+  it("keeps every walkable point above the panel, so Bobbin's feet stay in the scene", () => {
+    for (const r of rooms) for (const [, y] of r.walk as Pt[]) expect(y, r.id).toBeLessThan(SCENE_H);
+  });
+  it("puts the casting light where the sprite painter drew the Distaff's tip", () => {
+    expect(STAFF_TIP).toEqual(BOBBIN_TIP);
   });
 });

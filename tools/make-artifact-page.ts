@@ -8,7 +8,8 @@ const script = html.match(/<script type="module"[^>]*src="([^"]+)"/)?.[1];
 const css = html.match(/<link rel="stylesheet"[^>]*href="([^"]+)"/)?.[1];
 const title = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? "Reprise";
 if (!script || !css) throw new Error("dist/index.html has no bundle; run vite build first");
-const style = readFileSync(new URL(css.replace(/^\.\//, ""), dist), "utf8");
+// the stylesheet's own relative urls (the bundled fonts) are relative to assets/, where it lived
+const style = readFileSync(new URL(css.replace(/^\.\//, ""), dist), "utf8").replace(/url\(\.\//g, "url(./assets/");
 writeFileSync(
   new URL("artifact.html", dist),
   `<title>${title}</title>

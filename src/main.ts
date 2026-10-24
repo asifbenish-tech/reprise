@@ -1,5 +1,7 @@
 // src/main.ts: boot, title screen, audio unlock (GDD 9.3 rule 2: audio starts with a click).
 import * as Phaser from "phaser";
+import "@fontsource/pixelify-sans/latin-400.css";
+import "@fontsource/pixelify-sans/latin-600.css";
 import "./ui/style.css";
 import { t } from "./content/strings";
 import { readSave, readSettings, writeSettings, type Difficulty } from "./core/save";
@@ -58,6 +60,7 @@ function layout(): void {
   const ts = { s: 0.85, m: 1, l: 1.25 }[settings.textSize];
   stage.style.setProperty("--ts", String(ts));
   document.body.classList.toggle("contrast", settings.contrast);
+  document.body.classList.toggle("plainfont", !settings.pixelFont);
   document.body.classList.toggle("portrait", hgt > w && w < WORLD_W);
 }
 window.addEventListener("resize", layout);

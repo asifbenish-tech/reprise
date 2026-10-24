@@ -67,3 +67,9 @@ the generators never overwrite `final` files. To drop in a recorded stem, put `<
   Run workflow (choose the name set). It builds and deploys `dist/`; nothing deploys on a plain push.
 - **itch.io:** `npm run build`, zip the contents of `dist/`, upload as an HTML5 game ("This file will be
   played in the browser"), viewport 1280x720.
+
+## Third-party
+
+- [Phaser](https://phaser.io) and [Tone.js](https://tonejs.github.io), MIT.
+- [Pixelify Sans](https://github.com/eifetx/Pixelify-Sans) via `@fontsource/pixelify-sans`, SIL Open Font
+  License 1.1; the license ships with every build as `licenses/pixelify-sans-OFL.txt`.
