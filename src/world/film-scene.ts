@@ -22,6 +22,9 @@ interface Ring {
 const PINK = 0xff7ae0;
 const GOLD = 0xffd27a;
 const CAGE = 10; // notes in the loop that circles the flock
+/** Marcus's memory: where each kind of music played on the street, and its colour. */
+const STYLES: [number, number, number][] = [[58, 196, 0xffd27a], [100, 196, 0xffb050], [140, 206, 0xf0e0a0], [234, 192, 0xff5a4a], [397, 192, 0xd8f040], [526, 108, 0x8ae08a], [586, 192, 0xff8ad8]];
+const TOWER_TOP: [number, number] = [330, 40];
 const CYAN = 0x66e0ff;
 const RIFT: [number, number] = [330, 66];
 const TOWER: [number, number] = [226, 34];
@@ -54,6 +57,8 @@ export class FilmScene extends Phaser.Scene implements FilmControl {
   private cage: Phaser.GameObjects.Image[] = [];
   private cageA = { v: 0 };
   private lastCall = 0;
+  private lastMemory = 0;
+  private takenOver = false;
 
   constructor() {
     super({ key: "film" });
@@ -88,6 +93,7 @@ export class FilmScene extends Phaser.Scene implements FilmControl {
     this.pulls = [];
     this.cage = [];
     this.cageA.v = 0;
+    this.takenOver = false;
     this.rift.v = 0;
     this.hunger = null;
     this.songFrom = null;
@@ -110,7 +116,10 @@ export class FilmScene extends Phaser.Scene implements FilmControl {
     this.shotId = id;
     if (id === "island") this.keep(this.add.image(0, 0, "film_island").setOrigin(0, 0));
     else if (id === "space") this.space();
-    else this.earth();
+    else if (id === "earth") this.earth();
+    else if (id === "mem_before") this.keep(this.add.image(0, 0, "memory_street").setOrigin(0, 0));
+    else if (id === "mem_fight") this.keep(this.add.image(0, 0, "memory_fight").setOrigin(0, 0));
+    else this.keep(this.add.image(0, 0, "memory_now").setOrigin(0, 0));
     await this.fade(false, 900);
   }
 
@@ -182,9 +191,54 @@ export class FilmScene extends Phaser.Scene implements FilmControl {
         this.keep(this.add.image(540, 282, "fx_note").setTint(k % 5 === 4 ? CYAN : PINK).setDepth(32).setBlendMode(Phaser.BlendModes.ADD).setAlpha(0)),
       );
       this.tweens.add({ targets: this.cageA, v: 1, duration: 3500, ease: "Sine.easeIn" });
+    } else if (id === "takeover") {
+      // the street greys, the tower starts to broadcast
+      this.takenOver = true;
+      const grey = this.keep(this.add.image(0, 0, "memory_street_grey").setOrigin(0, 0).setAlpha(0).setDepth(5));
+      this.tweens.add({ targets: grey, alpha: 1, duration: 4500, ease: "Sine.easeIn" });
+      this.songFrom = TOWER_TOP;
     } else if (id === "falter") {
       this.tweens.add({ targets: this.sick, v: 1, duration: 5000 });
       this.tweens.add({ targets: this.anchor, x: this.anchor.x + 70, y: this.anchor.y + 46, duration: 7000, ease: "Sine.easeIn" });
+    }
+  }
+
+  private memoryNote(): void {
+    const id = this.shotId;
+    const note = (x: number, y: number, tint: number, add = true) =>
+      this.keep(this.add.image(x, y, "fx_note").setTint(tint).setDepth(30).setBlendMode(add ? Phaser.BlendModes.ADD : Phaser.BlendModes.NORMAL));
+    if (id === "mem_before" && !this.takenOver) {
+      const [x, y, c] = STYLES[Math.floor(Math.random() * STYLES.length)];
+      const n = note(x + (Math.random() - 0.5) * 16, y, c);
+      this.tweens.add({ targets: n, y: y - 40 - Math.random() * 40, x: n.x + (Math.random() - 0.5) * 30, alpha: 0, duration: 2200, ease: "Sine.easeOut", onComplete: () => n.destroy() });
+    } else if (id === "mem_before") {
+      // one sound, from one tower, falling on everybody
+      const n = note(TOWER_TOP[0] + (Math.random() - 0.5) * 20, TOWER_TOP[1] + 10, PINK);
+      const [tx, ty] = STYLES[Math.floor(Math.random() * STYLES.length)];
+      this.tweens.add({ targets: n, x: tx, y: ty - 10, duration: 1500, ease: "Sine.easeIn", onComplete: () => n.destroy() });
+    } else if (id === "mem_fight") {
+      // their songs go out, and break on the wall
+      const x0 = 60 + Math.floor(Math.random() * 6) * 50;
+      const n = note(x0, 196, [0xffd27a, 0xff5a4a, 0x8ae08a, 0xd8f040, 0xff8ad8, 0xffb050][Math.floor(Math.random() * 6)]);
+      this.tweens.add({
+        targets: n,
+        x: 424,
+        y: 120 + Math.random() * 100,
+        duration: 1100,
+        ease: "Sine.easeIn",
+        onComplete: () => {
+          n.setBlendMode(Phaser.BlendModes.NORMAL).setTint(0x77748a);
+          this.tweens.add({ targets: n, x: n.x - 30, y: n.y + 60, alpha: 0, duration: 900, ease: "Quad.easeIn", onComplete: () => n.destroy() });
+        },
+      });
+      if (Math.random() < 0.5) {
+        const p = note(430, 60 + Math.random() * 170, PINK);
+        this.tweens.add({ targets: p, x: 40 + Math.random() * 300, y: p.y + (Math.random() - 0.5) * 40, alpha: 0, duration: 1600, onComplete: () => p.destroy() });
+      }
+    } else if (id === "mem_now" && Math.random() < 0.5) {
+      // his own sound, kept: small and gold and still there
+      const n = note(300 + (Math.random() - 0.5) * 20, 206, 0xffd27a);
+      this.tweens.add({ targets: n, y: 160 - Math.random() * 30, alpha: 0, duration: 2400, ease: "Sine.easeOut", onComplete: () => n.destroy() });
     }
   }
 
@@ -291,6 +345,11 @@ export class FilmScene extends Phaser.Scene implements FilmControl {
       fx.fillEllipse(404, 178, 70, 26);
       fx.fillStyle(0xffd0f4, 0.5 * k);
       fx.fillEllipse(404, 178, 16, 6);
+    }
+    // Marcus's memory: every kind of music rising off the street in its own colour, until one sound comes down
+    if (this.shotId?.startsWith("mem_") && time - this.lastMemory > 260) {
+      this.lastMemory = time;
+      this.memoryNote();
     }
     // the flock's own song: calls passing from swan to swan. Once the hook is going round, none gets through.
     if (this.shotId === "space" && this.fliers.length > 1 && time - this.lastCall > 620) {

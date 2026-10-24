@@ -48,6 +48,7 @@ BOT_SEEDS=5 npm run bot
 | Music notation | `music/src/*.json` -> `tools/render-stems.py` -> `music/src/*.mid`, `assets/audio/stems/` |
 | Images | `assets/manifest.json` -> `tools/make-placeholders.ts`, `tools/make-normals.ts` |
 | Judgment calls and spec conflicts | `DECISIONS.md` |
+| The story arc for the rest of the game | `STORY.md` |
 
 ## Replacing placeholders
 

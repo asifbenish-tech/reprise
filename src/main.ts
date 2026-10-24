@@ -69,7 +69,10 @@ function layout(): void {
 }
 window.addEventListener("resize", layout);
 layout();
-hud.settings.onApply = layout;
+hud.settings.onApply = () => {
+  layout();
+  refreshTitleMusic();
+};
 
 // ---- the title screen ---------------------------------------------------------------------------------
 
@@ -104,13 +107,39 @@ function showTitle(): void {
     h("div", { class: "title-head" }, h("h1", { "aria-label": t("title.name") }, t("title.logo")), weave(), h("p", { class: "subtitle" }, t("title.sub"))),
     h("div", { class: "title-foot" }, bar, h("button", { class: "big", id: "begin", onclick: begin }, t("ui.begin")), h("p", { class: "fine" }, t("title.free"))),
   );
+  refreshTitleMusic();
+  title.append(titleMusic);
   (title.querySelector("#begin") as HTMLButtonElement).focus();
 }
 
+// Browsers keep sound off until the first click; any click on the title starts the title music (D-046).
+let audioStarted: Promise<void> | null = null;
+function wakeAudio(): Promise<void> {
+  audioStarted ??= (async () => {
+    await g.conductor.start(96);
+    g.audioReady();
+    g.playSong("title");
+  })();
+  return audioStarted;
+}
+title.addEventListener("pointerdown", () => void wakeAudio());
+
+// A music switch on the title screen too: some players will want silence from the first second.
+const titleMusic = h("button", {
+  class: "title-music",
+  onclick: () => {
+    g.setMusicOn(!settings.musicOn);
+    refreshTitleMusic();
+  },
+});
+function refreshTitleMusic(): void {
+  titleMusic.textContent = settings.musicOn ? t("ui.music_is_on") : t("ui.music_is_off");
+  titleMusic.classList.toggle("off", !settings.musicOn);
+  titleMusic.setAttribute("aria-pressed", String(settings.musicOn));
+}
+
 async function begin(): Promise<void> {
-  await g.conductor.start(96);
-  g.audioReady();
-  g.playSong("title");
+  await wakeAudio();
   if (!settings.calibrated && !g.fast) await runCalibration(g);
   showMenu();
 }
@@ -136,6 +165,8 @@ function showMenu(): void {
     h("button", { class: "link", onclick: () => hud.settings.open() }, t("ui.menu")),
   );
   append(title, h("div", { class: "title-head" }, h("h1", { "aria-label": t("title.name") }, t("title.logo")), weave(), h("p", { class: "subtitle" }, t("title.sub"))), foot);
+  refreshTitleMusic();
+  title.append(titleMusic);
   (title.querySelector("button.big") as HTMLButtonElement).focus();
 }
 

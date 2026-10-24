@@ -201,6 +201,10 @@ export class HudImpl implements Hud {
     this.skip();
   }
 
+  noteLost(n: number): void {
+    this.distaff.breakNote(n);
+  }
+
   titleCard(show: boolean): void {
     this.card.classList.toggle("show", show);
     if (show) this.announce(`${t("title.name")}. ${t("film.episode")}`);

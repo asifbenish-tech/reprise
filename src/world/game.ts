@@ -13,7 +13,7 @@ import { Distaff } from "../core/distaff";
 import { Spindle } from "../core/spindle";
 import { Effects } from "../core/effects";
 import { LoomModel } from "../core/loom";
-import { newSave, writeSave, type Difficulty, type SaveData, type Settings } from "../core/save";
+import { newSave, writeSave, writeSettings, type Difficulty, type SaveData, type Settings } from "../core/save";
 import type { HotspotDef, NoteIndex, Phrase, RoomDef, SpeakerDef, Target } from "../content/types";
 import { targetKey } from "../content/types";
 import { dialogues, drafts, puzzles as puzzleDefs, rooms, songs, speakers, stemHits, stemNotes } from "../content/load";
@@ -28,8 +28,8 @@ export const STATE_DRAFTS = new Set([
   "hushing", "hushing_rev", "quickening", "quickening_rev", "swelling", "swelling_rev", "tuning_rev",
 ]);
 
-export type FilmShot = "island" | "space" | "earth";
-export type FilmEvent = "tear" | "slip" | "song" | "falter";
+export type FilmShot = "island" | "space" | "earth" | "mem_before" | "mem_fight" | "mem_now";
+export type FilmEvent = "tear" | "slip" | "song" | "falter" | "takeover";
 
 /** The opening film's stage (src/world/film-scene.ts). */
 export interface FilmControl {
@@ -60,6 +60,8 @@ export interface View {
   drain?(from: string, to: string | [number, number], seconds: number): void;
   /** Notes rising from one sprite ("bobbin" for him) that the song playing from another swallows before they carry. */
   muffle?(from: string, by: string): void;
+  /** Gold notes travelling from one sprite into Bobbin's Distaff: a sound given back. */
+  give?(from: string): void;
   /** The swan weaves himself into a man: threads close round him, a flash, the hooded figure on one knee. */
   transform?(): Promise<void>;
   /** Holds Bobbin in one sprite frame (11: on one knee, spent), or null to let him stand again. */
@@ -81,6 +83,8 @@ export interface Hud {
   /** Letterboxed narration with a skip button; returns when the viewer can no longer skip. */
   cinema?(on: boolean, onSkip?: () => void): void;
   titleCard?(show: boolean): void;
+  /** A note's socket breaks on the Distaff (index of the note lost). */
+  noteLost?(n: number): void;
 }
 
 export interface RoomLogic {
@@ -136,12 +140,24 @@ export class Game {
   audioReady(): void {
     if (this.mixer) return;
     this.mixer = new Mixer();
-    this.mixer.setVolumes(this.settings.music, this.settings.effects);
+    this.applyVolumes();
     this.voice = new NoteVoice(this.mixer);
     this.mixer.setSpeechVolume(this.settings.voiceVolume);
     const mixer = this.mixer;
     this.lines = new VoiceLines(() => (this.settings.voices && !this.fast ? mixer.speech : null), (on) => mixer.speaking(on));
     this.conductor.calibrationSec = this.settings.calibrationSec;
+  }
+
+  /** The music level, or silence when the player has switched music off. */
+  applyVolumes(): void {
+    this.mixer?.setVolumes(this.settings.musicOn ? this.settings.music : 0, this.settings.effects);
+  }
+
+  setMusicOn(on: boolean): void {
+    this.settings.musicOn = on;
+    this.applyVolumes();
+    writeSettings(this.settings);
+    this.hud?.refresh();
   }
 
   get busy(): boolean {
@@ -549,6 +565,19 @@ export class Game {
     this.refreshLook();
     this.persist(true);
     this.checkPuzzles();
+  }
+
+  /** The city's song takes another note from the Distaff (the street, D-045); listening to Marcus gives it back. */
+  loseNote(): void {
+    const n = this.library.ownedNotes - 1;
+    if (n < 1) return;
+    this.library.ownedNotes = n;
+    this.distaff.clear();
+    this.bus.emit("notesOwned", { count: n });
+    this.hud?.noteLost?.(n);
+    this.hud?.refresh();
+    this.refreshLook();
+    this.persist(true);
   }
 
   /** The Distaff cracks: only c, d and e remain (P3). */

@@ -349,10 +349,11 @@ export class RoomScene extends Phaser.Scene implements View {
   muffle(from: string, by: string): void {
     if (this.g.fast) return;
     const song = this.sprites.get(by);
+    const at = song ? [song.x + 6, song.y - song.height * 0.55] : this.hotspotCenter(by);
     const src = from === "bobbin" ? this.bobbin : this.sprites.get(from);
-    if (!song || !src) return;
+    if (!at || !src) return;
     const now = performance.now();
-    this.hookRings.push({ x: song.x + 6, y: song.y - song.height * 0.55, start: now, until: now + 3200 });
+    this.hookRings.push({ x: at[0], y: at[1], start: now, until: now + 3200 });
     const starts: [number, number][] =
       from === "bobbin"
         ? [this.fx.tip() ?? [src.x, src.y - 20]]
@@ -375,6 +376,32 @@ export class RoomScene extends Phaser.Scene implements View {
         },
       });
     });
+  }
+
+  give(from: string): void {
+    if (this.g.fast) return;
+    const src = this.sprites.get(from);
+    const tip = this.fx.tip();
+    if (!src || !tip) return;
+    for (let i = 0; i < 8; i++) {
+      const n = this.add.image(src.x + (Math.random() - 0.5) * 20, src.y - src.height * 0.6, "fx_note").setTint(0xffd27a).setDepth(4960).setBlendMode(Phaser.BlendModes.ADD);
+      const mid = { x: (n.x + tip[0]) / 2, y: Math.min(n.y, tip[1]) - 30 - Math.random() * 20 };
+      const curve = new Phaser.Curves.QuadraticBezier(new Phaser.Math.Vector2(n.x, n.y), new Phaser.Math.Vector2(mid.x, mid.y), new Phaser.Math.Vector2(tip[0], tip[1]));
+      const k = { t: 0 };
+      this.tweens.add({
+        targets: k,
+        t: 1,
+        delay: i * 180,
+        duration: 1100,
+        ease: "Sine.easeInOut",
+        onUpdate: () => {
+          const v = curve.getPoint(k.t);
+          n.setPosition(v.x, v.y);
+        },
+        onComplete: () => n.destroy(),
+      });
+    }
+    this.time.delayedCall(8 * 180 + 1100, () => this.fx.note(2, false));
   }
 
   transform(): Promise<void> {

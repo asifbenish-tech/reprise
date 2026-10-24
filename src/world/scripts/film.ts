@@ -2,6 +2,36 @@
 // band, like the original's spoken prologue (owner direction, DECISIONS.md D-037). Skippable at any point.
 import type { FilmEvent, FilmShot, Game } from "../game";
 
+/** Marcus's memory of the street before the Producers' Guild, told over painted plates (owner direction, D-045). */
+export async function marcusMemory(g: Game): Promise<void> {
+  const view = g.view;
+  const hud = g.hud;
+  if (g.fast || !view?.film || !hud?.cinema) return;
+  const film = view.film();
+  let skipped = false;
+  const line = async (key: string) => {
+    if (!skipped) await g.say("marcus", key);
+  };
+  const shot = async (id: FilmShot) => {
+    if (!skipped) await film.shot(id);
+  };
+  await g.cutscene(async () => {
+    hud.cinema?.(true, () => (skipped = true));
+    await shot("mem_before");
+    await line("mem.1");
+    await line("mem.2");
+    if (!skipped) film.event("takeover");
+    await line("mem.3");
+    await line("mem.4");
+    await shot("mem_fight");
+    await line("mem.5");
+    await shot("mem_now");
+    await line("mem.6");
+    await film.end(skipped ? 300 : 1000);
+    hud.cinema?.(false);
+  });
+}
+
 export async function openingFilm(g: Game): Promise<void> {
   const view = g.view;
   const hud = g.hud;

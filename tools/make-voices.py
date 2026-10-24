@@ -27,9 +27,10 @@ GAP = 0.35  # seconds of silence between lines inside a sprite
 SPRITE_SECONDS = 75
 
 # Casting: a LibriTTS speaker for each character, a speed (Piper length_scale: above 1 is slower) and an
-# optional filter. Chosen by pitch (tools could not listen); change a number here to recast a part.
+# optional filter. Chosen by pitch and by how much the voice's pitch moves within a sentence (tools could
+# not listen); change a number here to recast a part. Bobbin was 720 until the owner found it robotic.
 CAST = {
-    "bobbin": {"sid": 720, "scale": 1.06},
+    "bobbin": {"sid": 876, "scale": 1.0},
     "jogger": {"sid": 6, "scale": 0.88},
     "commuter": {"sid": 186, "scale": 1.12},
     "engineer": {"sid": 498, "scale": 1.12},
@@ -47,6 +48,8 @@ CAST = {
     "scanner": {"sid": 858, "scale": 0.95, "fx": "robot"},
     "klaxon": {"sid": 858, "scale": 0.9, "fx": "robot"},
 }
+# Piper's variation: more than its defaults (0.667, 0.8) so the delivery wanders a little, as people do
+NOISE = {"noise_scale": 0.72, "noise_w_scale": 0.92}
 SILENT = {"skein", "lead_swan"}  # they honk and call; the game plays their instrument signature instead
 
 FX = {
@@ -123,6 +126,8 @@ def who_says_what(strings):
     for key in strings:
         if key.startswith(("look.", "self.", "fail.", "film.")) and not key.startswith(UNSPOKEN):
             pairs.add(("bobbin", key))
+        if key.startswith("mem."):
+            pairs.add(("marcus", key))
     return sorted(p for p in pairs if p[1] in strings)
 
 
@@ -134,7 +139,8 @@ def synth(voice, cfg_cls, speaker, text, path):
     cast = CAST.get(speaker, CAST["bobbin"])
     import numpy as np
 
-    chunks = [c.audio_float_array for c in voice.synthesize(text, syn_config=cfg_cls(speaker_id=cast["sid"], length_scale=cast["scale"]))]
+    cfg = cfg_cls(speaker_id=cast["sid"], length_scale=cast["scale"], **NOISE)
+    chunks = [c.audio_float_array for c in voice.synthesize(text, syn_config=cfg)]
     a = np.concatenate(chunks) if chunks else np.zeros(1, dtype=np.float32)
     # trim silence, then bring every line to the same peak
     loud = np.where(np.abs(a) > 0.01)[0]
@@ -190,7 +196,7 @@ def main():
     clips = {}
     for lid, (speaker, words) in sorted(lines.items()):
         cast = CAST.get(speaker, CAST["bobbin"])
-        tag = hashlib.sha1(json.dumps([cast, FX.get(cast.get("fx", "")), words]).encode()).hexdigest()[:16]
+        tag = hashlib.sha1(json.dumps([cast, NOISE, FX.get(cast.get("fx", "")), words]).encode()).hexdigest()[:16]
         path = os.path.join(CACHE, f"{tag}.wav")
         if not os.path.exists(path):
             synth(voice, SynthesisConfig, speaker, words, path)

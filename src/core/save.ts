@@ -96,6 +96,8 @@ export interface Settings {
   /** Spoken lines (D-044), and how loud they are. */
   voices: boolean;
   voiceVolume: number;
+  /** Music on or off, from the ♪ button (the level is `music`). */
+  musicOn: boolean;
   textSpeed: "auto" | "click";
   names: string;
 }
@@ -113,6 +115,7 @@ export const DEFAULT_SETTINGS: Settings = {
   pixelFont: true,
   voices: true,
   voiceVolume: 0.9,
+  musicOn: true,
   textSpeed: "auto",
   names: "",
 };

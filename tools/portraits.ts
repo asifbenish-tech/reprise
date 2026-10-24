@@ -526,7 +526,7 @@ const BUSTS: Record<string, Bust> = {
   lyra: { field: ["#3a1a14", "#6a3420", "#9a5a30"], body: "#c8683e", skin: "#e2b08a", hair: "#5a2c1a", hairStyle: "ponytail", eyes: "#5a3a20", collar: "v", accent: "#f0d0a0", brow: -0.4, smile: -0.2 },
   engineer: { field: ["#0a0c20", "#14204a", "#22346a"], body: "#3a5a8a", skin: "#c89a78", hair: "#8a8a8a", hairStyle: "short", headphones: "on", collar: "round", lids: 0.45, stubble: true },
   coach: { field: ["#3a1430", "#6a2450", "#9a3a6a"], body: "#9a4478", skin: "#ecc0a0", hair: "#2a1414", hairStyle: "bun", accent: "#ffd090", collar: "v", smile: 0.6, brow: -0.2 },
-  marcus: { field: ["#2a1a3a", "#5a3a5a", "#9a6a6a"], body: "#a05a30", skin: "#7a4a30", hair: "#1a1010", hairStyle: "short", collar: "round", stubble: true, smile: 0.3 },
+  marcus: { field: ["#2a1a3a", "#5a3a5a", "#9a6a6a"], body: "#3a6a9a", skin: "#7a4a30", hair: "#1a1010", hairStyle: "short", collar: "round", stubble: true, smile: 0.3, headphones: "on", accent: "#e8c040" },
   commuter: { field: ["#1a1e2a", "#2e3446", "#4a5266"], body: "#5a6272", skin: "#d8a888", hair: "#4a3424", hairStyle: "short", headphones: "on", collar: "jacket", accent: "#c8ccd8", lids: 0.3 },
   choreographer: { field: ["#1a0a20", "#3a0c30", "#6a1440"], body: "#26242e", skin: "#e0b090", hair: "#ececf4", hairStyle: "short", accent: "#ff4040", collar: "high", brow: 0.9, smile: -0.4 },
   juno: { field: ["#0e1a12", "#1a3a24", "#2a5a36"], body: "#2a7a54", skin: "#8a5a3c", hair: "#1a1010", hairStyle: "puffs", headphones: "neck", accent: "#7fe0a0", collar: "round", smile: 0.5 },

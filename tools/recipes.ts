@@ -6,6 +6,7 @@ import { band, dither, fbm, glow, vgrad } from "./paint";
 import { ROOMS } from "./rooms";
 import { closeup } from "./portraits";
 import { filmEarth, filmIsland, filmSwanSmall, titleSky } from "./cinema";
+import { memoryFight, memoryNow, memoryStreet, memoryStreetGrey } from "./memory";
 
 const CHARS: Record<string, (img: Img, n: number) => void> = {
   bobbin(img, n) {
@@ -67,7 +68,7 @@ const CHARS: Record<string, (img: Img, n: number) => void> = {
       metal(img, cx + 12, 58, 14, 14, "#c89848");
       img.ellipse(cx - 20, 56, 7, 2, "#e0c080");
       img.ellipse(cx + 19, 58, 7, 2, "#f0d090");
-      person(img, ox, fw, { h: 50, body: "#a05a30", skin: "#7a4a30", hair: "#1a1010", legs: "#3a2a20", accent: "#e8c040" }, 0, (i % 2) * 0.8, true);
+      person(img, ox, fw, { h: 50, body: "#3a6a9a", skin: "#7a4a30", hair: "#1a1010", legs: "#3a2a20", accent: "#e8c040", headphones: "on" }, 0, (i % 2) * 0.8, true);
       img.line(cx - 12, 38 - (i % 2) * 8, cx - 20, 55, "#ecd8a8");
       img.line(cx + 14, 40 - ((i + 1) % 2) * 8, cx + 19, 57, "#ecd8a8");
     });
@@ -301,6 +302,10 @@ export function draw(recipe: string, w: number, h: number, n: number): Img {
     if (id === "swan_small") filmSwanSmall(img, n);
     else if (fn) fn(img);
     else throw new Error(`No cinema recipe ${id}`);
+  } else if (kind === "memory") {
+    const fn = { street: memoryStreet, street_grey: memoryStreetGrey, fight: memoryFight, now: memoryNow }[id];
+    if (!fn) throw new Error(`No memory recipe ${id}`);
+    fn(img);
   } else if (kind === "ui" && id === "distaff") distaff(img);
   else if (kind === "ui" && id === "crack") crack(img);
   else throw new Error(`Unknown recipe ${recipe}`);

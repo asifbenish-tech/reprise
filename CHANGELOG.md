@@ -11,6 +11,12 @@
   and its light travels to the target; a wrong phrase fizzles (D-033).
 - Richer placeholder art: dithered, lit rooms; shaded characters; new close-ups; the staff as art (D-035).
 - Fix: two Distaff notes less than 5 ms apart (two keys at once) no longer throw in the harp voice.
+- The street takes the e; Marcus's memory (a film in his voice) and his rhythm give it back; Bobbin names
+  his road (D-045). Marcus wears headphones.
+- A twelve-bar title theme that starts on the first click; a music switch on the title, the panel and in
+  Settings (D-046).
+- Bobbin's voice recast and livelier delivery for everyone (D-045).
+- STORY.md: the owner's arc for the rest of the game (D-047).
 - Spoken lines: every character's lines voiced (generated offline, 417 lines), Settings switch and level,
   music dips under speech (D-044).
 - The hook drowns every other sound, on screen, in the film and the park; Bobbin works out that this is

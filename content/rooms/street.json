@@ -191,5 +191,6 @@
    "color": "#ff6ad5",
    "intensity": 0.8
   }
- ]
+ ],
+ "onEnter": "script:prologue.street_enter"
 }

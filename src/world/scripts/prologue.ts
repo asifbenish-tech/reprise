@@ -1,6 +1,6 @@
 // src/world/scripts/prologue.ts: the Crossing, the landing, and the park (P1-P6).
 import type { Game, LogicFactory, ScriptFn } from "../game";
-import { openingFilm } from "./film";
+import { marcusMemory, openingFilm } from "./film";
 
 async function callDraft(g: Game, draft: "opening" | "healing"): Promise<void> {
   g.view?.setSprite("lead_swan", { anim: "lead_swan" });
@@ -183,15 +183,41 @@ export const scripts: Record<string, ScriptFn> = {
     });
   },
 
+  /** Out of the park, the city's song is everywhere, and it takes another note (owner direction, D-045). */
+  async street_enter(g) {
+    if (g.flag("street_drained") || g.library.learned.has("waking")) return;
+    await g.cutscene(async () => {
+      g.setFlag("street_drained");
+      g.playSong("again_again");
+      await g.say("bobbin", "street.drained1");
+      g.view?.muffle?.("bobbin", "speaker_pole");
+      g.voice.playCracked(2);
+      g.loseNote();
+      await g.say("bobbin", "street.drained2");
+      await g.say("bobbin", "street.drained3");
+      g.playSong("marcus");
+      await g.say("bobbin", "street.marcus_heard");
+    });
+  },
+
   async listen_marcus(g) {
     if (g.library.learned.has("waking")) return void (await g.dialogue("marcus"));
     await g.cutscene(async () => {
       await g.say("bobbin", "street.marcus1");
+      await g.say("bobbin", "street.marcus_diff");
+      await g.dialogue("marcus_memory");
+      await marcusMemory(g);
+      await g.say("bobbin", "street.after_memory");
+      // he listens, and the note the song took comes back to the Distaff
+      g.view?.give?.("marcus");
       await g.say("marcus", "street.marcus_roll");
+      g.giveNote("e");
+      await g.say("bobbin", "street.note_back");
       await g.teach("bucket", "waking");
       g.caption("caption.flock_brightens");
       await g.say("bobbin", "street.marcus2");
       await g.say("bobbin", "street.marcus3");
+      await g.say("bobbin", "street.journey");
     });
   },
 

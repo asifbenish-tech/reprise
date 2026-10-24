@@ -231,6 +231,28 @@ browsers send the text to an online service. A spoken line moves on when the voi
 turn voices off and set their level, and the score dips under them. Real actors can replace the files
 later without code changes.
 
+**D-045 · The street takes a note, and Marcus gives it back (§3 Prologue, owner direction).** Out of the
+park the city's hit is everywhere, and it takes the e from the Distaff (two notes left; the socket breaks
+on screen). Marcus's rhythm leans back where every other beat stands to attention; Bobbin asks how, and
+Marcus's memory is told as a short film in his own voice: the street when every kind of music played on
+it, the Producers' Guild and its formula greying it, the fight they lost, and Marcus now, keeping his own
+sound in his headphones. Bobbin listens, his gold notes flow back into the Distaff, the e returns, and
+Marcus's roll teaches Waking as before. Bobbin names his road: each sound he helps remember gives a note.
+Bobbin's voice was recast (speaker 876 instead of 720, livelier delivery for everyone) after the owner
+found it robotic.
+
+**D-046 · Title music and a music switch (owner direction).** The title theme is twelve bars now (the
+clarinet's climb, then a slow tune over harp, strings and bass), and starts on the first click anywhere on
+the title, since browsers keep sound off until then. Music can be switched off from the title screen, from
+a ♪ button on the panel and in Settings; the choice is remembered.
+
+**D-047 · The owner's story arc (§3, §2, owner direction).** `STORY.md` replaces the plan for Release 2:
+worlds of music (rock, country and more) instead of the Studios and the Lawyers; a note back for every
+world that finds its own sound; a finale at the top of the Producers' Guild tower, inside their building, where the head of the Guild releases the catchiest
+song yet, everyone Bobbin helped and the swans fall under it, and three attempts at held notes braid their
+styles into a burst that frees them all. The genres, the head of the Guild and the fate of the Monotone are
+open questions for the owner. The end card already points down this road.
+
 ## Data formats (§9.5) extensions
 
 **D-025 · Extra fields.** `HotspotDef` gains `name`, `talk`, `listen`, `person`, `stand`, `when`, `sprite`

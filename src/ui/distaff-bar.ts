@@ -32,6 +32,7 @@ export class DistaffBar {
   private played: NoteIndex[] = [];
   private ring: HTMLElement;
   private stripTimer = 0;
+  private musicBtn: HTMLButtonElement;
   onBook: () => void = () => {};
   onMenu: () => void = () => {};
   onHint: () => void = () => {};
@@ -84,7 +85,9 @@ export class DistaffBar {
     this.closeup = h("div", { class: "closeup empty", "aria-live": "polite" });
     const book = h("button", { class: "icon-btn book-btn", "aria-label": t("ui.book"), title: t("ui.book"), onclick: () => this.onBook() }, "❦");
     const menu = h("button", { class: "icon-btn menu-btn", "aria-label": t("ui.menu"), title: t("ui.menu"), onclick: () => this.onMenu() }, "≡");
-    this.el = h("div", { id: "distaff" }, staff, this.strip, this.ring, noteRow, this.combBtn, this.closeup, book, menu);
+    this.musicBtn = h("button", { class: "icon-btn music-btn", onclick: () => this.g.setMusicOn(!this.g.settings.musicOn) }, "♪");
+    this.el = h("div", { id: "distaff" }, staff, this.strip, this.ring, noteRow, this.combBtn, this.closeup, book, menu, this.musicBtn);
+    this.refreshMusic();
 
     g.bus.on("note", ({ n, cracked, index }) => {
       this.pulse(n, cracked);
@@ -122,6 +125,16 @@ export class DistaffBar {
     const mote = h("span", { class: "mote", "aria-hidden": "true" }, NOTE_GLYPHS[n]);
     b.append(mote);
     window.setTimeout(() => mote.remove(), 900);
+  }
+
+  /** The song takes a note: its spool flares, shakes and goes dark. */
+  breakNote(n: number): void {
+    const b = this.notes[n];
+    if (!b) return;
+    b.classList.remove("breaking");
+    void b.offsetWidth;
+    b.classList.add("breaking");
+    window.setTimeout(() => b.classList.remove("breaking"), 1400);
   }
 
   /** A heard draft: notes glow as they sound, with or without labels by difficulty (GDD 4.1). */
@@ -190,7 +203,18 @@ export class DistaffBar {
     this.closeup.append(icon, h("span", { class: "closeup-label" }, label));
   }
 
+  /** The ♪ button shows whether music is on, and says what pressing it will do. */
+  refreshMusic(): void {
+    const on = this.g.settings.musicOn;
+    this.musicBtn.classList.toggle("off", !on);
+    this.musicBtn.setAttribute("aria-pressed", String(on));
+    const label = on ? t("ui.music_off") : t("ui.music_on");
+    this.musicBtn.setAttribute("aria-label", label);
+    this.musicBtn.title = label;
+  }
+
   refresh(): void {
+    this.refreshMusic();
     const g = this.g;
     if (!g.save) return;
     const owned = g.library.ownedNotes;

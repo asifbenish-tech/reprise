@@ -853,6 +853,42 @@
    "frames": 1,
    "status": "placeholder",
    "recipe": "cinema:title"
+  },
+  {
+   "id": "memory_street",
+   "path": "art/film/memory_street.png",
+   "w": 640,
+   "h": 296,
+   "frames": 1,
+   "status": "placeholder",
+   "recipe": "memory:street"
+  },
+  {
+   "id": "memory_street_grey",
+   "path": "art/film/memory_street_grey.png",
+   "w": 640,
+   "h": 296,
+   "frames": 1,
+   "status": "placeholder",
+   "recipe": "memory:street_grey"
+  },
+  {
+   "id": "memory_fight",
+   "path": "art/film/memory_fight.png",
+   "w": 640,
+   "h": 296,
+   "frames": 1,
+   "status": "placeholder",
+   "recipe": "memory:fight"
+  },
+  {
+   "id": "memory_now",
+   "path": "art/film/memory_now.png",
+   "w": 640,
+   "h": 296,
+   "frames": 1,
+   "status": "placeholder",
+   "recipe": "memory:now"
   }
  ],
  "audio": [
@@ -1151,10 +1187,24 @@
    "status": "placeholder"
   },
   {
+   "id": "title/bass",
+   "path": "audio/stems/title/bass",
+   "notes": "audio/stems/title/bass.notes.json",
+   "hits": "audio/stems/title/bass.hits.json",
+   "status": "placeholder"
+  },
+  {
    "id": "title/clarinet",
    "path": "audio/stems/title/clarinet",
    "notes": "audio/stems/title/clarinet.notes.json",
    "hits": "audio/stems/title/clarinet.hits.json",
+   "status": "placeholder"
+  },
+  {
+   "id": "title/harp",
+   "path": "audio/stems/title/harp",
+   "notes": "audio/stems/title/harp.notes.json",
+   "hits": "audio/stems/title/harp.hits.json",
    "status": "placeholder"
   },
   {

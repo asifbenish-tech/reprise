@@ -28,3 +28,10 @@ describe("spoken lines (D-044)", () => {
     for (const f of index.sprites) expect(existsSync(new URL(`../../assets/voice/${f}`, import.meta.url))).toBe(true);
   });
 });
+
+describe("Marcus's memory (D-045)", () => {
+  it("is told in Marcus's voice", () => {
+    for (const k of ["mem.1", "mem.3", "mem.6", "dlg.marcus_memory.n3"]) expect(hasLine("marcus", strings[k]), k).toBe(true);
+    expect(hasLine("bobbin", strings["street.drained2"])).toBe(true);
+  });
+});

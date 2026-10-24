@@ -1,7 +1,7 @@
 {
  "id": "title",
- "bpm": 80,
- "bars": 4,
+ "bpm": 84,
+ "bars": 12,
  "caption": "caption.song.title",
  "stems": [
   {
@@ -27,6 +27,22 @@
    "color": "#e8c890",
    "label": "thread.title.piano",
    "instrument": "piano"
+  },
+  {
+   "id": "harp",
+   "file": "audio/stems/title/harp",
+   "hitsFile": "audio/stems/title/harp.hits.json",
+   "color": "#e8d8ff",
+   "label": "thread.title.harp",
+   "instrument": "harp"
+  },
+  {
+   "id": "bass",
+   "file": "audio/stems/title/bass",
+   "hitsFile": "audio/stems/title/bass.hits.json",
+   "color": "#7a6aa0",
+   "label": "thread.title.bass",
+   "instrument": "bass"
   }
  ]
 }
