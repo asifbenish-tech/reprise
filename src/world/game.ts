@@ -98,6 +98,8 @@ export class Game {
   private busyDepth = 0;
   private models = new Map<string, LoomModel>();
   private unsubs: (() => void)[] = [];
+  private misses = 0; // phrases in a row that were no draft
+  private quips = 0;
   private lastSave = 0;
 
   constructor(public settings: Settings) {
@@ -148,6 +150,7 @@ export class Game {
   load(save: SaveData): void {
     for (const u of this.unsubs) u();
     this.unsubs = [];
+    this.misses = 0;
     this.save = save;
     this.effects.clearAll();
     this.models.clear();
@@ -162,7 +165,10 @@ export class Game {
     this.puzzles = new PuzzleTracker(puzzleDefs, () => this.condState());
     this.unsubs.push(
       this.bus.on("cast", (e) => this.onCast(e)),
-      this.bus.on("phraseFailed", () => this.voice.stingerFor(false, Tone.now() + 0.05)),
+      this.bus.on("phraseFailed", () => {
+        this.voice.stingerFor(false, Tone.now() + 0.05);
+        this.missed();
+      }),
       this.bus.on("spoolThreadAdded", ({ slot, thread }) => this.song?.addGuest(slot, thread)),
       this.bus.on("spoolThreadRemoved", ({ slot }) => {
         this.song?.removeGuest(slot);
@@ -346,6 +352,7 @@ export class Game {
 
   onCast(e: CastEvent): void {
     const key = e.reversed ? `${e.id}_rev` : e.id;
+    if (!e.fromLoop) this.misses = 0;
     const now = Tone.now();
     if (!e.fromLoop) {
       this.voice.stingerFor(true, now + 0.08);
@@ -446,6 +453,14 @@ export class Game {
         nodeId = choices?.length ? choices[pick]?.next : node.next;
       }
     });
+  }
+
+  /** Three phrases in a row that were no draft: Bobbin speaks to the hands on the Distaff, kindly. */
+  private missed(): void {
+    if (this.busy || this.room?.id === "crossing") return;
+    if (++this.misses < 3) return;
+    this.misses = 0;
+    void this.say("bobbin", `fail.${this.quips++ % 3}`);
   }
 
   private speakerSignature(sp: SpeakerDef): void {

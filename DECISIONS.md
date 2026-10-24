@@ -159,6 +159,13 @@ owner asked for better-looking art, so the second-pass placeholders are drawn wi
 manifest still marks every image `placeholder`. Signs painted into rooms use the words the strings
 already say (the billboard, the Spire's slogan), never a franchise name.
 
+**D-036 · Cynicism and the fourth wall (§1 pillar 4, owner direction).** The owner asked for more cynical
+humour and a little fourth-wall breaking. The premise gains a reason to land: the flock caught Earth's hit
+from across the dark, and the eldest wants a word with whoever made it, which pays off when the same
+song greys the swans in the park. Bobbin's voice rules still hold (plain, short, never cruel): his asides
+to the player are parenthetical or come from Skein, and after three phrases in a row that are no draft he
+speaks kindly to the hands on the Distaff. The satire stays aimed at the system, never at a person.
+
 ## Data formats (§9.5) extensions
 
 **D-025 · Extra fields.** `HotspotDef` gains `name`, `talk`, `listen`, `person`, `stand`, `when`, `sprite`

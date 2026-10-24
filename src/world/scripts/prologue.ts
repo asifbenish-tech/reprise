@@ -11,6 +11,10 @@ async function crossingIntro(g: Game): Promise<void> {
   await g.cutscene(async () => {
     g.caption("caption.crossing");
     await g.say("bobbin", "crossing.intro1");
+    // why here: the flock caught this world's hit from across the dark, and wants a word with its makers
+    await g.say("bobbin", "crossing.why1");
+    await g.say("bobbin", "crossing.why2");
+    await g.say("bobbin", "crossing.why3");
     await g.say("bobbin", "crossing.intro2");
     await callDraft(g, "opening");
     g.setFlag("await_opening");
@@ -106,6 +110,8 @@ export const scripts: Record<string, ScriptFn> = {
       const move = g.view?.moveSprite("jogger", 700, 280, 7) ?? Promise.resolve();
       await g.say("jogger", "pond.jogger");
       await g.say("bobbin", "pond.jogger2");
+      await g.say("bobbin", "pond.that_song");
+      await g.say("bobbin", "pond.your_head");
       g.setFlag("flock_grey");
       g.refreshLook();
       g.view?.flash(0x606070, 400);
