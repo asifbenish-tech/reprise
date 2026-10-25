@@ -62,6 +62,8 @@ export interface View {
   muffle?(from: string, by: string): void;
   /** Gold notes travelling from one sprite into Bobbin's Distaff: a sound given back. */
   give?(from: string): void;
+  /** A character hands Bobbin a thing (a texture key); resolves when the Distaff has taken it. */
+  hand?(from: string, item: string): Promise<void>;
   /** The swan weaves himself into a man: threads close round him, a flash, the hooded figure on one knee. */
   transform?(): Promise<void>;
   /** Holds Bobbin in one sprite frame (11: on one knee, spent), or null to let him stand again. */

@@ -1,10 +1,31 @@
 {
  "id": "engineer",
- "start": "n0",
+ "start": "after",
  "nodes": {
+  "after": {
+   "speaker": "engineer",
+   "text": "dlg.engineer.after",
+   "when": "flag:watched_engineer",
+   "else": "n0"
+  },
   "n0": {
    "speaker": "engineer",
    "text": "dlg.engineer.n0",
+   "next": "r1"
+  },
+  "r1": {
+   "speaker": "engineer",
+   "text": "dlg.engineer.r1",
+   "next": "r2"
+  },
+  "r2": {
+   "speaker": "bobbin",
+   "text": "dlg.engineer.r2",
+   "next": "r3"
+  },
+  "r3": {
+   "speaker": "engineer",
+   "text": "dlg.engineer.r3",
    "next": "n1"
   },
   "n1": {
@@ -25,7 +46,9 @@
   "n4": {
    "speaker": "engineer",
    "text": "dlg.engineer.n4",
-   "when": "!flag:watched_engineer"
+   "effects": [
+    "script:act1.watch_engineer"
+   ]
   }
  }
 }

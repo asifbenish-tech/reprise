@@ -9,20 +9,34 @@ function once(g: Game, flag: string, key: string, speaker = "bobbin"): void {
   void g.say(speaker, key);
 }
 
-/** A1-3: isolating the coach's voice lifts her scale out of the piano. */
-const fitting: LogicFactory = (g) => ({
-  cast(e) {
-    if (e.id !== "_isolate" || e.target?.kind !== "thread" || e.target.stem !== "voice") return false;
-    if (!g.library.learned.has("tuning")) {
-      void g.cutscene(async () => {
-        await g.say("bobbin", "fitting.isolated");
-        await g.teach("coach", "tuning");
-        await g.say("coach", "fitting.coach_hears");
-      });
-    }
-    return true;
-  },
-});
+/** A1-3: her voice heard on its own lifts her scale out of the piano: isolate it, or pull out the piano that buries
+ *  it. Pulling only the metronome, or her voice, gets a word that points the right way (owner feedback). */
+const fitting: LogicFactory = (g) => {
+  let heard = false;
+  const hear = (key: string) => {
+    if (heard || g.library.learned.has("tuning")) return;
+    heard = true;
+    void g.cutscene(async () => {
+      await g.say("bobbin", key);
+      await g.teach("coach", "tuning");
+      await g.say("coach", "fitting.coach_hears");
+    });
+  };
+  return {
+    cast(e) {
+      if (e.id !== "_isolate" || e.target?.kind !== "thread" || e.target.stem !== "voice") return false;
+      hear("fitting.isolated");
+      return true;
+    },
+    update() {
+      const m = g.loom?.song.def.id === "warmup" ? g.loom.song.model : null;
+      if (!m || heard || g.library.learned.has("tuning")) return;
+      if (m.pulled.has("voice")) once(g, "said_voice_out", "fitting.voice_out");
+      else if (m.pulled.has("piano")) hear("fitting.piano_out");
+      else if (m.pulled.has("metronome")) once(g, "said_metronome_out", "fitting.metronome_out");
+    },
+  };
+};
 
 /** A1-4: the dancers hang on the click; pull it and they freeze, then drift off to find a beat. */
 const corridor: LogicFactory = (g) => ({
@@ -131,6 +145,8 @@ export const scripts: Record<string, ScriptFn> = {
     g.view?.setSprite("chairman", { frame: 0 });
   },
 
+  /** A1-2: the engineer takes Bobbin for the Chairman's new project, shows him a song in layers, and hands him
+   *  his pocket mixer to help; on the Distaff it becomes the comb (owner feedback: the tool needs a giver). */
   async watch_engineer(g) {
     if (g.flag("watched_engineer")) return void (await g.say("bobbin", "mixing.desk_again"));
     await g.cutscene(async () => {
@@ -142,11 +158,15 @@ export const scripts: Record<string, ScriptFn> = {
         await g.waitSeconds(g.conductor.barSeconds() * 0.75);
       }
       m.isolated = null;
+      await g.say("engineer", "mixing.gift1");
+      await g.view?.hand?.("engineer", "fx_mixer");
       await g.say("bobbin", "mixing.flax1");
       await g.say("bobbin", "mixing.flax2");
+      await g.say("bobbin", "mixing.gift2");
       g.giveTool("combing");
       g.setFlag("watched_engineer");
       await g.say("bobbin", "mixing.flax3");
+      await g.say("bobbin", "mixing.gift3");
     });
   },
 

@@ -2,6 +2,8 @@
 
 ## Look pass (owner feedback on Release 1)
 
+- The engineer hands Bobbin his pocket mixer (for the Chairman, he thinks), and it becomes the comb. The
+  vocal coach's puzzle explains itself and accepts pulling the piano; a tip explains the Loom View (D-053).
 - Act II: Preset Zero, a new puzzle in the Preset Library. Bobbin finds the Song of Originality: eight
   notes, more than the Distaff holds, won back as sparks of originality from everyone he helps. The Book
   keeps a page for it (D-052). Panels' close buttons no longer cover their titles.

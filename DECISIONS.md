@@ -299,6 +299,15 @@ originality, one for each person who finds their own sound (the note-return mess
 waits until the song is found, the Book gains a page for it, and Juno warns him about the drawer. Both drafts
 are ones he already has, so no new draft enters Release 1.
 
+**D-053 · Who gives the comb, and an easier coach (owner feedback).** The comb no longer appears out of a
+monologue: the engineer in Control Room B takes Bobbin for the Chairman's new project (the Chairman came down
+to the lobby for him), wants to help produce whatever the Chairman wants, and hands him his pocket mixer; it
+flies to the Distaff and its faders become the comb. Bobbin's last word on it: he'll use it to find the
+voices the Chairman buried. In the fitting room the coach's conversation ends with Bobbin saying what he could
+do (comb the song apart, hold her voice up on its own), pulling the piano now works as well as isolating her
+voice, pulling only the metronome or her voice gets a line that points the right way, and the first Loom View
+shows a tip on threads, Isolate and Pull.
+
 ## Data formats (§9.5) extensions
 
 **D-025 · Extra fields.** `HotspotDef` gains `name`, `talk`, `listen`, `person`, `stand`, `when`, `sprite`

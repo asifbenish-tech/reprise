@@ -25,7 +25,12 @@
   },
   "n4": {
    "speaker": "coach",
-   "text": "dlg.coach.n4"
+   "text": "dlg.coach.n4",
+   "next": "n5"
+  },
+  "n5": {
+   "speaker": "bobbin",
+   "text": "dlg.coach.n5"
   }
  }
 }

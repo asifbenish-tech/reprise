@@ -130,3 +130,18 @@ test("the factory gate waits until Bobbin has found the Song of Originality", as
   expect((await state(page)).flags.gate_passed).toBe(true);
   expect(errors).toEqual([]);
 });
+
+test("the coach is heard when the piano is pulled, not only when her voice is isolated", async ({ page }) => {
+  const errors = watchErrors(page);
+  await boot(page, 99);
+  await solve(page, upTo("A1-3"));
+  await step(page, "walk:fitting_room");
+  await step(page, "comb:metronome");
+  await step(page, "pull:metronome");
+  expect(await page.evaluate(() => (window as any).__reprise.g.library.learned.has("tuning"))).toBe(false);
+  await step(page, "pull:piano");
+  await step(page, "learn:tuning");
+  await step(page, "close");
+  await solve(page, ["A1-4"]);
+  expect(errors).toEqual([]);
+});

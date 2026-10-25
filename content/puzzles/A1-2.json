@@ -17,7 +17,7 @@
  ],
  "bot": [
   "walk:mixing_room",
-  "listen:desk",
+  "talk:engineer",
   "flag:watched_engineer"
  ]
 }

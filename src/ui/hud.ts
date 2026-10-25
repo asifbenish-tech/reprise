@@ -70,7 +70,11 @@ export class HudImpl implements Hud {
     this.guide = new Guide(g);
     this.settings.onGuide = () => void this.guide.open();
     // tips keep out of the way of speech, conversations, the film, the Loom View and every panel
-    this.tips = new Tips(g, () => this.speech.classList.contains("show") || this.root.classList.contains("conversing") || this.filming || this.root.classList.contains("loom-open") || this.book.isOpen || this.settings.isOpen || this.guide.isOpen);
+    this.tips = new Tips(
+      g,
+      () => this.speech.classList.contains("show") || this.root.classList.contains("conversing") || this.filming || this.book.isOpen || this.settings.isOpen || this.guide.isOpen,
+      () => this.root.classList.contains("loom-open"),
+    );
     this.root = h("div", { id: "hud", dir: textDir() }, this.loomPanel, this.revealEl, this.hoverEl, this.speech, this.captionEl, this.toastEl, this.dialog, this.wheel, this.card, this.tips.el, this.distaff.el, this.book.el, this.settings.el, this.guide.el, this.live);
     parent.append(this.root);
     g.hudSelectThread = (id) => this.selectThread(id);

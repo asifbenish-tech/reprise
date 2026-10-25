@@ -130,6 +130,8 @@ interface Tip {
   when: (g: Game) => boolean;
   /** gone (and counted as seen) once this holds */
   done?: (g: Game) => boolean;
+  /** shown over the Loom View, where every other tip waits */
+  inLoom?: boolean;
   text: (g: Game) => string;
 }
 
@@ -140,7 +142,8 @@ const TIPS: Tip[] = [
   { id: "walk", when: (g) => !inRoom(g, "crossing"), done: (g) => !!g.selection, text: () => t("tip.walk") },
   { id: "weave", when: (g) => inRoom(g, "pond") && g.flag("landed") && !g.flag("skein_healed"), done: (g) => g.flag("skein_healed"), text: () => t("tip.weave") },
   { id: "book", when: (g) => !inRoom(g, "crossing") && g.save.learned.length > 0, text: (g) => t(g.save.difficulty === "practice" ? "tip.book.practice" : "tip.book") },
-  { id: "comb", when: (g) => g.save.tools.includes("combing"), text: () => t("tip.comb") },
+  { id: "comb", when: (g) => g.save.tools.includes("combing") && !g.loom, text: () => t("tip.comb") },
+  { id: "loom", when: (g) => !!g.loom, done: (g) => !g.loom, inLoom: true, text: () => t("tip.loom") },
   { id: "spindle", when: (g) => g.spindle.capacity > 0, text: () => t("tip.spindle") },
 ];
 
@@ -157,7 +160,7 @@ export class Tips {
   private current: Tip | null = null;
   private lastProgress = performance.now();
 
-  constructor(private g: Game, private quiet: () => boolean) {
+  constructor(private g: Game, private quiet: () => boolean, private loomOpen: () => boolean) {
     this.text = h("p", { class: "tip-text" });
     this.el = h(
       "div",
@@ -177,6 +180,11 @@ export class Tips {
     if (this.seen(id)) return;
     this.g.settings.tipsSeen.push(id);
     writeSettings(this.g.settings);
+  }
+
+  /** Out of the way while someone talks or a panel is open; over the Loom View only if it is about it. */
+  private blocked(tip: Tip): boolean {
+    return this.quiet() || this.loomOpen() !== !!tip.inLoom;
   }
 
   dismiss(): void {
@@ -202,12 +210,12 @@ export class Tips {
     if (this.current) {
       // out of the way while someone talks or a panel is open; back when the scene is quiet again
       if (this.current.done?.(g)) this.dismiss();
-      else this.el.classList.toggle("hidden", this.quiet());
+      else this.el.classList.toggle("hidden", this.blocked(this.current));
       return;
     }
     if (this.quiet() || g.busy) return;
     const stuck: Tip = { id: "hint", when: () => performance.now() - this.lastProgress > STUCK_MS && !inRoom(g, "crossing"), text: () => t("tip.hint") };
-    const next = [...TIPS, stuck].find((tip) => !this.seen(tip.id) && tip.when(g) && !tip.done?.(g));
+    const next = [...TIPS, stuck].find((tip) => !this.seen(tip.id) && !this.blocked(tip) && tip.when(g) && !tip.done?.(g));
     if (!next) return;
     this.current = next;
     this.text.textContent = next.text(g);

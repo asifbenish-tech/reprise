@@ -426,6 +426,34 @@ export class RoomScene extends Phaser.Scene implements View {
     this.time.delayedCall(8 * 180 + 1100, () => this.fx.note(2, false));
   }
 
+  /** Someone hands Bobbin a thing: it arcs from them to the Distaff's tip and is taken in with a flare. */
+  hand(from: string, item: string): Promise<void> {
+    const src = this.sprites.get(from);
+    const tip = this.fx.tip();
+    if (this.g.fast || !src || !tip) return Promise.resolve();
+    const it = this.add.image(src.x, src.y - src.height * 0.55, item).setDepth(4960);
+    const mid = { x: (it.x + tip[0]) / 2, y: Math.min(it.y, tip[1]) - 40 };
+    const curve = new Phaser.Curves.QuadraticBezier(new Phaser.Math.Vector2(it.x, it.y), new Phaser.Math.Vector2(mid.x, mid.y), new Phaser.Math.Vector2(tip[0], tip[1]));
+    const k = { t: 0 };
+    return new Promise((res) =>
+      this.tweens.add({
+        targets: k,
+        t: 1,
+        duration: 1400,
+        ease: "Sine.easeInOut",
+        onUpdate: () => {
+          const v = curve.getPoint(k.t);
+          it.setPosition(v.x, v.y).setScale(1 + Math.sin(k.t * Math.PI) * 0.6);
+        },
+        onComplete: () => {
+          it.destroy();
+          this.fx.note(4, false);
+          this.time.delayedCall(300, () => res());
+        },
+      }),
+    );
+  }
+
   transform(): Promise<void> {
     if (this.g.fast || !this.bobbin) {
       this.setSwan(false);

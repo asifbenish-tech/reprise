@@ -73,7 +73,7 @@
    ],
    "look": "look.mixing_room.desk",
    "name": "name.mixing_desk",
-   "listen": "script:act1.watch_engineer"
+   "listen": "dialogue:engineer"
   },
   {
    "id": "engineer",
