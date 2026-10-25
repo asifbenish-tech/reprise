@@ -12,7 +12,7 @@ import { DistaffBar } from "./distaff-bar";
 import { BookOfPatterns } from "./book-of-patterns";
 import { SettingsPanel } from "./settings";
 import { Guide, Tips } from "./tutorial";
-import { NOTE_COLORS, NOTE_GLYPHS, clear, h, weave } from "./dom";
+import { NOTE_COLORS, NOTE_GLYPHS, append, clear, h, weave } from "./dom";
 
 export class HudImpl implements Hud {
   readonly root: HTMLElement;
@@ -26,6 +26,7 @@ export class HudImpl implements Hud {
   private loomPanel: HTMLElement;
   private loomLabels: HTMLElement;
   private loomActions: HTMLElement;
+  private loomHelp: HTMLElement;
   private live: HTMLElement;
   private wheel: HTMLElement;
   private sayChain: Promise<void> = Promise.resolve();
@@ -52,7 +53,8 @@ export class HudImpl implements Hud {
     this.revealEl = h("div", { id: "reveal", "aria-hidden": "true" });
     this.loomLabels = h("div", { class: "loom-labels", role: "listbox", "aria-label": t("loom.threads") });
     this.loomActions = h("div", { class: "loom-actions" });
-    this.loomPanel = h("div", { id: "loom-panel", class: "hidden" }, this.loomActions, this.loomLabels);
+    this.loomHelp = h("p", { class: "loom-help", role: "status" });
+    this.loomPanel = h("div", { id: "loom-panel", class: "hidden" }, this.loomActions, this.loomHelp, this.loomLabels);
     this.live = h("div", { class: "sr-only", "aria-live": "polite" });
     this.card = h("div", { id: "title-card", "aria-hidden": "true" }, h("div", { class: "logo" }, t("title.logo")), weave(), h("p", {}, t("film.episode")));
     this.wheel = h("div", { id: "wheel", class: "hidden", "aria-hidden": "true" });
@@ -366,7 +368,8 @@ export class HudImpl implements Hud {
     const pulled = isStem && m.pulled.has(id!);
     const act = (label: string, fn: () => void, enabled: boolean, extra: Record<string, unknown> = {}) =>
       h("button", { class: "loom-btn", disabled: !enabled, onclick: () => { fn(); this.renderLoom(true); }, ...extra } as never, label);
-    this.loomActions.append(
+    append(
+      this.loomActions,
       act(pulled ? t("loom.put_back") : t("loom.pull"), () => this.g.pull(id!), isStem),
       h("button", {
         class: "loom-btn",
@@ -381,8 +384,11 @@ export class HudImpl implements Hud {
         },
         onkeyup: () => this.g.isolate(null),
       }, t("loom.isolate")),
-      act(t("loom.copy", { n: this.g.spindle.selected + 1 }), () => this.g.copyToSpool(id!), isStem && this.g.spindle.capacity > 0),
+      this.g.spindle.capacity > 0 ? act(t("loom.copy", { n: this.g.spindle.selected + 1 }), () => this.g.copyToSpool(id!), isStem) : null,
     );
+    // what the buttons do, for the thread in hand (owner feedback: the Loom View has to explain itself)
+    const label = isStem ? t(lv.song.model.stem(id!)!.label) : "";
+    this.loomHelp.textContent = !id ? t("loom.help.none") : !isStem ? t("loom.help.spool") : pulled ? t("loom.help.pulled", { thread: label }) : t("loom.help.thread", { thread: label });
     for (const { slot } of this.g.spindle.threadSlots()) {
       this.loomActions.append(act(t("loom.drop", { n: slot + 1 }), () => this.g.dropFromSpool(slot, id!), isStem && m.replacedBy(id!) !== slot));
     }

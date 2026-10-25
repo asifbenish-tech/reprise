@@ -207,11 +207,19 @@ export class Tips {
       this.el.classList.add("hidden");
       return;
     }
+    // someone who has opened the Loom View already knows how to comb
+    if (g.loom && !this.seen("comb")) this.mark("comb");
     if (this.current) {
       // out of the way while someone talks or a panel is open; back when the scene is quiet again
       if (this.current.done?.(g)) this.dismiss();
-      else this.el.classList.toggle("hidden", this.blocked(this.current));
-      return;
+      else if (!this.quiet() && this.blocked(this.current)) {
+        // its place (scene or Loom View) is not on screen: step aside unseen, so a tip that fits can show
+        this.current = null;
+        this.el.classList.add("hidden");
+      } else {
+        this.el.classList.toggle("hidden", this.blocked(this.current));
+        return;
+      }
     }
     if (this.quiet() || g.busy) return;
     const stuck: Tip = { id: "hint", when: () => performance.now() - this.lastProgress > STUCK_MS && !inRoom(g, "crossing"), text: () => t("tip.hint") };

@@ -269,6 +269,10 @@ body.plainfont .logo, body.plainfont #title h1 { font-family: var(--plain); font
 .loom-btn { padding: 0.2em 0.7em; background: rgba(0, 0, 0, 0.7); border: calc(var(--s) * 1px) solid rgba(123,108,240,0.7); font-size: 0.85em; touch-action: none; }
 .loom-btn:disabled { opacity: 0.35; cursor: default; }
 .loom-btn.close { margin-left: auto; }
+.loom-help {
+  position: absolute; left: calc(var(--s) * 6px); top: calc(var(--s) * 22px); max-width: calc(var(--s) * 400px); margin: 0;
+  padding: 0.3em 0.7em; background: rgba(8, 6, 18, 0.88); border-left: calc(var(--s) * 2px) solid var(--gold); color: #fff3c0; font-size: 0.9em;
+}
 .loom-labels { position: absolute; inset: 0; pointer-events: none; }
 .thread-label {
   position: absolute; left: calc(var(--s) * 6px); pointer-events: auto; font-size: 0.8em; padding: 0.05em 0.5em;
@@ -431,3 +435,5 @@ kbd {
 .book-song .book-name strong { color: #ffe9b0; }
 .song-notes { flex-wrap: wrap; }
 .book-slot.spark { color: var(--gold); border-style: dashed; opacity: 0.7; text-align: center; }
+/* over the Loom View the tip sits under its buttons and help line */
+#hud.loom-open #tip { top: calc(var(--s) * 44px); }

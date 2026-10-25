@@ -2,6 +2,8 @@
 
 ## Look pass (owner feedback on Release 1)
 
+- The Loom View explains itself: a help line for the chosen thread, buttons named for what they do, with
+  their keys, and no spool button before there are spools (D-054).
 - The engineer hands Bobbin his pocket mixer (for the Chairman, he thinks), and it becomes the comb. The
   vocal coach's puzzle explains itself and accepts pulling the piano; a tip explains the Loom View (D-053).
 - Act II: Preset Zero, a new puzzle in the Preset Library. Bobbin finds the Song of Originality: eight

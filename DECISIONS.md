@@ -308,6 +308,14 @@ do (comb the song apart, hold her voice up on its own), pulling the piano now wo
 voice, pulling only the metronome or her voice gets a line that points the right way, and the first Loom View
 shows a tip on threads, Isolate and Pull.
 
+**D-054 · The Loom View explains itself (owner feedback).** A tip alone was not enough (and one waiting for
+the scene could hold it back). The Loom View now always carries a help line under its buttons that follows
+the selection ("Metronome: Pull out takes it out of the song, or hold Hear alone to hear only this
+thread"), the buttons say what they do and their keys ("Pull out (P)", "Hear alone (hold I)", "Close (C)"),
+the spool button only appears once there are spools, and in the fitting room Bobbin names the three threads
+and what he wants from them when the view opens. A tip whose place is not on screen now steps aside unseen
+instead of blocking the one that fits.
+
 ## Data formats (§9.5) extensions
 
 **D-025 · Extra fields.** `HotspotDef` gains `name`, `talk`, `listen`, `person`, `stand`, `when`, `sprite`

@@ -28,6 +28,9 @@ const fitting: LogicFactory = (g) => {
       hear("fitting.isolated");
       return true;
     },
+    loomOpened() {
+      if (g.loom?.song.def.id === "warmup" && !g.library.learned.has("tuning")) once(g, "said_fitting_threads", "fitting.threads");
+    },
     update() {
       const m = g.loom?.song.def.id === "warmup" ? g.loom.song.model : null;
       if (!m || heard || g.library.learned.has("tuning")) return;
